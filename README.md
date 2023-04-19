@@ -6,6 +6,34 @@ A user friendly and accessible database that organizes all the contacts that Unl
 
 ## Functional Requirements
 
-Pages
+**Users and Permissions**
+- Viewers   
+    Can only view contact information.
+- Editors    
+    Can create, view and edit contact information.
+- Admins    
+    Can create, view and edit contact information. Can also create, view and edit users and their access to the database.
 
 
+**Pages**
+- Login Page   
+    Directs users to auth0 which will handle authentication.
+
+- Search Contacts Page    
+    Homepage of database. This is where contacts will be displayed and users will find specific ones based on filters.
+
+- View Contacts Page    
+    Users can view all fields of information.
+
+- Add Contacts Page    
+    Users can edit fields of information and apply filters to selected contact.
+
+- Admins Page    
+    Only accessible to admins. List of all users who have access to the database along with their privileges.
+
+
+##Tech Stack
+- Nuxt.js
+- PostgreSQL
+- Prisma
+- Auth0
