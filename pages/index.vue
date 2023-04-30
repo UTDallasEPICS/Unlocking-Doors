@@ -21,7 +21,7 @@ export default {
 
 <style>
   body {
-    background-color: #BCC6D1;
+    background-color: #BCC6D1 !important;
   }
 
   .logo {

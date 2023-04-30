@@ -1,11 +1,43 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://postgres:22949251121@localhost:5432/unlocking_doors?schema=mySchema"
+}
+
+model Contact {
+  id                  Int      @id @default(autoincrement())
+  company             String
+  prefix              String?
+  firstName           String?
+  lastName            String?
+  suffix              String?
+  salutation          String?
+  professionalTitle   String?
+  address             String?
+  city                String?
+  state               String?
+  zipCode             Int?
+  country             String?
+  mainPhone           Int?
+  directPhone         Int?
+  mobilePhone         Int?
+  emailAddress        String?
+  narrative           String?
+  group               String[]
+  tag                 String[]
+}
+
+model User {
+  id                  Int         @id @default(autoincrement())
+  username            String      @unique
+  permission          Permission  @default(VIEWER)
+}
+
+enum Permission {
+  ADMIN
+  EDITOR
+  VIEWER
 }

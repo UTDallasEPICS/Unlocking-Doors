@@ -32,7 +32,7 @@ A user friendly and accessible database that organizes all the contacts that Unl
     Only accessible to admins. List of all users who have access to the database along with their privileges.
 
 
-**Tech Stack**
+##Tech Stack
 - Nuxt.js
 - PostgreSQL
 - Prisma
