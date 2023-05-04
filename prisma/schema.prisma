@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://postgres:22949251121@localhost:5432/unlocking_doors?schema=mySchema"
+  url      = env("DB_URL")
 }
 
 model Contact {
