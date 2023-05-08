@@ -1,38 +1,108 @@
 <template>
-    <div class="container">
-      <div class="sidebar">
-        <div class="logo">
-          <img src="~/assets/logo.png" width="150" height="auto" />
-        </div>
-        <div class="search-through">
-          <strong>Search Through</strong>
-          <select>
-            <option value="all">Groups</option>
-            <option value="posts">Board Members</option>
-            <option value="comments">Donors</option>
-            <option value="users">Providers</option>
-          </select>
-        </div>
-        <div class="search-through">
-            <strong>Search Through</strong>
-            <select>
-              <option value="all">Tags</option>
-              <option value="posts">Board Members</option>
-              <option value="comments">Donors</option>
-              <option value="users">Providers</option>
-            </select>
-          </div>
+  <div class="container">
+    <div class="sidebar">
+      <div class="logo">
+        <img src="~/assets/logo.png" width="150" height="auto" />
       </div>
-      <div class="search-container">
-        <div class="search-bar">
-          <input type="text" placeholder="Search...">
-        </div>
+      <div class="search-through">
+        <strong>Search Through</strong>
+        <select>
+          <option value="all">Groups</option>
+          <option value="posts">Board Members</option>
+          <option value="comments">Donors</option>
+          <option value="users">Providers</option>
+        </select>
+      </div>
+      <div class="search-through">
+        <strong>Search Through</strong>
+        <select>
+          <option value="all">Tags</option>
+          <option value="posts">Board Members</option>
+          <option value="comments">Donors</option>
+          <option value="users">Providers</option>
+        </select>
       </div>
     </div>
-  </template>
+    <div class="search-container">
+      <div class="search-bar">
+        <input type="text" placeholder="Search..." v-model="searchQuery">
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Last Name</th>
+            <th>First Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Company</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="contact in filteredContacts" :key="contact.id">
+            <td>{{ contact.lastName }}</td>
+            <td>{{ contact.firstName }}</td>
+            <td>{{ contact.mainPhone }}</td>
+            <td>{{ contact.emailAddress }}</td>
+            <td>{{ contact.company }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <br>
+      <br>
+      <br>
+      <br>
+      <NuxtLink to="addContact">Add Contact</NuxtLink> <br>
+      <NuxtLink to="admin">Admin</NuxtLink>
+    </div>
+  </div>
+</template>
+
 
   <script>
 
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      contacts: [],
+      searchQuery: ''
+    }
+  },
+  created() {
+    this.fetchContacts();
+  },
+  methods: {
+    async fetchContacts() {
+      const { data } = await axios.get('/api/contact');
+      this.contacts = data;
+    },
+    search() {
+      axios.get('/api/contact/searchByFirstName', {
+        params: {
+          firstName: this.searchQuery,
+        }
+      }).then(response => {
+        this.contacts = response.data;
+      }).catch(error => {
+        console.error(error);
+      });
+    }
+  },
+  computed: {
+    filteredContacts() {
+      if (this.searchQuery) {
+        return this.contacts.filter(contact => {
+          return contact.firstName.toLowerCase().includes(this.searchQuery.toLowerCase());
+        });
+      } else {
+        return this.contacts;
+      }
+    }
+  }
+}
   </script>
 
 
@@ -98,7 +168,27 @@
       display: flex;
       flex-direction: column;
     }
-  
 
+  table {
+    border-collapse: collapse;
+    width: 90%;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 8px;
+  }
+
+  th {
+    background-color: #ddd;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  tbody tr:hover {
+    background-color: #ddd;
+  }
   </style>
   
