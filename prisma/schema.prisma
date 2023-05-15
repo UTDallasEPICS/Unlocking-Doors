@@ -1,7 +1,14 @@
+// Use this file to easily create schemas and update tables in postgres
+// This file specifically creates two tables
+
+// Contacts -> Resource info stored for UD including all the fields of info
+// Users    -> Accounts and their level of access to our application
+
 generator client {
   provider = "prisma-client-js"
 }
 
+//define your own connection to your local postgres DB in .env file and store in DATABASE_URL
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
