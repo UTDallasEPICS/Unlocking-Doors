@@ -1,27 +1,28 @@
 <template>
   <div>
-    <h>Login Page</h>
-    <br>
-
     <div class="logo">
       <img src="~/assets/logo.png">
     </div>
 
     <div class="button-container">
-      <NuxtLink to="search" class="login-button">Login</NuxtLink>
+      <a class="login-button" @click="navigateTo('/search')">Login</a>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'IndexPage'
+  methods: {
+    navigateTo(url) {
+      window.location.href = url;
+    }
+  }
 }
 </script>
 
 <style>
   body {
-    background-color: #BCC6D1;
+    background-color: #BCC6D1 !important;
   }
 
   .logo {
