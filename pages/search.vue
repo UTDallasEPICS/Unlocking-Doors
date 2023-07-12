@@ -30,8 +30,7 @@
       <div class="search-bar">
         <input type="text" placeholder="Search..." v-model="searchQuery">
       </div>
-
-      <table>
+      <table> 
         <thead>
           <tr>
             <th>Last Name</th>
@@ -53,6 +52,11 @@
           </tr>
         </tbody>
       </table>
+      <div class="pagination-controls">
+        <button @click="previousPage" :disabled="currentPage === 1">Previous</button>
+        <span>{{ currentPage }} / {{ totalPages }}</span>
+        <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+      </div>
     </div>
     <div class="card-overlay" v-if="selectedContact">
       <div class="card">
@@ -91,6 +95,8 @@ export default {
       searchQuery: '',
       selectedContact: null,
       isDeleting: false,
+      currentPage: 1,
+      pageSize: 10,
     }
   },
   created() {
@@ -127,7 +133,6 @@ export default {
       axios.put(`http://localhost:5000/contact/${this.selectedContact.id}`, this.selectedContact)
         .then(response => {
           console.log('Contact updated successfully:', response.data);
-          // Perform any additional actions after the contact is updated
         })
         .catch(error => {
           console.error('Error updating contact:', error);
@@ -142,29 +147,49 @@ export default {
       axios.delete(`http://localhost:5000/contact/${contactId}`)
         .then(response => {
           console.log('Contact deleted successfully:', response.data);
-          // Perform any additional actions after the contact is deleted
           this.fetchContacts(); // Refresh the contact list after deletion
         })
         .catch(error => {
           console.error('Error deleting contact:', error);
         });
     },
+    previousPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
+
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+      }
+    },
   },
   computed: {
-    filteredContacts() {
-      if (this.searchQuery) {
-        return this.contacts.filter(contact => {
-          return (
-            contact.firstName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-            contact.lastName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-            contact.company.toLowerCase().includes(this.searchQuery.toLowerCase())
-          );
-        });
-      } else {
-        return this.contacts;
-      }
+  filteredContacts() {
+    let filteredContacts = this.contacts;
+
+    if (this.searchQuery) {
+      filteredContacts = filteredContacts.filter(contact => {
+        return (
+          contact.firstName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+          contact.lastName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+          contact.company.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
+      });
     }
-  }
+
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    return filteredContacts.slice(startIndex, endIndex);
+  },
+
+  totalPages() {
+    return Math.ceil(this.contacts.length / this.pageSize);
+  },
+}
+
+
 }
 </script>
 
@@ -289,7 +314,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    background-color: rgba(0, 0, 0, 0.5);
   }
   
   .card {

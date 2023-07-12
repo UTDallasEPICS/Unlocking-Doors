@@ -131,7 +131,7 @@ app.get('/contact', async (req, res) => {
     res.json(users);
   });
   
-  //delete by id
+  // delete by id
   app.delete('/contact/:id', async (req, res) => {
     const { id } = req.params;
     const contactId = parseInt(id);
@@ -148,6 +148,8 @@ app.get('/contact', async (req, res) => {
     }
   });
   
+
+// the rest are similar basic endpoints for the user table
 
 // create a new user
 app.post('/user', async (req, res) => {
@@ -187,7 +189,7 @@ app.delete('/user/:username', async (req, res) => {
   res.json(deletedUsers)
 })
 
-
+  //starts the server and we're listening on port 5000
   app.listen(5000, () => {
     console.log('Server is listening on port 5000')
   })  
