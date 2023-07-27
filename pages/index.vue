@@ -55,6 +55,7 @@ export default {
     font-weight: bold;
     text-align: center;
     transition: background-color 0.3s ease;
+    cursor: pointer;
   }
 
   .login-button:hover {

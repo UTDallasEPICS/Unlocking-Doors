@@ -134,7 +134,9 @@ export default {
     async createContact() {
         console.log(this.firstName)
       try {
-        const response = await axios.post('http://localhost:5000/contact', {
+
+        for (let i = 0; i < 100; i++) {
+          const response = await axios.post('http://localhost:5000/contact', {
           prefix: this.prefix,
           firstName: this.firstName,
           lastName: this.lastName,
@@ -152,7 +154,8 @@ export default {
           emailAddress: this.emailAddress,
           narrative: this.narrative,
           company: this.company
-        });
+        }); 
+        }
         console.log(response.data);
       } catch (error) {
         console.log(error);
