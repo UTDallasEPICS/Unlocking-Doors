@@ -1,28 +1,22 @@
-<template>
-    <div class="container">
-      <div class="sidebar">
-        <div class="logo">
-          <img src="~/assets/logo.png" width="150" height="auto" />
-        </div>
-
-        <br><br><NuxtLink to="admin" class="admin-button">Admin Page</NuxtLink>
-
-      </div>
-      <div class="add-container">
-        <form @submit.prevent="createUser">
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input name="username" v-model="username" />
-              </div>
-              <div class="form-group">
-                <label for="permission">Permission:</label>
-                <input name="permission" v-model="permission" />
-              </div>
-              <br><br>
-            <button type="submit">Create User</button>              
-        </form>
-      </div>
-    </div>
+<template lang="pug">
+.container
+  .sidebar
+    .logo
+      img(src='~/assets/logo.png' width='150' height='auto')
+    br
+    br
+    NuxtLink.admin-button(to='admin') Admin Page
+  .add-container
+    form(@submit.prevent='createUser')
+      .form-group
+        label(for='username') Username:
+        input(name='username' v-model='username')
+      .form-group
+        label(for='permission') Permission:
+        input(name='permission' v-model='permission')
+      br
+      br
+      button(type='submit') Create User
   </template>
   
   <script>

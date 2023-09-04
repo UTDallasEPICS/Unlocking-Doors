@@ -1,87 +1,99 @@
-<template>
-  <div class="container">
-    <div class="sidebar">
-      <div class="logo">
-        <img src="~/assets/logo.png" width="150" height="auto" />
-      </div>
-      <div class="search-through">
-        <strong>Groups</strong>
-        <select>
-          <option >Board Members</option>
-          <option >Donors</option>
-          <option >Providers</option>
-        </select>
-      </div>
-      <div class="search-through">
-        <strong>Tags</strong>
-        <select>
-          <option>Options</option>
-        </select>
-      </div>
-
-      <br>
-      <br>
-      <br>
-
-      <NuxtLink to="addContact" class="add-contact-button">Add Contact</NuxtLink> <br><br>
-      <NuxtLink to="admin" class="admin-button">Admin Page</NuxtLink>
-    </div>
-    <div class="search-container">
-      <div class="search-bar">
-        <input type="text" placeholder="Search..." v-model="searchQuery">
-      </div>
-      <table> 
-        <thead>
-          <tr>
-            <th>Last Name</th>
-            <th>First Name</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>Company</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="contact in filteredContacts" :key="contact.id" @click="showContactDetails(contact)">
-            <td>{{ contact.lastName }}</td>
-            <td>{{ contact.firstName }}</td>
-            <td>{{ contact.mainPhone }}</td>
-            <td>{{ contact.emailAddress }}</td>
-            <td>{{ contact.company }}</td>
-            <td>
-              </td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="pagination-controls">
-        <button @click="previousPage" :disabled="currentPage === 1">Previous</button>
-        <span>{{ currentPage }} / {{ totalPages }}</span>
-        <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
-      </div>
-    </div>
-    <div class="card-overlay" v-if="selectedContact">
-      <div class="card">
-        <h2>{{ selectedContact.firstName }} {{ selectedContact.lastName }}</h2>
-        <p>Company: <input v-model="selectedContact.company"></p>
-        <p>Prefix: <input v-model="selectedContact.prefix"></p>
-        <p>Suffix: <input v-model="selectedContact.suffix"></p>
-        <p>Salutation: <input v-model="selectedContact.salutation"></p>
-        <p>Professional Title: <input v-model="selectedContact.professionalTitle"></p>
-        <p>Address: <input v-model="selectedContact.address"></p>
-        <p>City: <input v-model="selectedContact.city"></p>
-        <p>State: <input v-model="selectedContact.state"></p>
-        <p>Zip Code: <input v-model="selectedContact.zipCode"></p>
-        <p>Country: <input v-model="selectedContact.country"></p>
-        <p>Main Phone: <input v-model="selectedContact.mainPhone"></p>
-        <p>Direct Phone: <input v-model="selectedContact.directPhone"></p>
-        <p>Mobile Phone: <input v-model="selectedContact.mobilePhone"></p>
-        <p>Email: <input v-model="selectedContact.emailAddress"></p>
-        <p>Narrative: <textarea v-model="selectedContact.narrative"></textarea></p>
-        <button @click="updateContact">Save</button>
-        <button @click="selectedContact = null">Close</button>
-        <button @click="confirmDeleteContact(selectedContact.id)">Delete</button>
-      </div>      
-    </div>
-  </div>
+<template lang="pug">
+.container
+  .sidebar
+    .logo
+      img(src='~/assets/logo.png' width='150' height='auto')
+    .search-through
+      strong Groups
+      select
+        option Board Members
+        option Donors
+        option Providers
+    .search-through
+      strong Tags
+      select
+        option Options
+    br
+    br
+    br
+    NuxtLink.add-contact-button(to='addContact') Add Contact
+    br
+    br
+    NuxtLink.admin-button(to='admin') Admin Page
+  .search-container
+    .search-bar
+      input(type='text' placeholder='Search...' v-model='searchQuery')
+    table
+      thead
+        tr
+          th Last Name
+          th First Name
+          th Phone
+          th Email
+          th Company
+      tbody
+        tr(v-for='contact in filteredContacts' :key='contact.id' @click='showContactDetails(contact)')
+          td {{ contact.lastName }}
+          td {{ contact.firstName }}
+          td {{ contact.mainPhone }}
+          td {{ contact.emailAddress }}
+          td {{ contact.company }}
+          td
+    .pagination-controls
+      button(@click='previousPage' :disabled='currentPage === 1') Previous
+      span {{ currentPage }} / {{ totalPages }}
+      button(@click='nextPage' :disabled='currentPage === totalPages') Next
+  .card-overlay(v-if='selectedContact')
+    .card
+      h2 {{ selectedContact.firstName }} {{ selectedContact.lastName }}
+      p
+        | Company: 
+        input(v-model='selectedContact.company')
+      p
+        | Prefix: 
+        input(v-model='selectedContact.prefix')
+      p
+        | Suffix: 
+        input(v-model='selectedContact.suffix')
+      p
+        | Salutation: 
+        input(v-model='selectedContact.salutation')
+      p
+        | Professional Title: 
+        input(v-model='selectedContact.professionalTitle')
+      p
+        | Address: 
+        input(v-model='selectedContact.address')
+      p
+        | City: 
+        input(v-model='selectedContact.city')
+      p
+        | State: 
+        input(v-model='selectedContact.state')
+      p
+        | Zip Code: 
+        input(v-model='selectedContact.zipCode')
+      p
+        | Country: 
+        input(v-model='selectedContact.country')
+      p
+        | Main Phone: 
+        input(v-model='selectedContact.mainPhone')
+      p
+        | Direct Phone: 
+        input(v-model='selectedContact.directPhone')
+      p
+        | Mobile Phone: 
+        input(v-model='selectedContact.mobilePhone')
+      p
+        | Email: 
+        input(v-model='selectedContact.emailAddress')
+      p
+        | Narrative: 
+        textarea(v-model='selectedContact.narrative')
+      button(@click='updateContact') Save
+      button(@click='selectedContact = null') Close
+      button(@click='confirmDeleteContact(selectedContact.id)') Delete
 </template>
 
 

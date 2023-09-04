@@ -1,32 +1,23 @@
-<template>
-  <div class="container">
-    <div class="sidebar">
-      <div class="logo">
-        <img src="~/assets/logo.png" alt="Logo" width="150" height="auto" />
-      </div>
-
-      <div class="action-buttons">
-        <NuxtLink to="addUser" class="button add-user-button">Add a User</NuxtLink> <br><br>
-        <NuxtLink to="search" class="button back-button">Search Page</NuxtLink>
-      </div>
-    </div>
-    <div class="main-content">
-      <h1>Users</h1>
-      <ul class="user-list">
-        <li v-for="user in users" :key="user.id" class="user-item">
-          <div class="user-info">
-            <span class="username">{{ user.username }}</span>
-            <span class="permission">{{ user.permission }}</span>
-          </div>
-          <button class="delete-button" @click="confirmDeleteUser(user.username)">Delete</button>
-        </li>
-      </ul>
-      
-      <br>
-      <br>
-
-    </div>
-  </div>
+<template lang="pug">
+.container
+  .sidebar
+    .logo
+      img(src='~/assets/logo.png' alt='Logo' width='150' height='auto')
+    .action-buttons
+      NuxtLink.button.add-user-button(to='addUser') Add a User
+      br
+      br
+      NuxtLink.button.back-button(to='search') Search Page
+  .main-content
+    h1 Users
+    ul.user-list
+      li.user-item(v-for='user in users' :key='user.id')
+        .user-info
+          span.username {{ user.username }}
+          span.permission {{ user.permission }}
+        button.delete-button(@click='confirmDeleteUser(user.username)') Delete
+    br
+    br
 </template>
 
 <script>
