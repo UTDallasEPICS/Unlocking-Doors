@@ -1,108 +1,82 @@
-<template>
-    <div class="container">
-      <div class="sidebar">
-        <div class="logo">
-          <img src="~/assets/logo.png" width="150" height="auto" />
-        </div>
-        <div class="search-through">
-          <strong>Search Through</strong>
-          <select>
-            <option value="all">Groups</option>
-            <option value="posts">Board Members</option>
-            <option value="comments">Donors</option>
-            <option value="users">Providers</option>
-          </select>
-        </div>
-        <div class="search-through">
-          <strong>Search Through</strong>
-          <select>
-            <option value="all">Tags</option>
-            <option value="posts">Board Members</option>
-            <option value="comments">Donors</option>
-            <option value="users">Providers</option>
-          </select>
-        </div>
-        <div class="action-buttons">
-          <br><br><NuxtLink to="search" class="button back-button">Search Page</NuxtLink>
-        </div>
-      </div>
-      <div class="add-container">
-        <form @submit.prevent="createContact">
-            <div class="form-group">
-                <label for="prefix">Prefix:</label>
-                <input v-model="prefix" />
-              </div>
-              <div class="form-group">
-                <label for="firstName">First Name:</label>
-                <input name="firstName" v-model="firstName" />
-              </div>
-              <div class="form-group">
-                <label for="lastName">Last Name:</label>
-                <input v-model="lastName" />
-              </div>
-              <div class="form-group">
-                <label for="suffix">Suffix:</label>
-                <input v-model="suffix" />
-              </div>
-              <div class="form-group">
-                <label for="salutation">Salutation:</label>
-                <input v-model="salutation" />
-              </div>
-              <div class="form-group">
-                <label for="professionalTitle">Professional Title:</label>
-                <input v-model="professionalTitle" />
-              </div>
-              <div class="form-group">
-                <label for="address">Address:</label>
-                <input v-model="address" />
-              </div>
-              <div class="form-group">
-                <label for="city">City:</label>
-                <input v-model="city" />
-              </div>
-              <div class="form-group">
-                <label for="state">State:</label>
-                <input v-model="state" />
-              </div>
-              <div class="form-group">
-                <label for="zipCode">Zip Code:</label>
-                <input v-model="zipCode" />
-              </div>
-              <div class="form-group">
-                <label for="country">Country:</label>
-                <input v-model="country" />
-              </div>
-              <div class="form-group">
-                <label for="mainPhone">Main Phone:</label>
-                <input v-model="mainPhone" />
-              </div>
-              <div class="form-group">
-                <label for="directPhone">Direct Phone:</label>
-                <input v-model="directPhone" />
-              </div>
-              <div class="form-group">
-                <label for="mobilePhone">Mobile Phone:</label>
-                <input v-model="mobilePhone" />
-              </div>
-              <div class="form-group">
-                <label for="emailAddress">Email Address:</label>
-                <input v-model="emailAddress" />
-              </div>
-              <div class="form-group narrative">
-                <label for="narrative">Narrative:</label>
-                <input v-model="narrative" />
-              </div>
-              <div class="form-group">
-                <label for="company">Company:</label>
-                <input v-model="company" />
-              </div>
-            
-            <br>
-            <br>
-            <button type="submit">Create Contact</button>
-        </form>
-      </div>
-    </div>
+<template lang="pug">
+.container
+  .sidebar
+    .logo
+      img(src='~/assets/logo.png' width='150' height='auto')
+    .search-through
+      strong Search Through
+      select
+        option(value='all') Groups
+        option(value='posts') Board Members
+        option(value='comments') Donors
+        option(value='users') Providers
+    .search-through
+      strong Search Through
+      select
+        option(value='all') Tags
+        option(value='posts') Board Members
+        option(value='comments') Donors
+        option(value='users') Providers
+    .action-buttons
+      br
+      br
+      NuxtLink.button.back-button(to='search') Search Page
+  .add-container
+    form(@submit.prevent='createContact')
+      .form-group
+        label(for='prefix') Prefix:
+        input(v-model='prefix')
+      .form-group
+        label(for='firstName') First Name:
+        input(name='firstName' v-model='firstName')
+      .form-group
+        label(for='lastName') Last Name:
+        input(v-model='lastName')
+      .form-group
+        label(for='suffix') Suffix:
+        input(v-model='suffix')
+      .form-group
+        label(for='salutation') Salutation:
+        input(v-model='salutation')
+      .form-group
+        label(for='professionalTitle') Professional Title:
+        input(v-model='professionalTitle')
+      .form-group
+        label(for='address') Address:
+        input(v-model='address')
+      .form-group
+        label(for='city') City:
+        input(v-model='city')
+      .form-group
+        label(for='state') State:
+        input(v-model='state')
+      .form-group
+        label(for='zipCode') Zip Code:
+        input(v-model='zipCode')
+      .form-group
+        label(for='country') Country:
+        input(v-model='country')
+      .form-group
+        label(for='mainPhone') Main Phone:
+        input(v-model='mainPhone')
+      .form-group
+        label(for='directPhone') Direct Phone:
+        input(v-model='directPhone')
+      .form-group
+        label(for='mobilePhone') Mobile Phone:
+        input(v-model='mobilePhone')
+      .form-group
+        label(for='emailAddress') Email Address:
+        input(v-model='emailAddress')
+      .form-group.narrative
+        label(for='narrative') Narrative:
+        input(v-model='narrative')
+      .form-group
+        label(for='company') Company:
+        input(v-model='company')
+      br
+      br
+      button(type='submit') Create Contact
   </template>
   
   <script>
@@ -134,8 +108,6 @@ export default {
     async createContact() {
         console.log(this.firstName)
       try {
-
-        for (let i = 0; i < 100; i++) {
           const response = await axios.post('http://localhost:5000/contact', {
           prefix: this.prefix,
           firstName: this.firstName,
@@ -155,7 +127,6 @@ export default {
           narrative: this.narrative,
           company: this.company
         }); 
-        }
         console.log(response.data);
       } catch (error) {
         console.log(error);

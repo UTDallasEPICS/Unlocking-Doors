@@ -1,13 +1,9 @@
-<template>
-  <div>
-    <div class="logo">
-      <img src="~/assets/logo.png">
-    </div>
-
-    <div class="button-container">
-      <a class="login-button" @click="navigateTo('/search')">Login</a>
-    </div>
-  </div>
+<template lang="pug">
+div
+  .logo
+    img(src='~/assets/logo.png')
+  .button-container
+    a.login-button(@click="navigateTo('/search')") Login
 </template>
 
 <script>
