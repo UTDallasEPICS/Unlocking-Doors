@@ -81,7 +81,10 @@
   
   <script>
 import axios from 'axios';
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+/*
 export default {
   data() {
     return {
@@ -135,7 +138,51 @@ export default {
       this.$router.push('/search');
     }
   }
+
 };
+*/
+
+export default {
+  setup() {
+    const router = useRouter()
+    
+    const state = ref({
+      prefix: '',
+      firstName: '',
+      lastName: '',
+      suffix: '',
+      salutation: '',
+      professionalTitle: '',
+      address: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      country: '',
+      mainPhone: '',
+      directPhone: '',
+      mobilePhone: '',
+      emailAddress: '',
+      narrative: '',
+      company: ''
+    })
+
+    const createContact = async () => {
+      try {
+        const response = await axios.post('http://localhost:5000/contact', state.value)
+        console.log(response.data)
+      } catch (error) {
+        console.log(error)
+      }
+
+      router.push('/search')
+    }
+
+    return { 
+      state,
+      createContact
+    }
+  }
+}
 
 </script>
   
