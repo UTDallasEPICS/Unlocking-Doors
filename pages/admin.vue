@@ -20,35 +20,31 @@
     br
 </template>
 
-<script>
+<script setup>
 import axios from 'axios';
+import { ref, onMounted } from 'vue';
 
-export default {
-  data() {
-    return {
-      users: [],
-      usernameToDelete: '',
-    }
-  },
-  created() {
-    this.fetchUsers();
-  },
-  methods: {
-    async fetchUsers() {
+
+    const users = ref([]);
+    const usernameToDelete = ref('');
+
+    const fetchUsers = async () => {
       try {
         const { data } = await axios.get('http://localhost:5000/user');
-        this.users = data;
+        users.value = data;
       } catch (error) {
         console.error('Error fetching users:', error);
       }
-    },
-    confirmDeleteUser(username) {
+    };
+    
+    const confirmDeleteUser = (username) => {
       const confirmed = confirm(`Are you sure you want to delete the user ${username}?`);
       if (confirmed) {
-        this.deleteUser(username);
+        deleteUser(username);
       }
-    },
-    async deleteUser(username) {
+    };
+
+    const deleteUser = async (username) => {
       try {
         await axios.delete(`http://localhost:5000/user/${username}`);
         this.fetchUsers(); // Refresh the user list after deletion
@@ -56,9 +52,46 @@ export default {
       } catch (error) {
         console.error('Error deleting user:', error);
       }
-    },
-  },
-}
+    };
+
+    onMounted( () => {
+      fetchUsers();
+    });
+  // data() {
+  //   return {
+  //     users: [],
+  //     usernameToDelete: '',
+  //   }
+  // },
+  // created() {
+  //   this.fetchUsers();
+  // },
+  // methods: {
+  //   async fetchUsers() {
+  //     try {
+  //       const { data } = await axios.get('http://localhost:5000/user');
+  //       this.users = data;
+  //     } catch (error) {
+  //       console.error('Error fetching users:', error);
+  //     }
+  //   },
+  //   confirmDeleteUser(username) {
+  //     const confirmed = confirm(`Are you sure you want to delete the user ${username}?`);
+  //     if (confirmed) {
+  //       this.deleteUser(username);
+  //     }
+  //   },
+  //   async deleteUser(username) {
+  //     try {
+  //       await axios.delete(`http://localhost:5000/user/${username}`);
+  //       this.fetchUsers(); // Refresh the user list after deletion
+  //       console.log(`User with username ${username} has been deleted.`);
+  //     } catch (error) {
+  //       console.error('Error deleting user:', error);
+  //     }
+  //   },
+  // },
+
 </script>
 
 <style>
