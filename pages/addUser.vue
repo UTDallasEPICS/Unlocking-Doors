@@ -19,33 +19,25 @@
         button(type='submit') Create User
 </template>
     
-    <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        username: '',
-        permission: ''
-      };
-    },
-    methods: {
-      async createUser() {
-        try {
-          const response = await axios.post('http://localhost:3000/api/userPost', {
-            method: 'POST',
-            username: this.username,
-            permission: this.permission
-          });
-          console.log(response.data);
-        } catch (error) {
-          console.log(error);
-        }
+    <script setup>
+    import { axios } from 'axios';
+    import { ref } from "vue";
+
+    const username = ref('');
+    const permission = ref('');
+
+    const createUser = async () => {
+      try {
+        const response = await axios.post('http://localhost:5000/user', {
+          username: this.username,
+          permission: this.permission
+        });
+        console.log(response.data);
+      } catch (error) {
+        console.log(error);
       }
-    }
-  };
-  
-  </script>
+    };
+    </script>
     
       <style scoped>
         body {

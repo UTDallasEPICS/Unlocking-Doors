@@ -97,115 +97,108 @@
 </template>
   
   
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        contacts: [],
-        searchQuery: '',
-        selectedContact: null,
-        isDeleting: false,
-        currentPage: 1,
-        pageSize: 10,
-      }
-    },
-    created() {
-      this.fetchContacts();
-    },
-    methods: {
-      async fetchContacts() {
-        try {
-          const { data } = await axios.get('http://localhost:3000/api/contactGet', {
-            method: 'GET',
-          });
-          this.contacts = data;
-        } catch (error) {
-          console.error(error);
-        }
-      },
-      search() {
-        axios.get('http://localhost:3000/api/contactName', {method: 'GET'}, {
-          params: {
-            firstName: this.searchQuery,
-            lastName: this.searchQuery,
-            company: this.searchQuery
-          }
-        })
-          .then(response => {
-            this.contacts = response.data;
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      },
-      showContactDetails(contact) {
-        this.selectedContact = contact;
-      },
-      updateContact() {
-        axios.put(`http://localhost:3000/api/contactPut/${this.selectedContact.id}`, {method: 'PUT'}, this.selectedContact)
-          .then(response => {
-            console.log('Contact updated successfully:', response.data);
-          })
-          .catch(error => {
-            console.error('Error updating contact:', error);
-          });
-      },
-      confirmDeleteContact(contactId) {
-        if (confirm("Are you sure you want to delete this contact?")) {
-          this.deleteContact(contactId);
-        }
-      },
-      deleteContact(contactId) {
-        axios.delete(`http://localhost:3000/api/contactDelete/${contactId}`, {method: 'DELETE'})
-          .then(response => {
-            console.log('Contact deleted successfully:', response.data);
-            this.fetchContacts(); // Refresh the contact list after deletion
-          })
-          .catch(error => {
-            console.error('Error deleting contact:', error);
-          });
-      },
-      previousPage() {
-        if (this.currentPage > 1) {
-          this.currentPage--;
-        }
-      },
-  
-      nextPage() {
-        if (this.currentPage < this.totalPages) {
-          this.currentPage++;
-        }
-      },
-    },
-    computed: {
-    filteredContacts() {
-      let filteredContacts = this.contacts;
-  
-      if (this.searchQuery) {
-        filteredContacts = filteredContacts.filter(contact => {
-          return (
-            contact.firstName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-            contact.lastName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-            contact.company.toLowerCase().includes(this.searchQuery.toLowerCase())
-          );
-        });
-      }
-  
-      const startIndex = (this.currentPage - 1) * this.pageSize;
-      const endIndex = startIndex + this.pageSize;
-      return filteredContacts.slice(startIndex, endIndex);
-    },
-  
-    totalPages() {
-      return Math.ceil(this.contacts.length / this.pageSize);
-    },
-  }
-  
-  
-  }
-  </script>
+ <script setup>
+ import { axios } from 'axios';
+ import { ref } from "vue";
+ const contact = ref([]);
+ const searchQuery = ref('');
+ const selectedContact = ref(null);
+ isDeleting = false;
+ currentPage = 1;
+ pageSize = 10;
+
+
+
+ const fetchContacts = async () => {
+   try {
+     const { data } = await axios.get('http://localhost:5000/contact');
+     this.contacts = data;
+   } catch (error) {
+     console.error(error);
+   }
+ };
+
+ const search = () => {
+   axios.get('http://localhost:5000/contact/searchByName', {
+     params: {
+       firstName: this.searchQuery,
+       lastName: this.searchQuery,
+       company: this.searchQuery
+     }
+   })
+     .then(response => {
+       this.contacts = response.data;
+     })
+     .catch(error => {
+       console.error(error);
+     });
+ };
+ const showContactDetails = (contact) => {
+   this.selectedContact = contact;
+ };
+ const updateContact = () => {
+   axios.put(`http://localhost:5000/contact/${this.selectedContact.id}`, this.selectedContact)
+     .then(response => {
+       console.log('Contact updated successfully:', response.data);
+     })
+     .catch(error => {
+       console.error('Error updating contact:', error);
+     });
+ };
+ const confirmDeleteContact = (contactId) => {
+   if (confirm("Are you sure you want to delete this contact?")) {
+     this.deleteContact(contactId);
+   }
+ };
+ const deleteContact = (contactId) => {
+   axios.delete(`http://localhost:5000/contact/${contactId}`)
+     .then(response => {
+       console.log('Contact deleted successfully:', response.data);
+       this.fetchContacts(); // Refresh the contact list after deletion
+     })
+     .catch(error => {
+       console.error('Error deleting contact:', error);
+     });
+ };
+ const previousPage = () => {
+   if (this.currentPage > 1) {
+     this.currentPage--;
+   }
+ };
+
+ const nextPage = () => {
+   if (this.currentPage < this.totalPages) {
+     this.currentPage++;
+   }
+ };
+
+ const Returcompute = computed(() => {
+   const filteredContacts = () => {
+     let filteredContacts = this.contacts;
+
+     if (this.searchQuery) {
+       filteredContacts = filteredContacts.filter(contact => {
+         return (
+           contact.firstName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+           contact.lastName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+           contact.company.toLowerCase().includes(this.searchQuery.toLowerCase())
+         );
+       });
+     }
+
+     const startIndex = (this.currentPage - 1) * this.pageSize;
+     const endIndex = startIndex + this.pageSize;
+     return filteredContacts.slice(startIndex, endIndex);
+   };
+
+   const totalPages = () => {
+     return Math.ceil(this.contacts.length / this.pageSize);
+   };
+ })
+
+
+
+ </script>
   
   
     <style scoped>

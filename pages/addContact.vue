@@ -79,66 +79,45 @@
         button(type='submit') Create Contact
 </template>
     
-    <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        prefix: '',
-        firstName: '',
-        lastName: '',
-        suffix: '',
-        salutation: '',
-        professionalTitle: '',
-        address: '',
-        city: '',
-        state: '',
-        zipCode: '',
-        country: '',
-        mainPhone: '',
-        directPhone: '',
-        mobilePhone: '',
-        emailAddress: '',
-        narrative: '',
-        company: ''
-      };
-    },
-    methods: {
-      async createContact() {
-          console.log(this.firstName)
-        try {
-            const response = await axios.post('http://localhost:3000/api/contactPost', {
-            method: 'POST',
-            prefix: this.prefix,
-            firstName: this.firstName,
-            lastName: this.lastName,
-            suffix: this.suffix,
-            salutation: this.salutation,
-            professionalTitle: this.professionalTitle,
-            address: this.address,
-            city: this.city,
-            state: this.state,
-            zipCode: this.zipCode,
-            country: this.country,
-            mainPhone: this.mainPhone,
-            directPhone: this.directPhone,
-            mobilePhone: this.mobilePhone,
-            emailAddress: this.emailAddress,
-            narrative: this.narrative,
-            company: this.company
-          }); 
-          console.log(response.data);
-        } catch (error) {
-          console.log(error);
-        }
-  
-        this.$router.push('/search');
-      }
-    }
-  };
-  
-  </script>
+   <script setup>
+   import axios from 'axios';
+   import { ref } from 'vue';
+   import { useRouter } from 'vue-router';
+
+
+   const router = useRouter();
+
+   const state = ref({
+     prefix: '',
+     firstName: '',
+     lastName: '',
+     suffix: '',
+     salutation: '',
+     professionalTitle: '',
+     address: '',
+     city: '',
+     state: '',
+     zipCode: '',
+     country: '',
+     mainPhone: '',
+     directPhone: '',
+     mobilePhone: '',
+     emailAddress: '',
+     narrative: '',
+     company: ''
+   });
+
+   const createContact = async () => {
+     try {
+       const response = await axios.post('http://localhost:5000/contact', state.value);
+       console.log(response.data);
+     } catch (error) {
+       console.log(error);
+     }
+
+     router.push('/search');
+   };
+   </script>
     
       <style scoped>
         body {

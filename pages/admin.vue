@@ -21,15 +21,16 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
 import axios from 'axios';
+import { ref, onMounted } from 'vue';
+
 
 const users = ref([]);
 const usernameToDelete = ref('');
 
 const fetchUsers = async () => {
   try {
-    const { data } = await axios.get('http://localhost:3000/api/userGet', {method: 'GET'});
+    const { data } = await axios.get('http://localhost:5000/user');
     users.value = data;
   } catch (error) {
     console.error('Error fetching users:', error);
@@ -45,15 +46,52 @@ const confirmDeleteUser = (username) => {
 
 const deleteUser = async (username) => {
   try {
-    await axios.delete(`http://localhost:3000/user/${username}`);
-    await fetchUsers(); // Refresh the user list after deletion
+    await axios.delete(`http://localhost:5000/user/${username}`);
+    fetchUsers(); // Refresh the user list after deletion
     console.log(`User with username ${username} has been deleted.`);
   } catch (error) {
     console.error('Error deleting user:', error);
   }
 };
 
+await fetchUsers();
+// data() {
+//   return {
+//     users: [],
+//     usernameToDelete: '',
+//   }
+// },
+// created() {
+//   this.fetchUsers();
+// },
+// methods: {
+//   async fetchUsers() {
+//     try {
+//       const { data } = await axios.get('http://localhost:5000/user');
+//       this.users = data;
+//     } catch (error) {
+//       console.error('Error fetching users:', error);
+//     }
+//   },
+//   confirmDeleteUser(username) {
+//     const confirmed = confirm(`Are you sure you want to delete the user ${username}?`);
+//     if (confirmed) {
+//       this.deleteUser(username);
+//     }
+//   },
+//   async deleteUser(username) {
+//     try {
+//       await axios.delete(`http://localhost:5000/user/${username}`);
+//       this.fetchUsers(); // Refresh the user list after deletion
+//       console.log(`User with username ${username} has been deleted.`);
+//     } catch (error) {
+//       console.error('Error deleting user:', error);
+//     }
+//   },
+// },
+
 </script>
+
 
 <style scoped>
 body {
