@@ -23,6 +23,7 @@
     .search-container
       .search-bar
         input(type='text' placeholder='Search...' v-model='searchQuery')
+        button(@click='contacts = search(searchQuery)') Search
       table
         thead
           tr
@@ -32,17 +33,13 @@
             th Email
             th Company
         tbody
-          tr(v-for='contact in filteredContacts' :key='contact.id' @click='showContactDetails(contact)')
+          tr(v-for='contact in contacts' :key='contact.id' @click='showContactDetails(contact)')
             td {{ contact.lastName }}
             td {{ contact.firstName }}
             td {{ contact.mainPhone }}
             td {{ contact.emailAddress }}
             td {{ contact.company }}
             td
-      .pagination-controls
-        button(@click='previousPage' :disabled='currentPage === 1') Previous
-        span {{ currentPage }} / {{ totalPages }}
-        button(@click='nextPage' :disabled='currentPage === totalPages') Next
     .card-overlay(v-if='selectedContact')
       .card
         h2 {{ selectedContact.firstName }} {{ selectedContact.lastName }}
@@ -98,32 +95,49 @@
   
   
  <script setup>
- import { axios } from 'axios';
+ //import { axios } from 'axios';
  import { ref } from "vue";
  const contact = ref([]);
  const searchQuery = ref('');
  const selectedContact = ref(null);
- isDeleting = false;
- currentPage = 1;
- pageSize = 10;
+ //isDeleting = false;
+ //currentPage = 1;
+ //pageSize = 10;
+
+ //const ref
 
 
+ // add query here
+  const { data: contacts } = await useFetch('/api/contact', {
+      method: 'GET',
+      //qeury property
+      //pass in search queury ref
+      default () {
+        return []
+      },
+  });
+  
+ const search = async (searchQuery) => {
+  const { data: searchResults } = await useFetch('/api/contactField', {
+    method: 'GET',
+    params: {
+      firstName: searchQuery,
+      lastName: searchQuery,
+      company: searchQuery,
+    }
+  });
 
- const fetchContacts = async () => {
-   try {
-     const { data } = await axios.get('http://localhost:5000/contact');
-     this.contacts = data;
-   } catch (error) {
-     console.error(error);
-   }
- };
+  console.log('API response:', searchResults);
+  return searchResults
+ }
 
+ /*
  const search = () => {
    axios.get('http://localhost:5000/contact/searchByName', {
      params: {
-       firstName: this.searchQuery,
-       lastName: this.searchQuery,
-       company: this.searchQuery
+       firstName: searchQuery,
+       lastName: searchQuery,
+       company: searchQuery
      }
    })
      .then(response => {
@@ -133,11 +147,22 @@
        console.error(error);
      });
  };
- const showContactDetails = (contact) => {
-   this.selectedContact = contact;
+ */
+
+ let showContactDetails = (contact) => {
+   selectedContact = contact;
  };
+
+ // $fetch instead of search fetch
+ // query parameters intead of search parameters
+
+ //?id = $
+
+ //MAKE AYSNC FUNCTIONS
+ ///await $fetch
+
  const updateContact = () => {
-   axios.put(`http://localhost:5000/contact/${this.selectedContact.id}`, this.selectedContact)
+   axios.put(`http://localhost:5000/contact/${selectedContact.id}`, selectedContact)
      .then(response => {
        console.log('Contact updated successfully:', response.data);
      })
@@ -160,42 +185,22 @@
        console.error('Error deleting contact:', error);
      });
  };
- const previousPage = () => {
-   if (this.currentPage > 1) {
-     this.currentPage--;
-   }
- };
 
- const nextPage = () => {
-   if (this.currentPage < this.totalPages) {
-     this.currentPage++;
-   }
- };
+ /*
+  const filteredContacts = computed( () => {
+        let filteredContacts = contacts;
 
- const Returcompute = computed(() => {
-   const filteredContacts = () => {
-     let filteredContacts = this.contacts;
-
-     if (this.searchQuery) {
-       filteredContacts = filteredContacts.filter(contact => {
-         return (
-           contact.firstName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-           contact.lastName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-           contact.company.toLowerCase().includes(this.searchQuery.toLowerCase())
-         );
-       });
-     }
-
-     const startIndex = (this.currentPage - 1) * this.pageSize;
-     const endIndex = startIndex + this.pageSize;
-     return filteredContacts.slice(startIndex, endIndex);
-   };
-
-   const totalPages = () => {
-     return Math.ceil(this.contacts.length / this.pageSize);
-   };
- })
-
+  if (searchQuery) {
+    filteredContacts = filteredContacts.filter(contact => {
+      return (
+        contact.firstName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        contact.lastName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        contact.company.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+     })
+    };
+   })
+   */
 
 
  </script>

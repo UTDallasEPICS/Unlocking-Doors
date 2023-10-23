@@ -83,10 +83,27 @@
    import axios from 'axios';
    import { ref } from 'vue';
    import { useRouter } from 'vue-router';
-
-
    const router = useRouter();
 
+   const prefix = ref('');
+   const firstName = ref('');
+   const lastName = ref('');
+   const suffix = ref('');
+   const salutation = ref('');
+   const professionalTitle = ref('');
+   const address = ref('');
+   const city = ref('');
+   const state = ref('');
+   const zipCode = ref('');
+   const country = ref('');
+   const mainPhone = ref('');
+   const directPhone = ref('');
+   const mobilePhone = ref('');
+   const emailAddress = ref('');
+   const narrative = ref('');
+   const company = ref('');
+
+  /*
    const state = ref({
      prefix: '',
      firstName: '',
@@ -107,6 +124,38 @@
      company: ''
    });
 
+   */
+
+   const createContact = async () => {
+    const { data } = await useFetch('/api/contact', {
+      method: 'POST',
+      body: {
+        prefix: prefix,
+        firstName: firstName,
+        lastName: lastName,
+        suffix: suffix,
+        saluation: salutation,
+        professionalTitle: professionalTitle,
+        address: address,
+        city: city,
+        state: state,
+        zipCode: zipCode,
+        country: country,
+        mainPhone: mainPhone,
+        directPhone: directPhone,
+        mobilePhone: mobilePhone,
+        emailAddress: emailAddress,
+        narrative: narrative,
+        company
+      }
+    })
+
+    router.push('/search');
+   }
+
+   
+
+   /*
    const createContact = async () => {
      try {
        const response = await axios.post('http://localhost:5000/contact', state.value);
@@ -117,6 +166,9 @@
 
      router.push('/search');
    };
+   */
+
+
    </script>
     
       <style scoped>
