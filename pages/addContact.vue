@@ -22,7 +22,7 @@
         br
         NuxtLink.button.back-button(to='search') Search Page
     .add-container
-      form(@submit.prevent='createContact')
+      form(@submit.prevent='createContact' @keydown.enter.prevent)
         .form-group
           label(for='prefix') Prefix:
           input(v-model='prefix')
@@ -74,6 +74,7 @@
         .form-group
           label(for='company') Company:
           input(v-model='company')
+        TagInput(v-model='tag')
         br
         br
         button(type='submit') Create Contact
@@ -83,6 +84,7 @@
    import axios from 'axios';
    import { ref } from 'vue';
    import { useRouter } from 'vue-router';
+   import TagInput from '@/components/TagInput.vue';
    const router = useRouter();
 
    const prefix = ref('');
@@ -102,6 +104,7 @@
    const emailAddress = ref('');
    const narrative = ref('');
    const company = ref('');
+   const tag = ref([]);
 
   /*
    const state = ref({
@@ -146,10 +149,11 @@
         mobilePhone: mobilePhone,
         emailAddress: emailAddress,
         narrative: narrative,
-        company
+        company: company,
+        tag: tag,
       }
     })
-
+    console.log("This is what's in the tag: " + tag.value);
     router.push('/search');
    }
 

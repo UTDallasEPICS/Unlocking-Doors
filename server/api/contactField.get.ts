@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   const company = event.context.query?.company || '';
   */
 
-  const { firstName, lastName, company } = getQuery(event)
+  const { firstName, lastName, company, tag } = getQuery(event)
 
   
   const contacts = await prisma.contact.findMany({
@@ -33,6 +33,14 @@ export default defineEventHandler(async (event) => {
           company: {
             contains: company as any,
             mode: 'insensitive',
+          },
+        },
+        {
+          tag: {
+            // some: {
+            //   contains: tag as any,
+            //   mode: 'insensitive'
+            // },
           },
         },
       ],
