@@ -106,29 +106,6 @@
    const company = ref('');
    const tag = ref([]);
 
-  /*
-   const state = ref({
-     prefix: '',
-     firstName: '',
-     lastName: '',
-     suffix: '',
-     salutation: '',
-     professionalTitle: '',
-     address: '',
-     city: '',
-     state: '',
-     zipCode: '',
-     country: '',
-     mainPhone: '',
-     directPhone: '',
-     mobilePhone: '',
-     emailAddress: '',
-     narrative: '',
-     company: ''
-   });
-
-   */
-
    const createContact = async () => {
     const { data } = await useFetch('/api/contact', {
       method: 'POST',
@@ -156,21 +133,6 @@
     console.log("This is what's in the tag: " + tag.value);
     router.push('/search');
    }
-
-   
-
-   /*
-   const createContact = async () => {
-     try {
-       const response = await axios.post('http://localhost:5000/contact', state.value);
-       console.log(response.data);
-     } catch (error) {
-       console.log(error);
-     }
-
-     router.push('/search');
-   };
-   */
 
 
    </script>
