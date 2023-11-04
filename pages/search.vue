@@ -16,10 +16,10 @@
       br
       br
       br
-      NuxtLink.add-contact-button(to='addContact') Add Contact
+      NuxtLink.add-contact-button(v-if='isEditor' || 'isAdmin' to='addContact') Add Contact
       br
       br
-      NuxtLink.admin-button(to='admin') Admin Page
+      NuxtLink.admin-button(v-if='isAdmin' to='admin') Admin Page
     .search-container
       .search-bar
         input(type='text' placeholder='Search...' v-model='searchQuery')
@@ -40,7 +40,7 @@
             td {{ contact.emailAddress }}
             td {{ contact.company }}
             td
-    .card-overlay(v-if='selectedContact')
+    .card-overlay(v-if='selectedContact' && ('isEditor' || 'isAdmin'))
       .card
         h2 {{ selectedContact.firstName }} {{ selectedContact.lastName }}
         p
@@ -94,17 +94,27 @@
 </template>
   
   
- <script setup>
+ <script lang="ts" setup>
  //import { axios } from 'axios';
  import { ref } from "vue";
+ import type { User } from '@/types.d.ts'
+ import axios from "axios";
+ 
  const contact = ref([]);
  const searchQuery = ref('');
- const selectedContact = ref(null);
+ let selectedContact = ref(null);
  //isDeleting = false;
  //currentPage = 1;
  //pageSize = 10;
 
  //const ref
+
+ const user = useCookie<User>('user');
+ const id_info = computed(() => user.value?.id)
+ const id = id_info.value as number
+ const isViewer = computed(() => user.value?.permission == "VIEWER")
+ const isEditor = computed(() => user.value?.permission == "EDITOR")
+ const isAdmin = computed(() => user.value?.permission == "ADMIN")
 
 
  // add query here
@@ -117,7 +127,7 @@
       },
   });
   
- const search = async (searchQuery) => {
+ const search = async (searchQuery: any) => {
   const { data: searchResults } = await useFetch('/api/contactField', {
     method: 'GET',
     params: {
@@ -149,7 +159,7 @@
  };
  */
 
- let showContactDetails = (contact) => {
+ let showContactDetails = (contact: any) => {
    selectedContact = contact;
  };
 
@@ -162,24 +172,28 @@
  ///await $fetch
 
  const updateContact = () => {
-   axios.put(`http://localhost:5000/contact/${selectedContact.id}`, selectedContact)
+  const contact = selectedContact?.value as unknown as {id: string} | undefined;
+  if (contact) {
+   axios.put(`http://localhost:5000/contact/${contact.id}`, contact)
      .then(response => {
        console.log('Contact updated successfully:', response.data);
      })
      .catch(error => {
        console.error('Error updating contact:', error);
      });
+    }
  };
- const confirmDeleteContact = (contactId) => {
+ const confirmDeleteContact = (contactId: any) => {
    if (confirm("Are you sure you want to delete this contact?")) {
-     this.deleteContact(contactId);
+     (this as unknown as { deleteContact?: (contact: any) => void })?.deleteContact?.(contactId);
    }
  };
- const deleteContact = (contactId) => {
+ const deleteContact = (contactId: any) => {
    axios.delete(`http://localhost:5000/contact/${contactId}`)
      .then(response => {
        console.log('Contact deleted successfully:', response.data);
-       this.fetchContacts(); // Refresh the contact list after deletion
+       //this.fetchContacts(); // Refresh the contact list after deletion
+        (this as unknown as { fetchContacts: () => void }).fetchContacts();
      })
      .catch(error => {
        console.error('Error deleting contact:', error);
