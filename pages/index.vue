@@ -3,38 +3,20 @@ div
     .logo
         img(src='~/assets/logo.png')
     .button-container
-        a.login-button(@click="login") Login
+        a.login-button(@click="login") Login 
 </template>
   
   
-  <script>
-    // Composition API
-    import { useAuth0 } from '@auth0/auth0-vue';
-  
-    export default {
-      setup() {
-        const auth0 = useAuth0();
-  
-        return {
-          login() {
-            auth0.loginWithRedirect();
-          }
-        };
-      }
-    };
-  
-    /* Original script
-  <script setup lang="ts"> */
-  </script> 
-  
-    // Options API
-    export default {
-      methods: {
-        login() {
-          this.$auth0.loginWithRedirect();
-        }
-      }
-    };
+<script setup lang="ts">
+  import { useAuth0 } from '@auth0/auth0-vue';
+
+  const auth0 = useAuth0();
+
+  const login = () => {
+    auth0.loginWithRedirect();
+  };
+</script>
+
   
   <style scoped>
     body {
