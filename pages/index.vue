@@ -10,6 +10,13 @@ div
 <script setup lang="ts">
   import { useAuth0 } from '@auth0/auth0-vue';
 
+  const runtime = useRuntimeConfig()
+
+  console.log('Runtime config:', runtime)
+  if (process.server) {
+    console.log('API secret:', runtime.apiSecret)
+  }
+
   const auth0 = useAuth0();
 
   const login = () => {

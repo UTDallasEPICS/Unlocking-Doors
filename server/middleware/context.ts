@@ -9,12 +9,14 @@ const client = new PrismaClient();
 interface MyTokenPayload extends JwtPayload {
   email?: string; // Assuming the email is an optional field in your JWT token.
 }
+const runtime  = useRuntimeConfig()
 
 export default defineEventHandler(async (event) => {
   event.context.client = client;
   const cvtoken = getCookie(event, 'cvtoken') || '';
 
   if (!cvtoken && !(event.node.req.url?.includes('/api/callback'))) {
+    console.log(loginRedirectUrl())
     await sendRedirect(event, loginRedirectUrl());
   } else if (cvtoken) {
     try {
