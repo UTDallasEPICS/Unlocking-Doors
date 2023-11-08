@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
 
         if (!event.context.user) {
           console.error(`${claims.email} not found`);
-          setCookie(event, 'cvtoken', '');
+          setCookie(event, 'cvtoken', ''); 
           setCookie(event, 'cvuser', '');
           return await sendRedirect(event, loginRedirectUrl());
         }
