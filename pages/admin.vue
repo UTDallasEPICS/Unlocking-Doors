@@ -4,7 +4,7 @@
     .logo
       img(src='~/assets/logo.png' alt='Logo' width='150' height='auto')
     .action-buttons
-      NuxtLink.button.add-user-button(to='addUser') Add a User
+      NuxtLink.button.add-user-button(@click="navigateTo('/addUser')") Add a User
       br
       br
       NuxtLink.button.back-button(to='search') Search Page
@@ -21,13 +21,46 @@
 </template>
 
 <script setup>
-import axios from 'axios';
+//import axios from 'axios';
 import { ref, onMounted } from 'vue';
 
 
-const users = ref([]);
+//const users = ref([]);
 const usernameToDelete = ref('');
 
+/*
+const createUser = async () => {
+      const { data } = await useFetch('/api/user', {
+        method: 'POST',
+        body: {
+          username: username,
+          permission: permission
+        }
+      })
+    }
+
+    const createUser = async () => {
+      try {
+        const response = await axios.post('http://localhost:5000/user', {
+          username: this.username,
+          permission: this.permission
+        });
+        console.log(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  
+    */
+
+  const { data: users } = await useFetch('/api/user', {
+    method: 'GET',
+    default () {
+      return []
+    },
+  })
+
+/*
 const fetchUsers = async () => {
   try {
     const { data } = await axios.get('http://localhost:5000/user');
@@ -36,7 +69,7 @@ const fetchUsers = async () => {
     console.error('Error fetching users:', error);
   }
 };
-
+*/
 const confirmDeleteUser = (username) => {
   const confirmed = confirm(`Are you sure you want to delete the user ${username}?`);
   if (confirmed) {
@@ -45,16 +78,25 @@ const confirmDeleteUser = (username) => {
 };
 
 const deleteUser = async (username) => {
+  const params = new URLSearchParams();
+  params.append('username', username);
+
+  const response = await fetch('/api/user/?' + params.toString(), { method: 'DELETE' });
+};
+
+/*
+const deleteUser = async (username) => {
   try {
     await axios.delete(`http://localhost:5000/user/${username}`);
-    fetchUsers(); // Refresh the user list after deletion
+    //fetchUsers(); // Refresh the user list after deletion
     console.log(`User with username ${username} has been deleted.`);
   } catch (error) {
     console.error('Error deleting user:', error);
   }
 };
+*/
 
-await fetchUsers();
+//await fetchUsers();
 // data() {
 //   return {
 //     users: [],

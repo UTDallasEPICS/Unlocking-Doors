@@ -30,6 +30,7 @@ model Contact {
   tag               String[]
 }
 
+//make email
 model User {
   id         Int        @id @default(autoincrement())
   username   String     @unique

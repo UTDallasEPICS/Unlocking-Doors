@@ -16,16 +16,27 @@
           input(name='permission' v-model='permission')
         br
         br
-        button(type='submit') Create User
+        button(type='submit' @click="navigateTo('/admin')") Create User
 </template>
     
     <script setup>
-    import { axios } from 'axios';
+    //import { axios } from 'axios';
     import { ref } from "vue";
 
     const username = ref('');
     const permission = ref('');
 
+
+    const createUser = async () => {
+      const { data } = await useFetch('/api/user', {
+        method: 'POST',
+        body: {
+          username: username,
+          permission: permission
+        }
+      })
+    }
+/*
     const createUser = async () => {
       try {
         const response = await axios.post('http://localhost:5000/user', {
@@ -37,6 +48,8 @@
         console.log(error);
       }
     };
+
+    */
     </script>
     
       <style scoped>
