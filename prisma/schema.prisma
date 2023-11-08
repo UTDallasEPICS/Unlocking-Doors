@@ -27,7 +27,7 @@ model Contact {
   emailAddress      String?
   narrative         String?
   group             String[]
-  tag               String[]
+  tags               Tag[] @relation("ContactToTag", references: [id])
 }
 
 //make email

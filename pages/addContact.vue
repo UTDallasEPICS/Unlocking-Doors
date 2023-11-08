@@ -1,4 +1,4 @@
-<template lang="pug">
+<template>
 .container
     .sidebar
       .logo
@@ -74,7 +74,12 @@
         .form-group
           label(for='company') Company:
           input(v-model='company')
-        TagInput(v-model='tag')
+        <div>
+          <TagInput
+            :availablePrivateCategories = "availablePrivateCategories"
+            :content= "content" 
+          />
+        </div>
         br
         br
         button(type='submit') Create Contact
@@ -104,7 +109,13 @@
    const emailAddress = ref('');
    const narrative = ref('');
    const company = ref('');
-   const tag = ref([]);
+   //const tag = ref([]);
+   const tags = ref({ PrivateCategory: [] });
+   const availablePrivateCategories = ref([
+    "Tag 1",
+    "Tag 2",
+    "Tag 3",
+   ]);
 
    const createContact = async () => {
     const { data } = await useFetch('/api/contact', {
@@ -127,10 +138,9 @@
         emailAddress: emailAddress,
         narrative: narrative,
         company: company,
-        tag: tag,
+        //tag: tag,
       }
     })
-    console.log("This is what's in the tag: " + tag.value);
     router.push('/search');
    }
 
