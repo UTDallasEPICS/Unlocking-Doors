@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
     emailAddress,
     narrative,
     company,
-    tag,
+    tags,
   } = await readBody(event)
 
   // Create a new contact in the database.
@@ -44,9 +44,14 @@ export default defineEventHandler(async (event) => {
       emailAddress,
       narrative,
       company,
-      tag,
+      tags: {
+        connectOrCreate: tags.map((tagName) => ({
+          where: { name: tagName },
+          create: { name: tagName },
+        })),
+      },
     },
-  })
+  });
 
   // Return the new contact data as a JSON response.
   return {

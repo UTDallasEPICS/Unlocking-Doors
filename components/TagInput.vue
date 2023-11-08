@@ -29,5 +29,5 @@
 </script>
 
 <style scoped>
-  /* Add your custom styles here if needed */
+  /* custom styles here */
 </style>

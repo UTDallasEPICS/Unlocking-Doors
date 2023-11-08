@@ -76,8 +76,9 @@
           input(v-model='company')
         <div>
           <TagInput
-            :availablePrivateCategories = "availablePrivateCategories"
-            :content= "content" 
+            :availablePrivateCategories = "existingTags"
+            :content= "contact"
+            @tag="addNewTag" 
           />
         </div>
         br
@@ -110,12 +111,15 @@
    const narrative = ref('');
    const company = ref('');
    //const tag = ref([]);
-   const tags = ref({ PrivateCategory: [] });
-   const availablePrivateCategories = ref([
-    "Tag 1",
-    "Tag 2",
-    "Tag 3",
-   ]);
+   const tags = ref([]);
+   const existingTags = ref([]);
+
+   //Function to add new tag
+   const addNewTag = (newTag) => {
+    tags.value.push(newTag);
+   };
+
+  
 
    const createContact = async () => {
     const { data } = await useFetch('/api/contact', {
@@ -139,6 +143,7 @@
         narrative: narrative,
         company: company,
         //tag: tag,
+        tags: tags
       }
     })
     router.push('/search');
