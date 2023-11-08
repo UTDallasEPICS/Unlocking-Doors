@@ -22,7 +22,7 @@
         br
         NuxtLink.button.back-button(to='search') Search Page
     .add-container
-      form(@submit.prevent='createContact')
+      form(@submit.prevent='createContact' @keydown.enter.prevent)
         .form-group
           label(for='prefix') Prefix:
           input(v-model='prefix')
@@ -74,6 +74,7 @@
         .form-group
           label(for='company') Company:
           input(v-model='company')
+        TagInput(v-model='tag')
         br
         br
         button(type='submit') Create Contact
@@ -83,40 +84,57 @@
    import axios from 'axios';
    import { ref } from 'vue';
    import { useRouter } from 'vue-router';
-
-
+   import TagInput from '@/components/TagInput.vue';
    const router = useRouter();
 
-   const state = ref({
-     prefix: '',
-     firstName: '',
-     lastName: '',
-     suffix: '',
-     salutation: '',
-     professionalTitle: '',
-     address: '',
-     city: '',
-     state: '',
-     zipCode: '',
-     country: '',
-     mainPhone: '',
-     directPhone: '',
-     mobilePhone: '',
-     emailAddress: '',
-     narrative: '',
-     company: ''
-   });
+   const prefix = ref('');
+   const firstName = ref('');
+   const lastName = ref('');
+   const suffix = ref('');
+   const salutation = ref('');
+   const professionalTitle = ref('');
+   const address = ref('');
+   const city = ref('');
+   const state = ref('');
+   const zipCode = ref('');
+   const country = ref('');
+   const mainPhone = ref('');
+   const directPhone = ref('');
+   const mobilePhone = ref('');
+   const emailAddress = ref('');
+   const narrative = ref('');
+   const company = ref('');
+   const tag = ref([]);
 
    const createContact = async () => {
-     try {
-       const response = await axios.post('http://localhost:5000/contact', state.value);
-       console.log(response.data);
-     } catch (error) {
-       console.log(error);
-     }
+    const { data } = await useFetch('/api/contact', {
+      method: 'POST',
+      body: {
+        prefix: prefix,
+        firstName: firstName,
+        lastName: lastName,
+        suffix: suffix,
+        saluation: salutation,
+        professionalTitle: professionalTitle,
+        address: address,
+        city: city,
+        state: state,
+        zipCode: zipCode,
+        country: country,
+        mainPhone: mainPhone,
+        directPhone: directPhone,
+        mobilePhone: mobilePhone,
+        emailAddress: emailAddress,
+        narrative: narrative,
+        company: company,
+        tag: tag,
+      }
+    })
+    console.log("This is what's in the tag: " + tag.value);
+    router.push('/search');
+   }
 
-     router.push('/search');
-   };
+
    </script>
     
       <style scoped>

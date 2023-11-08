@@ -21,6 +21,7 @@ export default defineEventHandler(async (event) => {
     emailAddress,
     narrative,
     company,
+    tag,
   } = await readBody(event)
 
   // Create a new contact in the database.
@@ -43,6 +44,7 @@ export default defineEventHandler(async (event) => {
       emailAddress,
       narrative,
       company,
+      tag,
     },
   })
 
