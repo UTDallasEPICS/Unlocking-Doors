@@ -33,7 +33,7 @@ model Contact {
 //make email
 model User {
   id         Int        @id @default(autoincrement())
-  username   String     @unique
+  email   String     @unique
   permission Permission @default(VIEWER)
 }
 

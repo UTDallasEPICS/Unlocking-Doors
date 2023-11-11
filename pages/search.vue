@@ -20,6 +20,10 @@
       br
       br
       NuxtLink.admin-button(v-if='isAdmin' to='admin') Admin Page
+      br
+      br
+      <input type='file' id='fileInput' accept='.xls, .xlsx'>
+      button(@click='readSpreadsheet()') Import Contacts
     .search-container
       .search-bar
         input(type='text' placeholder='Search...' v-model='searchQuery')
@@ -99,7 +103,19 @@
  import { ref } from "vue";
  import type { User } from '@/types.d.ts'
  import axios from "axios";
+ import { readSpreadsheet } from '@/src/migration';
  
+const handleReadSpreadsheet = async (filePath: string) => {
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    const file = fileInput.files?.[0];
+
+    if (file) {
+      const data = await readSpreadsheet(file);
+    } else {
+      console.log('No file selected.');
+    }
+  };
+
  const contact = ref([]);
  const searchQuery = ref('');
  let selectedContact = ref(null);
