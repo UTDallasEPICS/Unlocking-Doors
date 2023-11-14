@@ -45,12 +45,14 @@ export default defineEventHandler(async (event) => {
       narrative,
       company,
       tags: {
-        connectOrCreate: tags.map((tagName) => ({
-          where: { name: tagName },
-          create: { name: tagName },
-        })),
+        connectOrCreate: tags.map((tag) => {
+          return {
+            where: { name: tag },
+            create: { name: tag },
+          };
+        }),
       },
-    },
+    }
   });
 
   // Return the new contact data as a JSON response.

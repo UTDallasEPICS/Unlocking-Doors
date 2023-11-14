@@ -26,16 +26,14 @@ model Contact {
   mobilePhone       String?
   emailAddress      String?
   narrative         String?
-  group             String[]
-  tags               Tag[] @relation("ContactToTag", references: [id])
+  tags              Tag[] @relation("ContactToTag")
 }
 
 model Tag {
-  id    Int      @id @default(autoIncrement())
-  name  String
-  contacts Contact[]
+  id    Int      @id @default(autoincrement())
+  name  String   @unique
+  contacts Contact[] @relation("ContactToTag")
 
-  @@unique([name])
 }
 
 //make email
