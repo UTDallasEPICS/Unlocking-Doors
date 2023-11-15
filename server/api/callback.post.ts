@@ -6,4 +6,3 @@ export default defineEventHandler(async event => {
   setCookie(event, "cvtoken", body.id_token)
   await sendRedirect(event, "/") 
 });
-
