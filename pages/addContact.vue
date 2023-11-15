@@ -1,4 +1,4 @@
-<template>
+<template lang="pug">
 .container
     .sidebar
       .logo
@@ -74,24 +74,34 @@
         .form-group
           label(for='company') Company:
           input(v-model='company')
-        <div>
-          <TagInput
-            :availablePrivateCategories = "existingTags"
-            :content= "contact"
-            @tag="addNewTag" 
-          />
-        </div>
+        vue-multiselect(
+          v-if="availablePrivateCategories",
+          :multiple="true", v-model="content.PrivateCategory",
+          :close-on-select="false", open-direction="bottom",
+          :taggable="true",
+          :options="availablePrivateCategories",
+          @tag="addPrivateCategory")
         br
         br
         button(type='submit') Create Contact
 </template>
     
    <script setup>
-   import axios from 'axios';
    import { ref } from 'vue';
    import { useRouter } from 'vue-router';
-   import TagInput from '@/components/TagInput.vue';
+   import VueMultiselect from 'vue-multiselect';
    const router = useRouter();
+   
+   const props = defineProps({
+    availablePrivateCategories: Array,
+    content: Object,
+  });
+  const emit = defineEmits();
+
+  const addPrivateCategory = (e) => {
+    content.value.PrivateCategory = [...(content.value.PrivateCategory || []), e];
+  };
+
 
    const prefix = ref('');
    const firstName = ref('');
