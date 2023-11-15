@@ -25,58 +25,58 @@
       form(@submit.prevent='createContact' @keydown.enter.prevent)
         .form-group
           label(for='prefix') Prefix:
-          input(v-model='prefix')
+          input(v-model='state.prefix')
         .form-group
           label(for='firstName') First Name:
-          input(name='firstName' v-model='firstName')
+          input(name='firstName' v-model='state.firstName')
         .form-group
           label(for='lastName') Last Name:
-          input(v-model='lastName')
+          input(v-model='state.lastName')
         .form-group
           label(for='suffix') Suffix:
-          input(v-model='suffix')
+          input(v-model='state.suffix')
         .form-group
           label(for='salutation') Salutation:
-          input(v-model='salutation')
+          input(v-model='state.salutation')
         .form-group
           label(for='professionalTitle') Professional Title:
-          input(v-model='professionalTitle')
+          input(v-model='state.professionalTitle')
         .form-group
           label(for='address') Address:
-          input(v-model='address')
+          input(v-model='state.address')
         .form-group
           label(for='city') City:
-          input(v-model='city')
+          input(v-model='state.city')
         .form-group
           label(for='state') State:
-          input(v-model='state')
+          input(v-model='state.state')
         .form-group
           label(for='zipCode') Zip Code:
-          input(v-model='zipCode')
+          input(v-model='state.zipCode')
         .form-group
           label(for='country') Country:
-          input(v-model='country')
+          input(v-model='state.country')
         .form-group
           label(for='mainPhone') Main Phone:
-          input(v-model='mainPhone')
+          input(v-model='state.mainPhone')
         .form-group
           label(for='directPhone') Direct Phone:
-          input(v-model='directPhone')
+          input(v-model='state.directPhone')
         .form-group
           label(for='mobilePhone') Mobile Phone:
-          input(v-model='mobilePhone')
+          input(v-model='state.mobilePhone')
         .form-group
           label(for='emailAddress') Email Address:
-          input(v-model='emailAddress')
+          input(v-model='state.emailAddress')
         .form-group.narrative
           label(for='narrative') Narrative:
-          input(v-model='narrative')
+          input(v-model='state.narrative')
         .form-group
           label(for='company') Company:
-          input(v-model='company')
+          input(v-model='state.company')
         vue-multiselect(
           v-if="availablePrivateCategories",
-          :multiple="true", v-model="content.PrivateCategory",
+          :multiple="true", v-model="state.content.PrivateCategory",
           :close-on-select="false", open-direction="bottom",
           :taggable="true",
           :options="availablePrivateCategories",
@@ -102,27 +102,29 @@
     content.value.PrivateCategory = [...(content.value.PrivateCategory || []), e];
   };
 
+  const state = ref({
+     prefix: '',
+     firstName: '',
+     lastName: '',
+     suffix: '',
+     salutation: '',
+     professionalTitle: '',
+     address: '',
+     city: '',
+     state: '',
+     zipCode: '',
+     country: '',
+     mainPhone: '',
+     directPhone: '',
+     mobilePhone: '',
+     emailAddress: '',
+     narrative: '',
+     company: '',
+     tags: [],
+     existingTags: [],
+   });
 
-   const prefix = ref('');
-   const firstName = ref('');
-   const lastName = ref('');
-   const suffix = ref('');
-   const salutation = ref('');
-   const professionalTitle = ref('');
-   const address = ref('');
-   const city = ref('');
-   const state = ref('');
-   const zipCode = ref('');
-   const country = ref('');
-   const mainPhone = ref('');
-   const directPhone = ref('');
-   const mobilePhone = ref('');
-   const emailAddress = ref('');
-   const narrative = ref('');
-   const company = ref('');
-   //const tag = ref([]);
-   const tags = ref([]);
-   const existingTags = ref([]);
+
 
    //Function to add new tag
    const addNewTag = (newTag) => {
@@ -134,27 +136,7 @@
    const createContact = async () => {
     const { data } = await useFetch('/api/contact', {
       method: 'POST',
-      body: {
-        prefix: prefix,
-        firstName: firstName,
-        lastName: lastName,
-        suffix: suffix,
-        saluation: salutation,
-        professionalTitle: professionalTitle,
-        address: address,
-        city: city,
-        state: state,
-        zipCode: zipCode,
-        country: country,
-        mainPhone: mainPhone,
-        directPhone: directPhone,
-        mobilePhone: mobilePhone,
-        emailAddress: emailAddress,
-        narrative: narrative,
-        company: company,
-        //tag: tag,
-        tags: tags
-      }
+      body: state.value
     })
     router.push('/search');
    }
