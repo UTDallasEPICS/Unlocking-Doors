@@ -98,11 +98,10 @@
  //import { axios } from 'axios';
  import { ref } from "vue";
  import type { User } from '@/types.d.ts'
- import axios from "axios";
 
  const contact = ref([]);
  const searchQuery = ref('');
- let selectedContact = ref(null);
+ const selectedContact = ref(null);
  //isDeleting = false;
  //currentPage = 1;
  //pageSize = 10;
@@ -160,7 +159,7 @@
  */
 
  let showContactDetails = (contact: any) => {
-   selectedContact = contact;
+   selectedContact.value = contact;
  };
 
  // $fetch instead of search fetch
@@ -171,33 +170,67 @@
  //MAKE AYSNC FUNCTIONS
  ///await $fetch
 
- const updateContact = () => {
+ const updateContact = async () => {
   const contact = selectedContact?.value as unknown as {id: string} | undefined;
   if (contact) {
-   axios.put(`http://localhost:5000/contact/${contact.id}`, contact)
-     .then(response => {
-       console.log('Contact updated successfully:', response.data);
-     })
-     .catch(error => {
-       console.error('Error updating contact:', error);
-     });
+    try {
+      /*axios.put(`http://localhost:5000/contact/${contact.id}`, contact)
+      .await((response: any) => {
+        console.log('Contact updated successfully:', response.data);
+      })
+      .catch((error: any) => {
+        console.error('Error updating contact:', error);
+      });*/
+      const response = await fetch(`http://localhost:5000/contact/${contact.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type' : 'application.json',
+        },
+        body: JSON.stringify(contact),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Error! ${response.status}');
+      }
+
+      const data = await response.json();
+      console.log('Contact updated successfully:', data);
+    } catch (error) {
+      console.error('Error updating contact:', error);
     }
- };
+  };
+ }
  const confirmDeleteContact = (contactId: any) => {
    if (confirm("Are you sure you want to delete this contact?")) {
-     (this as unknown as { deleteContact?: (contact: any) => void })?.deleteContact?.(contactId);
+     //(this as unknown as { deleteContact?: (contact: any) => void })?.deleteContact?.(contactId);
+     //const deleteContact = (contact as { deleteContact?: (contact: any) => void})?.deleteContact;
+     deleteContact?.(contactId);
    }
  };
- const deleteContact = (contactId: any) => {
-   axios.delete(`http://localhost:5000/contact/${contactId}`)
-     .then(response => {
+ const deleteContact = async (contactId: any) => {
+   /*axios.delete(`http://localhost:5000/contact/${contactId}`)
+     .await((response: any) => {
        console.log('Contact deleted successfully:', response.data);
        //this.fetchContacts(); // Refresh the contact list after deletion
-        (this as unknown as { fetchContacts: () => void }).fetchContacts();
+        //(this as unknown as { fetchContacts: () => void }).fetchContacts();
      })
-     .catch(error => {
+     .catch((error: any) => {
        console.error('Error deleting contact:', error);
-     });
+     });*/
+     try {
+      const response = await fetch(`http://localhost:5000/contact/${contactId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Error! ${response.status}');
+      }
+
+      const data = await response.json();
+      console.log('Contact deleted successfully:', data);
+     } catch (error) {
+      console.error('Error deleting contact:', error);
+     }
  };
 
  /*

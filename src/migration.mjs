@@ -2,11 +2,14 @@ import { PrismaClient } from "@prisma/client";
 import * as fs from 'fs';
 
 const prisma = new PrismaClient();
+//const fs = require('fs');
 
 async function readSpreadsheet(filePath) {
     try {
-      const buffer = fs.readFileSync(filePath);
-      const data = await toCSV(buffer);
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const rows = content.split('\n').map(row => row.split(','));
+      //skip headers in row 1
+      const data = rows.slice(1)
       await processExcelData(data)
     } catch (error) {
       console.log(error);
@@ -15,18 +18,9 @@ async function readSpreadsheet(filePath) {
     }
 }
 
-async function toCSV(buffer) {
-  const lines = [];
-  for (let i = 0; i < buffer.length; i++) {
-    lines.push(buffer[i].toString());
-  }
-  const csvString = lines.join(',');
-  return [csvString];
-}
-
 async function processExcelData(data) {
   try {
-    for (const row of data) {
+    const createContactPromises = data.map(async (row) => {
       const newContact = await prisma.contact.create({
         data: {
           prefix : row[7],
@@ -47,9 +41,11 @@ async function processExcelData(data) {
           narrative : row[25],
           company : row[9],
         },
-      });
-      console.log('New Contact: ', newContact);
-    }
+    });
+    console.log('New Contact: ', newContact);
+    return newContact;
+    });
+    const importedContacts = await Promise.all(createContactPromises);
   } catch (error) {
     console.error('Error creating new contact: ', error);
   } finally {
@@ -58,7 +54,7 @@ async function processExcelData(data) {
 }
 
 async function main() {
-  const excelFilePath = './test.xlsx';
+  const excelFilePath = './test.csv';
   readSpreadsheet(excelFilePath);
   console.log('Sucessfully ran migration');
 }
