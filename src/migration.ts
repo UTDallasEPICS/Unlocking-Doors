@@ -4,7 +4,7 @@ import * as fs from 'fs';
 const prisma = new PrismaClient();
 //const fs = require('fs');
 
-async function readSpreadsheet(filePath) {
+async function readSpreadsheet(filePath: string) {
     try {
       const content = fs.readFileSync(filePath, 'utf-8');
       const rows = content.split('\n').map(row => row.split(','));
@@ -18,28 +18,56 @@ async function readSpreadsheet(filePath) {
     }
 }
 
-async function processExcelData(data) {
+async function processExcelData(data: string) {
   try {
     const createContactPromises = data.map(async (row) => {
+      const newTags = new Array();
+      for (let k = 0; k < 4; k++) {
+        if (row[k] != null) {
+          newTags.push(row[k]);
+        }
+      }
+      
+      //Create tags first
+      const tagPromises = newTags
+      .filter(tagText => tagText.trim() !== '') // Only use valid tag values
+      .map(async (tagText) => {
+        return prisma.tag.upsert({
+          where: { name: tagText },
+          create: { name: tagText },
+          update: { name: tagText },
+        });
+      });
+    
+      const createdTags = await Promise.all(tagPromises);
+
       const newContact = await prisma.contact.create({
         data: {
           prefix : row[7],
           firstName : row[5],
+          middleName : row[6],
           lastName : row[4],
           suffix : row[8],
-          salutation : row[7],
           professionalTitle : row[10],
-          address : row[11],
-          city : row[12],
-          state : row[13],
-          zipCode : row[14],
-          country : row[14],
+          address1 : row[11],
+          city1 : row[12],
+          state1 : row[13],
+          zipCode1 : row[14],
+          address1Type : row[15],
+          address2 : row[16],
+          city2 : row[17],
+          state2 : row[18],
+          zipCode2 : row[19],
+          address2Type: row[20],
           mainPhone : row[22],
           directPhone : row[23],
           mobilePhone : row[24],
           emailAddress : row[21],
           narrative : row[25],
           company : row[9],
+          tag : {
+            connect: createdTags.map((tag) => ({ id: tag.id })), //Connect tags to each contact
+          },
         },
     });
     console.log('New Contact: ', newContact);

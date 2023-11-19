@@ -30,32 +30,47 @@
           label(for='firstName') First Name:
           input(name='firstName' v-model='firstName')
         .form-group
+          label(for='middleName') Middle Name:
+          input(v-model='middleName')
+        .form-group
           label(for='lastName') Last Name:
           input(v-model='lastName')
         .form-group
           label(for='suffix') Suffix:
           input(v-model='suffix')
         .form-group
-          label(for='salutation') Salutation:
-          input(v-model='salutation')
-        .form-group
           label(for='professionalTitle') Professional Title:
           input(v-model='professionalTitle')
         .form-group
-          label(for='address') Address:
-          input(v-model='address')
+          label(for='address1') Address 1:
+          input(v-model='address1')
         .form-group
-          label(for='city') City:
-          input(v-model='city')
+          label(for='city1') City:
+          input(v-model='city1')
         .form-group
-          label(for='state') State:
-          input(v-model='state')
+          label(for='state1') State:
+          input(v-model='state1')
         .form-group
-          label(for='zipCode') Zip Code:
-          input(v-model='zipCode')
+          label(for='zipCode1') Zip Code:
+          input(v-model='zipCode1')
         .form-group
-          label(for='country') Country:
-          input(v-model='country')
+          label(for='address1Type') Address Type:
+          input(v-model='address1Type')
+        .form-group
+          label(for='address2') Address 2:
+          input(v-model='address2')
+        .form-group
+          label(for='city2') City:
+          input(v-model='city2')
+        .form-group
+          label(for='state2') State:
+          input(v-model='state2')
+        .form-group
+          label(for='zipCode2') Zip Code:
+          input(v-model='zipCode2')
+        .form-group
+          label(for='address2Type') Address Type:
+          input(v-model='address2Type')
         .form-group
           label(for='mainPhone') Main Phone:
           input(v-model='mainPhone')
@@ -84,10 +99,47 @@
    import axios from 'axios';
    import { ref } from 'vue';
    import { useRouter } from 'vue-router';
-   import TagInput from '@/components/TagInput.vue';
+   import VueMultiselect from 'vue-multiselect';
    const router = useRouter();
 
-   const prefix = ref('');
+   const props = defineProps({
+    availablePrivateCategories: Array,
+    content: Object,
+  });
+  const emit = defineEmits();
+
+  const addPrivateCategory = (e) => {
+    content.value.PrivateCategory = [...(content.value.PrivateCategory || []), e];
+  };
+
+  const state = ref({
+    prefix : '',
+    firstName : '',
+    middleName : '',
+    lastName : '',
+    suffix : '',
+    professionalTitle : '',
+    address1 : '',
+    city1 : '',
+    state1 : '',
+    zipCode1 : '',
+    address1Type : '',
+    address2 : '',
+    city2 : '',
+    state2 : '',
+    zipCode2 : '',
+    address2Type : '',
+    mainPhone : '',
+    directPhone : '',
+    mobilePhone : '',
+    emailAddress : '',
+    narrative : '',
+    company : '',
+    tag : [],
+    existingTags : [],
+  });
+
+   /*const prefix = ref('');
    const firstName = ref('');
    const lastName = ref('');
    const suffix = ref('');
@@ -104,7 +156,7 @@
    const emailAddress = ref('');
    const narrative = ref('');
    const company = ref('');
-   const tag = ref([]);
+   const tag = ref([]);*/
 
   /*
    const state = ref({
@@ -129,10 +181,49 @@
 
    */
 
+   //Function to add new tag
+   const addNewTag = (newTag) => {
+    tags.value.push(newTag);
+   };
+   
+
+   const createContact = async () => {
+    const { data } = await useFetch('/api/contact', {
+      method: 'POST',
+      body: state.value
+    })
+    router.push('/search');
+   }
+
+   /*
    const createContact = async () => {
     const { data } = await useFetch('/api/contact', {
       method: 'POST',
       body: {
+        prefix: prefix,
+        firstName: firstName,
+        middleName: middleName,
+        lastName: lastName,
+        suffix: suffix,
+        professionalTitle: professionalTitle,
+        address1: address1,
+        city1: city1,
+        state1: state1,
+        zipCode1: zipCode1,
+        address1Type: address1Type,
+        address2: address2,
+        city2: city2,
+        state2: state2,
+        zipCode2: zipCode2,
+        address2Type: address2Type,
+        mainPhone: mainPhone,
+        directPhone: directPhone,
+        mobilePhone: mobilePhone,
+        emailAddress: emailAddress,
+        narrative: narrative,
+        company: company,
+        tag: tag,
+        
         prefix: prefix,
         firstName: firstName,
         lastName: lastName,
@@ -156,6 +247,7 @@
     console.log("This is what's in the tag: " + tag.value);
     router.push('/search');
    }
+   */
 
    
 

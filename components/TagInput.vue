@@ -14,47 +14,50 @@
 </template>
   
 <script>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, defineProps, defineEmits } from 'vue';
 
-export default {
-    props: {
-        modelValue: Array
-    },
+// Props
+const props = defineProps({
+  modelValue: Array,
+});
 
-    setup(props, { emit }) {
-        const tags = ref([]);
-        const currentTag = ref('');
+  //Emits
+  const emit = defineEmits();
 
-        const addTag = () => {
-            if (currentTag.value) {
-                tags.value.push({ id: Date.now(), text: currentTag.value });
-                currentTag.value = '';
-                emit('update:modelValue', tags.value.map(tag => tag.text));
-            }
-        };
+  //Data
+  const tags = ref([]);
+  const currentTag = ref('');
+  const duplicateTag = ref(false);
 
-        const removeTag = (id) => {
-            tags.value = tags.value.filter((tag) => tag.id !== id);
-            emit('update:modelValue', tags.value.map(tag => tag.text));
-        };
-
-        // Create a computed property to extract and store the text values only
-        const tag = computed(() => tags.value.map(tag => tag.text));
-
-        // log changes to the tag array
-        watch(tag, (newVal) => {
-            console.log(newVal);
-        });
-
-        return {
-            tags,
-            currentTag,
-            addTag,
-            removeTag,
-            tag,
-        };
+  // Methods
+  const addTag = () => {
+    if (currentTag.value) {
+      const lowercaseTag = currentTag.value.toLowerCase();
+      if (!tags.value.some(tag => tag.text.toLowerCase() === lowercaseTag)) {
+        tags.value.push({ id: lowercaseTag, text: lowercaseTag });
+        currentTag.value = '';
+        emit('update:modelValue', tags.value.map(tag => tag.text));
+        duplicateTag.value = false;
+      }
+      else {
+        duplicateTag.value = true;
+      }
     }
-}
+  };
+
+  const removeTag = (id) => {
+      tags.value = tags.value.filter((tag) => tag.id !== id);
+      emit('update:modelValue', tags.value.map(tag => tag.text));
+  };
+
+  // Create a computed property to extract and store the text values only
+  const tag = computed(() => tags.value.map(tag => tag.text));
+
+  // log changes to the tag array
+  watch(tag, (newVal) => {
+      console.log(newVal);
+  });
+
 </script>
   
   <style scoped>

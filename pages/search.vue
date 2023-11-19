@@ -53,26 +53,38 @@
           | Suffix: 
           input(v-model='selectedContact.suffix')
         p
-          | Salutation: 
-          input(v-model='selectedContact.salutation')
-        p
           | Professional Title: 
           input(v-model='selectedContact.professionalTitle')
         p
-          | Address: 
-          input(v-model='selectedContact.address')
+          | Address 1: 
+          input(v-model='selectedContact.address1')
         p
           | City: 
-          input(v-model='selectedContact.city')
+          input(v-model='selectedContact.city1')
         p
           | State: 
-          input(v-model='selectedContact.state')
+          input(v-model='selectedContact.state1')
         p
           | Zip Code: 
-          input(v-model='selectedContact.zipCode')
+          input(v-model='selectedContact.zipCode1')
         p
-          | Country: 
-          input(v-model='selectedContact.country')
+          | Address Type: 
+          input(v-model='selectedContact.address1Type')
+        p
+        | Address 2: 
+        input(v-model='selectedContact.address2')
+        p
+          | City: 
+          input(v-model='selectedContact.city2')
+        p
+          | State: 
+          input(v-model='selectedContact.state2')
+        p
+          | Zip Code: 
+          input(v-model='selectedContact.zipCode2')
+        p
+          | Address Type: 
+          input(v-model='selectedContact.address2Type')
         p
           | Main Phone: 
           input(v-model='selectedContact.mainPhone')
@@ -125,6 +137,16 @@
         return []
       },
   });
+
+  //Method called after contact deletion to display remaining contacts
+  const fetchContacts = async () => {
+    const { data: contacts } = await useFetch('/api/contact', {
+      method: 'GET',
+      default() {
+        return [];
+      },
+    });
+  }
   
  const search = async (searchQuery: any) => {
   const { data: searchResults } = await useFetch('/api/contactField', {
@@ -228,6 +250,8 @@
 
       const data = await response.json();
       console.log('Contact deleted successfully:', data);
+      //Fetches the contacts after deletion so deleted contacts are not shown
+      fetchContacts?.();
      } catch (error) {
       console.error('Error deleting contact:', error);
      }

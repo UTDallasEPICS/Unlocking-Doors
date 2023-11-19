@@ -24,6 +24,12 @@ export default defineEventHandler(async (event) => {
           },
         },
         {
+          middleName: {
+            contains: middleName as any,
+            mode: 'insensitive',
+          },
+        },
+        {
           lastName: {
             contains: lastName as any,
             mode: 'insensitive',
