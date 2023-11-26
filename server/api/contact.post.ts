@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
       emailAddress,
       narrative,
       company,
-      tags: {
+      Tags: {
         connectOrCreate: tags.map((tag: string) => {
           return {
             where: { name: tag },

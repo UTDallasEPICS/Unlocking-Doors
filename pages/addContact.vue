@@ -74,7 +74,7 @@
         .form-group
           label(for='company') Company:
           input(v-model='state.company')
-        vue-multiselect(
+        VueMultiselect(
           v-if="availablePrivateCategories",
           :multiple="true", v-model="state.content.PrivateCategory",
           :close-on-select="false", open-direction="bottom",
@@ -138,7 +138,7 @@
       method: 'POST',
       body: state.value
     })
-    router.push('/search');
+    router.push('/');
    }
 
 

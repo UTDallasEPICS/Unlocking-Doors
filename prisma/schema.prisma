@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Contact {
-  id                Int      @id @default(autoincrement())
+  id                Int     @id @default(autoincrement())
   company           String
   prefix            String?
   firstName         String?
@@ -26,20 +26,18 @@ model Contact {
   mobilePhone       String?
   emailAddress      String?
   narrative         String?
-<<<<<<< HEAD
-  tags              Tag[] @relation("ContactToTag")
+  Tags              Tag[]   @relation("ContactToTag")
 }
 
 model Tag {
-  id    Int      @id @default(autoincrement())
-  name  String   @unique
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
   contacts Contact[] @relation("ContactToTag")
 
-=======
-  group             String[]
-  tag               String[]
+  group String[]
+  tag   String[]
+
   @@map("contact")
->>>>>>> main
 }
 
 //make email
@@ -47,6 +45,7 @@ model User {
   id         Int        @id @default(autoincrement())
   username   String     @unique
   permission Permission @default(VIEWER)
+
   @@map("user")
 }
 

@@ -11,7 +11,6 @@ const genState = (): string => {
 
 // Assuming useRuntimeConfig is defined somewhere and its return type is known
 const runtime = useRuntimeConfig();
-console.log(runtime)
 export const loginRedirectUrl = (): string => 
   `${runtime.AUTH0_ISSUER_BASE_URL}/authorize?response_type=id_token&response_mode=form_post&client_id=${runtime.AUTH0_CLIENT_ID}&scope=openid%20email&redirect_uri=${encodeURIComponent(runtime.AUTH0_BASE_URL + "/api/callback")}&nonce=${genState()}`;
 
