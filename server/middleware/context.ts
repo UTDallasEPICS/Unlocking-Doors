@@ -16,7 +16,6 @@ export default defineEventHandler(async (event) => {
   const cvtoken = getCookie(event, 'cvtoken') || '';
 
   if (!cvtoken && !(event.node.req.url?.includes('/api/callback'))) {
-    console.log(loginRedirectUrl())
     await sendRedirect(event, loginRedirectUrl());
   } else if (cvtoken) {
     try {

@@ -14,7 +14,7 @@ const isSearch = computed(() => route.path == "/Search/")
 
 if(!cvCookie.value)
 {
-    await navigateTo('/api/callback')
+    await navigateTo('/api/login')
 }
 
 </script>
