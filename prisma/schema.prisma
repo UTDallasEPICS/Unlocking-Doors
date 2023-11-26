@@ -26,6 +26,7 @@ model Contact {
   mobilePhone       String?
   emailAddress      String?
   narrative         String?
+<<<<<<< HEAD
   tags              Tag[] @relation("ContactToTag")
 }
 
@@ -34,6 +35,11 @@ model Tag {
   name  String   @unique
   contacts Contact[] @relation("ContactToTag")
 
+=======
+  group             String[]
+  tag               String[]
+  @@map("contact")
+>>>>>>> main
 }
 
 //make email
@@ -41,6 +47,7 @@ model User {
   id         Int        @id @default(autoincrement())
   username   String     @unique
   permission Permission @default(VIEWER)
+  @@map("user")
 }
 
 enum Permission {
