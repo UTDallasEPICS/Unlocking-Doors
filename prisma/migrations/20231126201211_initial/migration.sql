@@ -2,7 +2,7 @@
 CREATE TYPE "Permission" AS ENUM ('ADMIN', 'EDITOR', 'VIEWER');
 
 -- CreateTable
-CREATE TABLE "Contact" (
+CREATE TABLE "contact" (
     "id" SERIAL NOT NULL,
     "company" TEXT NOT NULL,
     "prefix" TEXT,
@@ -24,17 +24,17 @@ CREATE TABLE "Contact" (
     "group" TEXT[],
     "tag" TEXT[],
 
-    CONSTRAINT "Contact_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "contact_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "User" (
+CREATE TABLE "user" (
     "id" SERIAL NOT NULL,
     "username" TEXT NOT NULL,
     "permission" "Permission" NOT NULL DEFAULT 'VIEWER',
 
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+CREATE UNIQUE INDEX "user_username_key" ON "user"("username");

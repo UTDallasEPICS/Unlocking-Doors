@@ -28,6 +28,7 @@ model Contact {
   narrative         String?
   group             String[]
   tag               String[]
+  @@map("contact")
 }
 
 //make email
@@ -35,6 +36,7 @@ model User {
   id         Int        @id @default(autoincrement())
   username   String     @unique
   permission Permission @default(VIEWER)
+  @@map("user")
 }
 
 enum Permission {
