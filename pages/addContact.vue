@@ -249,21 +249,6 @@
    }
    */
 
-   
-
-   /*
-   const createContact = async () => {
-     try {
-       const response = await axios.post('http://localhost:5000/contact', state.value);
-       console.log(response.data);
-     } catch (error) {
-       console.log(error);
-     }
-
-     router.push('/search');
-   };
-   */
-
 
    </script>
     
