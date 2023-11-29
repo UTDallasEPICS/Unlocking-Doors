@@ -16,10 +16,10 @@
       br
       br
       br
-      NuxtLink.add-contact-button(to='addContact') Add Contact
+      NuxtLink.add-contact-button(v-if='isEditor' || 'isAdmin' to='addContact') Add Contact
       br
       br
-      NuxtLink.admin-button(to='admin') Admin Page
+      NuxtLink.admin-button(v-if='isAdmin' to='admin') Admin Page
       br
       br
       a(href='/api/logout') Logout
@@ -43,7 +43,7 @@
             td {{ contact.emailAddress }}
             td {{ contact.company }}
             td
-    .card-overlay(v-if='selectedContact')
+    .card-overlay(v-if='selectedContact' && ('isEditor' || 'isAdmin'))
       .card
         h2 {{ selectedContact.firstName }} {{ selectedContact.lastName }}
         p
@@ -97,9 +97,10 @@
 </template>
     
     
-   <script setup>
+   <script lang='ts' setup>
    //import { axios } from 'axios';
    import { ref } from "vue";
+   import type { User } from '@/types.d.ts'
    const contact = ref([]);
    const searchQuery = ref('');
    const selectedContact = ref(null);
@@ -108,6 +109,13 @@
    //pageSize = 10;
   
    //const ref
+
+    const user = useCookie<User>('user');
+    const id_info = computed(() => user.value?.id)
+    const id = id_info.value as number
+    const isViewer = computed(() => user.value?.permission == "VIEWER")
+    const isEditor = computed(() => user.value?.permission == "EDITOR")
+    const isAdmin = computed(() => user.value?.permission == "ADMIN")
    
   const logout = () => {
      window.location.href + '/api/logout'
@@ -123,8 +131,17 @@
         },
     });
   
-    
-   const search = async (searchQuery) => {
+     //Method called after contact deletion to display remaining contacts
+  const fetchContacts = async () => {
+    const { data: contacts } = await useFetch('/api/contact', {
+      method: 'GET',
+      default() {
+        return [];
+      },
+    });
+  }
+
+   const search = async (searchQuery: any) => {
     const { data: searchResults } = await useFetch('/api/contactField', {
       method: 'GET',
       params: {
@@ -156,8 +173,8 @@
    };
    */
   
-   let showContactDetails = (contact) => {
-     selectedContact = contact;
+   let showContactDetails = (contact: any) => {
+     selectedContact.value = contact;
    };
   
    // $fetch instead of search fetch
@@ -168,30 +185,78 @@
    //MAKE AYSNC FUNCTIONS
    ///await $fetch
   
-   const updateContact = () => {
-     axios.put(`http://localhost:5000/contact/${selectedContact.id}`, selectedContact)
+   const updateContact = async () => {
+     /*axios.put(`http://localhost:5000/contact/${selectedContact.id}`, selectedContact)
        .then(response => {
          console.log('Contact updated successfully:', response.data);
        })
        .catch(error => {
          console.error('Error updating contact:', error);
-       });
+       });*/
+       const contact = selectedContact?.value as unknown as {id: string} | undefined;
+        if (contact) {
+          try {
+            const response = await fetch(`http://localhost:5000/contact/${contact.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type' : 'application.json',
+            },
+            body: JSON.stringify(contact),
+        });
+      
+      if (!response.ok) {
+        throw new Error('Error! ${response.status}');
+      }
+      const data = await response.json();
+      console.log('Contact updated successfully:', data);
+      } catch (error) {
+        console.error('Error updating contact:', error);
+      }
+    };
    };
-   const confirmDeleteContact = (contactId) => {
+
+   /*const confirmDeleteContact = (contactId) => {
      if (confirm("Are you sure you want to delete this contact?")) {
        this.deleteContact(contactId);
      }
-   };
-   const deleteContact = (contactId) => {
+   };*/
+
+   const confirmDeleteContact = (contactId: any) => {
+   if (confirm("Are you sure you want to delete this contact?")) {
+     //(this as unknown as { deleteContact?: (contact: any) => void })?.deleteContact?.(contactId);
+     //const deleteContact = (contact as { deleteContact?: (contact: any) => void})?.deleteContact;
+     deleteContact?.(contactId);
+   }
+  };
+
+   /*const deleteContact = (contactId) => {
      axios.delete(`http://localhost:5000/contact/${contactId}`)
        .then(response => {
          console.log('Contact deleted successfully:', response.data);
-         this.fetchContacts(); // Refresh the contact list after deletion
+         //Fetches the contacts after deletion so deleted contacts are not shown
+        fetchContacts?.();
        })
        .catch(error => {
          console.error('Error deleting contact:', error);
        });
-   };
+   };*/
+
+   const deleteContact = async (contactId: any) => {
+     try {
+      const response = await fetch(`http://localhost:5000/contact/${contactId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Error! ${response.status}');
+      }
+      const data = await response.json();
+      console.log('Contact deleted successfully:', data);
+      //Fetches the contacts after deletion so deleted contacts are not shown
+      fetchContacts?.();
+     } catch (error) {
+      console.error('Error deleting contact:', error);
+     }
+ };
   
    /*
     const filteredContacts = computed( () => {
@@ -346,4 +411,3 @@
       }
     
       </style>
-      
