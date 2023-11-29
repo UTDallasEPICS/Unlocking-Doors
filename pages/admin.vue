@@ -7,7 +7,7 @@
       NuxtLink.button.add-user-button(@click="navigateTo('/addUser')") Add a User
       br
       br
-      NuxtLink.button.back-button(to='search') Search Page
+      NuxtLink.button.back-button(to='/') Search Page
   .main-content
     h1 Users
     ul.user-list

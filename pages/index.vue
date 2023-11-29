@@ -16,7 +16,7 @@
       br
       br
       br
-      NuxtLink.add-contact-button(v-if='isEditor' || 'isAdmin' to='addContact') Add Contact
+      NuxtLink.add-contact-button(v-if='isEditor || isAdmin' to='addContact') Add Contact
       br
       br
       NuxtLink.admin-button(v-if='isAdmin' to='admin') Admin Page
@@ -110,7 +110,7 @@
   
    //const ref
 
-    const user = useCookie<User>('user');
+    const user = useCookie<User>('cvuser');
     const id_info = computed(() => user.value?.id)
     const id = id_info.value as number
     const isViewer = computed(() => user.value?.permission == "VIEWER")
@@ -196,7 +196,7 @@
        const contact = selectedContact?.value as unknown as {id: string} | undefined;
         if (contact) {
           try {
-            const response = await fetch(`http://localhost:5000/contact/${contact.id}`, {
+            const response = await fetch(`/${contact.id}`, {
             method: 'PUT',
             headers: {
               'Content-Type' : 'application.json',
@@ -204,11 +204,11 @@
             body: JSON.stringify(contact),
         });
       
-      if (!response.ok) {
-        throw new Error('Error! ${response.status}');
-      }
-      const data = await response.json();
-      console.log('Contact updated successfully:', data);
+        if (!response.ok) {
+          throw new Error('Error! ${response.status}');
+        }
+        const data = await response.json();
+        console.log('Contact updated successfully:', data);
       } catch (error) {
         console.error('Error updating contact:', error);
       }
@@ -223,8 +223,6 @@
 
    const confirmDeleteContact = (contactId: any) => {
    if (confirm("Are you sure you want to delete this contact?")) {
-     //(this as unknown as { deleteContact?: (contact: any) => void })?.deleteContact?.(contactId);
-     //const deleteContact = (contact as { deleteContact?: (contact: any) => void})?.deleteContact;
      deleteContact?.(contactId);
    }
   };
@@ -243,16 +241,16 @@
 
    const deleteContact = async (contactId: any) => {
      try {
-      const response = await fetch(`http://localhost:5000/contact/${contactId}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) {
-        throw new Error('Error! ${response.status}');
-      }
-      const data = await response.json();
-      console.log('Contact deleted successfully:', data);
-      //Fetches the contacts after deletion so deleted contacts are not shown
-      fetchContacts?.();
+        const response = await fetch(`/${contactId}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) {
+          throw new Error('Error! ${response.status}');
+        }
+        const data = await response.json();
+        console.log('Contact deleted successfully:', data);
+        //Fetches the contacts after deletion so deleted contacts are not shown
+        fetchContacts?.();
      } catch (error) {
       console.error('Error deleting contact:', error);
      }
