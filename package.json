@@ -23,6 +23,6 @@
     "express": "^4.18.2",
     "prisma": "^5.3.1",
     "pug": "^3.0.2",
-    "vue-multiselect": "^2.1.8"
+    "vue-multiselect": "^3.0.0-alpha.2"
   }
 }

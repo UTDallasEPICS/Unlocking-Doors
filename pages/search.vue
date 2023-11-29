@@ -4,15 +4,10 @@
       .logo
         img(src='~/assets/logo.png' width='150' height='auto')
       .search-through
-        strong Groups
-        select
-          option Board Members
-          option Donors
-          option Providers
-      .search-through
         strong Tags
-        select
-          option Options
+        select(v-model="tagFilter")
+          option(value="None") None
+          option(v-for="tag in tags" :value="tag") {{ tag }}
       br
       br
       br
@@ -33,7 +28,7 @@
             th Email
             th Company
         tbody
-          tr(v-for='contact in contacts' :key='contact.id' @click='showContactDetails(contact)')
+          tr(v-for='contact in searchResults' :key='contact.id' @click='showContactDetails(contact)')
             td {{ contact.lastName }}
             td {{ contact.firstName }}
             td {{ contact.mainPhone }}
@@ -95,10 +90,10 @@
   
   
  <script setup>
- //import { axios } from 'axios';
  import { ref } from "vue";
  const contact = ref([]);
  const searchQuery = ref('');
+ const tagFilter = ref('None');
  const selectedContact = ref(null);
  //isDeleting = false;
  //currentPage = 1;
@@ -106,48 +101,24 @@
 
  //const ref
 
-
- // add query here
-  const { data: contacts } = await useFetch('/api/contact', {
-      method: 'GET',
-      //qeury property
-      //pass in search queury ref
-      default () {
-        return []
-      },
-  });
+ const { data: tags} = await useFetch('/api/tag', {
+  method: 'GET',
+ });
   
- const search = async (searchQuery) => {
-  const { data: searchResults } = await useFetch('/api/contactField', {
+  const { data: searchResults, refresh:search } = await useFetch('/api/contactField', {
     method: 'GET',
     params: {
-      firstName: searchQuery,
-      lastName: searchQuery,
-      company: searchQuery,
+      searchQuery,
+      tag: tagFilter,
     }
   });
 
-  console.log('API response:', searchResults);
-  return searchResults
- }
+//search()
 
- /*
- const search = () => {
-   axios.get('http://localhost:5000/contact/searchByName', {
-     params: {
-       firstName: searchQuery,
-       lastName: searchQuery,
-       company: searchQuery
-     }
-   })
-     .then(response => {
-       this.contacts = response.data;
-     })
-     .catch(error => {
-       console.error(error);
-     });
- };
- */
+
+
+
+
 
  let showContactDetails = (contact) => {
    selectedContact = contact;
