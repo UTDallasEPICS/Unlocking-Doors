@@ -33,11 +33,6 @@ model Tag {
   id       Int       @id @default(autoincrement())
   name     String    @unique
   contacts Contact[] @relation("ContactToTag")
-
-  group String[]
-  tag   String[]
-
-  @@map("contact")
 }
 
 //make email

@@ -74,153 +74,152 @@
         .form-group
           label(for='company') Company:
           input(v-model='state.company')
-        VueMultiselect(
-          v-if="availablePrivateCategories",
-          :multiple="true", v-model="state.content.PrivateCategory",
-          :close-on-select="false", open-direction="bottom",
-          :taggable="true",
-          :options="availablePrivateCategories",
-          @tag="addPrivateCategory")
+
+        Multiselect(
+          placeholder="Search or add a tag"
+          tag-placeholder="Add this as new tag"
+          :multiple="true" 
+          v-model="state.tags" 
+          :close-on-select="false" 
+          open-direction="bottom" 
+          :taggable="true" 
+          :options="tags" 
+          @tag="addNewTag"
+          )
+        br
+        br
+        br
+        br
         br
         br
         button(type='submit') Create Contact
 </template>
     
-   <script setup>
-   import { ref } from 'vue';
-   import { useRouter } from 'vue-router';
-   import VueMultiselect from 'vue-multiselect';
-   const router = useRouter();
-   
-   const props = defineProps({
-    availablePrivateCategories: Array,
-    content: Object,
-  });
-  const emit = defineEmits();
+<script setup>
+import "vue-multiselect/dist/vue-multiselect.css";
 
-  const addPrivateCategory = (e) => {
-    content.value.PrivateCategory = [...(content.value.PrivateCategory || []), e];
-  };
+import { useRouter } from 'vue-router';
+import Multiselect from 'vue-multiselect';
+const router = useRouter();
 
-  const state = ref({
-     prefix: '',
-     firstName: '',
-     lastName: '',
-     suffix: '',
-     salutation: '',
-     professionalTitle: '',
-     address: '',
-     city: '',
-     state: '',
-     zipCode: '',
-     country: '',
-     mainPhone: '',
-     directPhone: '',
-     mobilePhone: '',
-     emailAddress: '',
-     narrative: '',
-     company: '',
-     tags: [],
-     existingTags: [],
-   });
+const state = ref({
+  prefix: '',
+  firstName: '',
+  lastName: '',
+  suffix: '',
+  salutation: '',
+  professionalTitle: '',
+  address: '',
+  city: '',
+  state: '',
+  zipCode: '',
+  country: '',
+  mainPhone: '',
+  directPhone: '',
+  mobilePhone: '',
+  emailAddress: '',
+  narrative: '',
+  company: '',
+  tags: [],
+});
 
 
+const createContact = async () => {
+const { data } = await useFetch('/api/contact', {
+  method: 'POST',
+  body: state.value
+})
+router.push('/search');
+}
 
-   //Function to add new tag
-   const addNewTag = (newTag) => {
-    tags.value.push(newTag);
-   };
-
-  
-
-   const createContact = async () => {
-    const { data } = await useFetch('/api/contact', {
-      method: 'POST',
-      body: state.value
-    })
-    router.push('/');
-   }
+const { data: tags} = await useFetch('/api/tag', {
+  method: 'GET',
+});
 
 
-   </script>
+const addNewTag = (tagName) => {
+  tags.value = [...(tags.value || []), tagName];
+  state.value.tags = [...(state.value.tags || []), tagName];
+};
+</script>
     
-      <style scoped>
-        body {
-          background-color: white;
-          margin: 0;
-        }
-      
-        .container {
-          display: flex;
-        }
-      
-        .sidebar {
-          height: 100vh;
-          width: 250px;
-          background-color: #f0f0f0;
-        }
-      
-        .logo {
-          padding: 25px 0 50px 50px;
-        }
-      
-        .search-through {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          padding-top: 20px;
-          font-size: 20px;
-          font-weight: bold;
-        }
-        
-        .search-through select {
-          margin-top: 10px;
-          font-size: 16px;
-          border-radius: 5px;
-          border: 1px solid #ccc;
-          padding: 5px;
-        }
-      
-        .add-container {
-          margin: 50px 0 0 50px;
-          flex-grow: 1;
-        }
+<style scoped>
+  body {
+    background-color: white;
+    margin: 0;
+  }
+
+  .container {
+    display: flex;
+  }
+
+  .sidebar {
+    height: 100vh;
+    width: 250px;
+    background-color: #f0f0f0;
+  }
+
+  .logo {
+    padding: 25px 0 50px 50px;
+  }
+
+  .search-through {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+  }
   
-        .form-group {
-          display: flex;
-          flex-direction: row;
-          margin-bottom: 10px;
-        }
+  .search-through select {
+    margin-top: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 5px;
+  }
+
+  .add-container {
+    margin: 50px 0 0 50px;
+    flex-grow: 1;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+  }
+
+  .narrative {
+    height: 100px;
+  }
   
-        .narrative {
-          height: 100px;
-        }
-        
-        .form-group label {
-          width: 150px;
-          margin-right: 10px;
-          text-align: right;
-        }
+  .form-group label {
+    width: 150px;
+    margin-right: 10px;
+    text-align: right;
+  }
+
+  .button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
   
-        .button {
-          display: inline-block;
-          padding: 10px 20px;
-          font-size: 16px;
-          font-weight: bold;
-          text-align: center;
-          text-decoration: none;
-          border-radius: 4px;
-          cursor: pointer;
-        }
-        
-        .back-button {
-          background-color: #1f609c;
-          color: #ffffff;
-          margin-left: 50px;
-        }
-  
-        .back-button:hover {
-          opacity: 0.8;
-        }
-      
-      </style>
+  .back-button {
+    background-color: #1f609c;
+    color: #ffffff;
+    margin-left: 50px;
+  }
+
+  .back-button:hover {
+    opacity: 0.8;
+  }
+
+</style>
