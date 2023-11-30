@@ -18,7 +18,7 @@ async function readSpreadsheet(filePath: string) {
     }
 }
 
-async function processExcelData(data: string) {
+async function processExcelData(data: string[][]) {
   try {
     const createContactPromises = data.map(async (row) => {
       const newTags = new Array();
@@ -65,7 +65,7 @@ async function processExcelData(data: string) {
           emailAddress : row[21],
           narrative : row[25],
           company : row[9],
-          tag : {
+          Tags : {
             connect: createdTags.map((tag) => ({ id: tag.id })), //Connect tags to each contact
           },
         },
