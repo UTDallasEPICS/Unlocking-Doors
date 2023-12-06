@@ -83,7 +83,7 @@ npm i -D tsx
 Ensure that the excel file for migration is saved as a csv file, and update the file path in migration.ts. Then, run the script:
 ````bash
 # npm
-npx tsx src/migration.ts
+npx tsx scripts/migration.ts
 ````
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
