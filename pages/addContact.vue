@@ -1,0 +1,371 @@
+<template lang="pug">
+.container
+      .sidebar
+        .logo
+          img(src='~/assets/logo.png' width='150' height='auto')
+        .search-column
+          .search-through
+      .body
+        .top-bar
+          .account-bar
+            a.my-account-button(@click="navigateTo('/addUser')") My Account
+            img(src='~/assets/account.png')
+          .title
+            strong Contact Database
+          a.search-page-button(@click="navigateTo('/')") Search Page
+          a.text |
+          a.add-contact-button(@click="navigateTo('/addContact')") Add New Contact
+          a.text |
+          NuxtLink.admin-page-button(v-if='isAdmin' to='admin') Admin Page
+        .add-container-bg
+          .add-container
+            .add-container-contents
+              strong Add New Contact
+              form(@submit.prevent='createContact' @keydown.enter.prevent)
+                .columns
+                  .first-column
+                    .form-group
+                      label(for='firstName') First Name:
+                      input(name='firstName' v-model='state.firstName')
+                    .form-group
+                      label(for='lastName') Last Name:
+                      input(v-model='state.lastName')
+                    .form-group
+                      label(for='company') Company:
+                      input(v-model='state.company')
+                    .form-group
+                      label(for='prefix') Prefix:
+                      input(v-model='state.prefix')
+                    .form-group
+                      label(for='suffix') Suffix:
+                      input(v-model='state.suffix')
+                    .form-group
+                      label(for='salutation') Salutation:
+                      input(v-model='state.salutation')
+                    .form-group
+                      label(for='professionalTitle') Professional Title:
+                      input(v-model='state.professionalTitle')
+                  .second-column
+                    .form-group
+                      label(for='address') Address:
+                      input(v-model='state.address')
+                    .form-group
+                      label(for='city') City:
+                      input(v-model='state.city')
+                    .form-group
+                      label(for='state') State:
+                      input(v-model='state.state')
+                    .form-group
+                      label(for='zipCode') Zip Code:
+                      input(v-model='state.zipCode')
+                    .form-group
+                      label(for='country') Country:
+                      input(v-model='state.country')
+                    .form-group
+                      label(for='mainPhone') Main Phone:
+                      input(v-model='state.mainPhone')
+                    .form-group
+                      label(for='directPhone') Direct Phone:
+                      input(v-model='state.directPhone')
+                    .form-group
+                      label(for='mobilePhone') Mobile Phone:
+                      input(v-model='state.mobilePhone')
+                    .form-group
+                      label(for='emailAddress') Email Address:
+                      input(v-model='state.emailAddress')
+                  .third-column
+                    .form-group.narrative
+                      label(for='narrative') Narrative:
+                      textarea(v-model='state.narrative')
+                    .form-group
+                      Multiselect(
+                        placeholder="Search or add a tag"
+                        tag-placeholder="Add this as new tag"
+                        :multiple="true" 
+                        v-model="state.tags" 
+                        :close-on-select="false" 
+                        open-direction="bottom" 
+                        :taggable="true" 
+                        :options="tags" 
+                        @tag="addNewTag"
+                        )
+                  br
+                  br
+                  .create-contact-button
+                    button(type='submit') Create Contact
+</template>
+    
+<script lang='ts' setup>
+import "vue-multiselect/dist/vue-multiselect.css";
+
+import { useRouter } from 'vue-router';
+import Multiselect from 'vue-multiselect';
+const router = useRouter();
+
+import type { User } from '@/types.d'
+  const user = useCookie<User>('cvuser');
+  const id_info = computed(() => user.value?.id)
+  const id = id_info.value as number
+  const isViewer = computed(() => user.value?.permission == "VIEWER")
+  const isEditor = computed(() => user.value?.permission == "EDITOR")
+  const isAdmin = computed(() => user.value?.permission == "ADMIN")
+
+const state = ref({
+  prefix: '',
+  firstName: '',
+  lastName: '',
+  suffix: '',
+  salutation: '',
+  professionalTitle: '',
+  address: '',
+  city: '',
+  state: '',
+  zipCode: '',
+  country: '',
+  mainPhone: '',
+  directPhone: '',
+  mobilePhone: '',
+  emailAddress: '',
+  narrative: '',
+  company: '',
+  tags: [],
+});
+
+
+const createContact = async () => {
+const { data } = await useFetch('/api/contact', {
+  method: 'POST',
+  body: state.value
+})
+router.push('/');
+}
+
+const { data: tags} = await useFetch('/api/tag', {
+  method: 'GET',
+});
+
+
+const addNewTag = (tagName: any) => {
+  tags.value = [...(tags.value || []), tagName];
+  state.value.tags = [...(state.value.tags || []), tagName];
+};
+</script>
+    
+<style scoped>
+
+  @font-face {
+    font-family: 'Poppins';
+    src: url('assets/fonts/Poppins-Medium.ttf');
+  }
+
+  .body {
+    background-color: white;
+    width: 80%;
+    position: relative;
+  }
+
+  .container {
+    display: flex;
+    min-width: 1280px;
+  }
+
+  .sidebar {
+    height: 97.8vh;
+    width: 16%;
+    position: relative;
+    top: 0;
+    left: 0;
+  }
+
+  .top-bar {
+    position: relative;
+    height: 20%;
+    font-family: 'Poppins';
+    color: #034EA2;
+  }
+
+  .top-bar > .account-bar {
+    padding: 7px 30px;
+    position: absolute;
+    top: -8%;
+    right: -1%;
+    border-radius: 0 0 0 20px;
+    background-color: #D9D9D9;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .top-bar > .account-bar > a.my-account-button {
+    font-family: 'Poppins';
+    color: black !important;
+    margin-right: 20px;
+    cursor: pointer;
+  }
+
+  .top-bar > .account-bar > img {
+    height: 25px;
+    width: 25px;
+  }
+
+  .top-bar > .title {
+    padding: 25px 0 0 30px;
+    font-size: 28px;
+  }
+
+  .top-bar > a {
+    margin-right: 20px;
+  }
+
+  .top-bar > .add-contact-button {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .top-bar > .search-page-button,
+  .top-bar > .admin-page-button {
+    cursor: pointer;
+  }
+
+  .logo {
+    padding: 25px 0 10px 35px;
+  }
+
+  .search-through {
+    display: flex;
+    flex-direction: column;
+    padding: 15px 13px 0 15px;
+    font-size: 17px;
+    font-weight: bold;
+    font-family: 'Poppins';
+  }
+  
+  .search-through select {
+    margin-top: 10px;
+    font: 16px 'Poppins';
+    border: transparent;
+    border-radius: 10px;
+    padding: 5px;
+    background-color: #D9D9D9;
+  }
+
+  .checkbox {
+    display: flex;
+    flex-direction: row;
+    padding: 6px 0;
+  }
+
+  .checkbox > input {
+    cursor: pointer;
+    height: 15px;
+  }
+
+  .checkbox-label {
+    font: 300 15px 'Poppins';
+    padding-left: 10px;
+  }
+
+  .selected-filters {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 10px 0 15px;
+    font: bold 17px 'Poppins';
+    flex-grow: 1;
+  }
+
+  .filters {
+    margin-top: 8px;
+    height: 250px;
+    border-radius: 10px;
+    background-color: #D9D9D9;
+  }
+
+  .add-container-bg {
+    background-color: #D9D9D9;
+    margin-left: 10px;
+    border-radius: 20px 0 0 0;
+    box-shadow: inset 0 0 15px #717171;
+    height: 83%;
+    width: 100%;
+    position: absolute;
+    bottom: -1%;
+    right: -1%;
+  }
+
+  .add-container {
+    position: relative;
+    height: 91%;
+    width: 95%;
+    margin: 25px 0 0 30px;
+    border-radius: 20px;
+    background-color: white;
+  }
+
+  .add-container-contents {
+    padding: 20px 40px 0;
+  }
+
+  .add-container-contents > strong {
+    font: bold 20px 'Poppins';
+  }
+
+  .add-container-contents > form {
+    padding-top: 10px;
+  }
+
+  .create-contact-button > button {
+    position: absolute;
+    bottom: 2%;
+    left: 40%;
+    background-color: #034EA2;
+    color: white;
+    font: 600 14px 'Poppins';
+    padding: 5px 50px;
+    border: 2px solid;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: row;
+    padding-top: 10px;
+  }
+
+  .form-group > label {
+    width: 100%;
+    padding-right: 10px;
+    font: 15px 'Poppins';
+    text-align: left;
+  }
+
+  .form-group > input,
+  .form-group > textarea {
+    padding: 3px 7px;
+    border: 2px solid #D9D9D9;
+    border-radius: 20px;
+    font-family: 'Poppins';
+  }
+
+  .form-group > textarea {
+    width: 200px;
+    resize: none;
+  }
+
+  .columns {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .second-column {
+    padding: 0 30px;
+  }
+
+  .narrative {
+    height: 100px;
+  }
+
+  .narrative > label {
+    margin-right: -30px;
+  }
+
+</style>

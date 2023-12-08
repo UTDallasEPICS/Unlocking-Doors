@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Contact {
+  id                Int     @id @default(autoincrement())
+  company           String
+  prefix            String?
+  firstName         String?
+  lastName          String?
+  suffix            String?
+  salutation        String?
+  professionalTitle String?
+  address           String?
+  city              String?
+  state             String?
+  zipCode           String?
+  country           String?
+  mainPhone         String?
+  directPhone       String?
+  mobilePhone       String?
+  emailAddress      String?
+  narrative         String?
+  Tags              Tag[]   @relation("ContactToTag")
+}
+
+model Tag {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  contacts Contact[] @relation("ContactToTag")
+}
+
+//make email
+model User {
+  id         Int        @id @default(autoincrement())
+  username   String     @unique
+  permission Permission @default(VIEWER)
+
+  @@map("user")
+}
+
+enum Permission {
+  ADMIN
+  EDITOR
+  VIEWER
+}
