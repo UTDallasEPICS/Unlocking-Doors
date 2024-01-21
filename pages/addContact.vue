@@ -25,42 +25,58 @@
                 .columns
                   .first-column
                     .form-group
+                      label(for='prefix') Prefix:
+                      input(v-model='state.prefix')
+                    .form-group
                       label(for='firstName') First Name:
                       input(name='firstName' v-model='state.firstName')
+                    .form-group
+                      label(for='middleName') Middle Name:
+                      input(v-model='state.middleName')
                     .form-group
                       label(for='lastName') Last Name:
                       input(v-model='state.lastName')
                     .form-group
-                      label(for='company') Company:
-                      input(v-model='state.company')
-                    .form-group
-                      label(for='prefix') Prefix:
-                      input(v-model='state.prefix')
-                    .form-group
                       label(for='suffix') Suffix:
                       input(v-model='state.suffix')
                     .form-group
-                      label(for='salutation') Salutation:
-                      input(v-model='state.salutation')
-                    .form-group
                       label(for='professionalTitle') Professional Title:
                       input(v-model='state.professionalTitle')
+                    .form-group
+                      label(for='company') Company:
+                      input(v-model='state.company')
                   .second-column
                     .form-group
-                      label(for='address') Address:
-                      input(v-model='state.address')
+                      label(for='address1') Address 1:
+                      input(v-model='state.address1')
                     .form-group
                       label(for='city') City:
-                      input(v-model='state.city')
+                      input(v-model='state.city1')
                     .form-group
                       label(for='state') State:
-                      input(v-model='state.state')
+                      input(v-model='state.state1')
                     .form-group
                       label(for='zipCode') Zip Code:
-                      input(v-model='state.zipCode')
+                      input(v-model='state.zipCode1')
                     .form-group
-                      label(for='country') Country:
-                      input(v-model='state.country')
+                      label(for='address1Type') Address Type:
+                      input(v-model='state.address1Type')
+                    .form-group
+                      label(for='address2') Address 2:
+                      input(v-model='state.address2')
+                    .form-group
+                      label(for='city2') City:
+                      input(v-model='state.city2')
+                    .form-group
+                      label(for='state2') State:
+                      input(v-model='state.state2')
+                    .form-group
+                      label(for='zipCode2') Zip Code:
+                      input(v-model='state.zipCode2')
+                    .form-group
+                      label(for='address2Type') Address Type:
+                      input(v-model='state.address2Type')
+                  .third-column
                     .form-group
                       label(for='mainPhone') Main Phone:
                       input(v-model='state.mainPhone')
@@ -73,7 +89,6 @@
                     .form-group
                       label(for='emailAddress') Email Address:
                       input(v-model='state.emailAddress')
-                  .third-column
                     .form-group.narrative
                       label(for='narrative') Narrative:
                       textarea(v-model='state.narrative')
@@ -110,26 +125,32 @@ import type { User } from '@/types.d'
   const isEditor = computed(() => user.value?.permission == "EDITOR")
   const isAdmin = computed(() => user.value?.permission == "ADMIN")
 
-const state = ref({
-  prefix: '',
-  firstName: '',
-  lastName: '',
-  suffix: '',
-  salutation: '',
-  professionalTitle: '',
-  address: '',
-  city: '',
-  state: '',
-  zipCode: '',
-  country: '',
-  mainPhone: '',
-  directPhone: '',
-  mobilePhone: '',
-  emailAddress: '',
-  narrative: '',
-  company: '',
-  tags: [],
-});
+  const state = ref({
+    prefix : '',
+    firstName : '',
+    middleName : '',
+    lastName : '',
+    suffix : '',
+    professionalTitle : '',
+    address1 : '',
+    city1 : '',
+    state1 : '',
+    zipCode1 : '',
+    address1Type : '',
+    address2 : '',
+    city2 : '',
+    state2 : '',
+    zipCode2 : '',
+    address2Type : '',
+    mainPhone : '',
+    directPhone : '',
+    mobilePhone : '',
+    emailAddress : '',
+    narrative : '',
+    company : '',
+    tag : [],
+    existingTags : [],
+  });
 
 
 const createContact = async () => {
@@ -224,6 +245,8 @@ const addNewTag = (tagName: any) => {
   .top-bar > .search-page-button,
   .top-bar > .admin-page-button {
     cursor: pointer;
+    text-decoration: none;
+    color: #034EA2;
   }
 
   .logo {
@@ -314,8 +337,8 @@ const addNewTag = (tagName: any) => {
 
   .create-contact-button > button {
     position: absolute;
-    bottom: 2%;
-    left: 40%;
+    bottom: 5%;
+    left: 10%;
     background-color: #034EA2;
     color: white;
     font: 600 14px 'Poppins';

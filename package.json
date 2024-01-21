@@ -15,7 +15,8 @@
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.4",
     "@types/pug": "^2.0.6",
-    "nuxt": "^3.7.3"
+    "nuxt": "^3.7.3",
+    "tsx": "^4.6.2"
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^2.1.2",
@@ -28,7 +29,6 @@
     "jsonwebtoken": "^9.0.2",
     "prisma": "^5.3.1",
     "pug": "^3.0.2",
-    "tsx": "^4.6.2",
     "vue-multiselect": "^3.0.0-alpha.2"
   }
 }

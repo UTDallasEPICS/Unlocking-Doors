@@ -23,7 +23,6 @@
             a.text |
             a.add-contact-button(@click="navigateTo('/addContact')") Add New Contact
             a.text |
-            a.admin-page-button(@click="navigateTo('/admin')") Admin Page
           .add-container-bg
             .add-container
               .add-container-contents
