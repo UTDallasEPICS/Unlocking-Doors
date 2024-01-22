@@ -12,12 +12,14 @@
       .body
         .top-bar
           .account-bar
-            a(href='/api/logout') Logout
+            a.logout-link(href='/api/logout') Logout
             img(src='~/assets/account.png')
           .title
             strong Contact Database
           a.search-page-button(@click="navigateTo('/')") Search Page
+          a.text |
           NuxtLink.add-contact-button(v-if='isEditor || isAdmin' to='addContact') Add New Contact
+          a.text(v-if='isEditor || isAdmin') |
           NuxtLink.admin-page-button(v-if='isAdmin' to='admin') Admin Page
         .search-container
           .search-bar
@@ -25,7 +27,7 @@
             button(@click='contacts = search(searchQuery)') Search
           table
             tbody
-              tr(v-for='contact in searchResults' :key='contact.id' @click='editContact(contact)')
+              tr(v-for='contact in searchResults' :key='contact.id' @click='isEditor || isAdmin ? editContact(contact): null')
                 td.center-text #[strong {{ (contact.firstName &amp;&amp; contact.lastName) ? (contact.firstName + &apos; &apos; + contact.lastName) : (contact.firstName || contact.lastName || &apos;&apos;) }} ] 
                 td #[strong EMAIL] 
                   br
@@ -38,7 +40,7 @@
                 td {{ contact.company ? contact.company : &apos;&apos; }}
           .pagination
             button(@click="prevPage()") Previous
-            span | Page {{ currentPage }}
+            span  Page {{ currentPage }} 
             button(@click="nextPage()") Next
           
 </template>
@@ -97,7 +99,7 @@ const nextPage = () => {
 
   const editContact = (contact: any) => {
     const contactString = JSON.stringify(contact);
-    router.push({ path: `/editContact`, query: { tempContact: contactString } });
+    router.push({ path: `/editContact`, query: { tempContact: contactString } }); 
   };
  </script>
   
@@ -145,6 +147,11 @@ const nextPage = () => {
     color: black !important;
     margin-right: 20px;
     cursor: pointer;
+  }
+
+  a.logout-link {
+    color: #034EA2;
+    text-decoration: none;
   }
 
   .top-bar > .account-bar > img {
@@ -318,5 +325,30 @@ const nextPage = () => {
 
   tbody tr:hover {
     background-color: #ddd;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .pagination button, .pagination span {
+    padding: 8px 16px;
+    margin: 0 5px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+  }
+
+  .pagination button:hover {
+    background-color: #f0f0f0;
+  }
+
+  .pagination span {
+    background-color: #f0f0f0;
+    cursor: default;
   }
 </style>

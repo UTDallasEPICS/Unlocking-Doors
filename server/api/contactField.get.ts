@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
       ]
   }
   if(tag != "None" && tag) {
-    query.where.Tags = {
+    query.where.tag = {
       some: {name:tag},
     }
   }

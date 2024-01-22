@@ -6,55 +6,57 @@ export default defineEventHandler(async (event) => {
   const {
     prefix,
     firstName,
+    middleName,
     lastName,
     suffix,
-    salutation,
     professionalTitle,
-    address,
-    city,
-    state,
-    zipCode,
-    country,
+    address1,
+    city1,
+    state1,
+    zipCode1,
+    address1Type,
+    address2,
+    city2,
+    state2,
+    zipCode2,
+    address2Type,
     mainPhone,
     directPhone,
     mobilePhone,
     emailAddress,
     narrative,
     company,
-    tags,
+    tag,
   } = await readBody(event)
 
   // Create a new contact in the database.
-  console.log(tags)
   const newContact = await prisma.contact.create({
     data: {
       prefix,
       firstName,
+      middleName,
       lastName,
       suffix,
-      salutation,
       professionalTitle,
-      address,
-      city,
-      state,
-      zipCode,
-      country,
+      address1,
+      city1,
+      state1,
+      zipCode1,
+      address1Type,
+      address2,
+      city2,
+      state2,
+      zipCode2,
+      address2Type,
       mainPhone,
       directPhone,
       mobilePhone,
       emailAddress,
       narrative,
       company,
-      Tags: {
-        connectOrCreate: tags.map((tagName: string) => {
-          return {
-            where: { name: tagName },
-            create: { name: tagName },
-          };
-        }),
-      },
-    }
-  });
+      tag,
+    },
+  })
 
   // Return the new contact data as a JSON response.
   return {
