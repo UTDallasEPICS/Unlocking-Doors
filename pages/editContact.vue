@@ -32,57 +32,57 @@
                     .first-column
                       .form-group
                         label(for='firstName') First Name:
-                        input(v-model='parsedContact.firstName')
+                        input(v-model='contact.firstName')
                       .form-group
                         label(for='lastName') Last Name:
-                        input(v-model='parsedContact.lastName')
+                        input(v-model='contact.lastName')
                       .form-group
                         label(for='company') Company:
-                        input(v-model='parsedContact.company')
+                        input(v-model='contact.company')
                       .form-group
                         label(for='prefix') Prefix:
-                        input(v-model='parsedContact.prefix')
+                        input(v-model='contact.prefix')
                       .form-group
                         label(for='suffix') Suffix:
-                        input(v-model='parsedContact.suffix')
+                        input(v-model='contact.suffix')
                       .form-group
                         label(for='salutation') Salutation:
-                        input(v-model='parsedContact.salutation')
+                        input(v-model='contact.salutation')
                       .form-group
                         label(for='professionalTitle') Professional Title:
-                        input(v-model='parsedContact.professionalTitle')
+                        input(v-model='contact.professionalTitle')
                     .second-column
                       .form-group
                         label(for='address') Address:
-                        input(v-model='parsedContact.address')
+                        input(v-model='contact.address')
                       .form-group
                         label(for='city') City:
-                        input(v-model='parsedContact.city')
+                        input(v-model='contact.city')
                       .form-group
                         label(for='state') State:
-                        input(v-model='parsedContact.state')
+                        input(v-model='contact.state')
                       .form-group
                         label(for='zipCode') Zip Code:
-                        input(v-model='parsedContact.zipCode')
+                        input(v-model='contact.zipCode')
                       .form-group
                         label(for='country') Country:
-                        input(v-model='parsedContact.country')
+                        input(v-model='contact.country')
                       .form-group
                         label(for='mainPhone') Main Phone:
-                        input(v-model='parsedContact.mainPhone')
+                        input(v-model='contact.mainPhone')
                       .form-group
                         label(for='directPhone') Direct Phone:
-                        input(v-model='parsedContact.directPhone')
+                        input(v-model='contact.directPhone')
                       .form-group
                         label(for='mobilePhone') Mobile Phone:
-                        input(v-model='parsedContact.mobilePhone')
+                        input(v-model='contact.mobilePhone')
                       .form-group
                         label(for='emailAddress') Email Address:
-                        input(v-model='parsedContact.emailAddress')
+                        input(v-model='contact.emailAddress')
                     .third-column
                       .form-group.narrative
                         label(for='narrative') Narrative:
-                        textarea(v-model='parsedContact.narrative')
+                        textarea(v-model='contact.narrative')
                       .form-group.tag
                     br
                     br
@@ -114,15 +114,15 @@
        const narrative = ref('');
        const company = ref('');
        const tag = ref([]);
-       const contact = route.query.tempContact;
-       const parsedContact = JSON.parse(route.query.tempContact);
-    
+      
+const {data: contact } = await useFetch(`/api/contact/?id=${route.query.id}`) 
+
     const updateContact = async () => {
-        const { data } = await useFetch('/api/contact', {
+        const data = await $fetch('/api/contact', {
             method: 'PUT',
-            body: parsedContact,
+            body: contact,
             params: {
-                contactId: parsedContact.id
+                contactId: contact.id
             }
         })
         router.push('/');

@@ -2,12 +2,12 @@ import jwt from "jsonwebtoken";
 import fs from "fs";
 import { PrismaClient } from "@prisma/client";
 import { loginRedirectUrl } from "../api/auth0";
-import { JwtPayload } from "jsonwebtoken";
+import type { JwtPayload } from "jsonwebtoken";
 
 const client = new PrismaClient();
 
 interface MyTokenPayload extends JwtPayload {
-  email?: string; // Assuming the email is an optional field in your JWT token.
+  email?: string; 
 }
 const runtime  = useRuntimeConfig()
 
@@ -23,13 +23,12 @@ export default defineEventHandler(async (event) => {
         cvtoken, 
         fs.readFileSync(process.cwd() + '/cert-dev.pem')
       );
-      const claims = decoded as MyTokenPayload; // Type assertion
+      const claims = decoded as MyTokenPayload; 
 
       if (claims.email) {
         event.context.claims = claims;
-        // Using username field to find the user, assuming username stores the email
         event.context.user = await client.user.findFirst({
-          where: { username: claims.email } // Use the correct casing for username
+          where: { username: claims.email } 
         });
 
         if (!event.context.user) {

@@ -97,7 +97,7 @@
                         placeholder="Search or add a tag"
                         tag-placeholder="Add this as new tag"
                         :multiple="true" 
-                        v-model="state.tags" 
+                        v-model="state.tag" 
                         :close-on-select="false" 
                         open-direction="bottom" 
                         :taggable="true" 
@@ -148,18 +148,34 @@ import type { User } from '@/types.d'
     emailAddress : '',
     narrative : '',
     company : '',
-    tag : [],
-    existingTags : [],
+    tag : [] as string[],
+    existingTags : [] as string[],
+    date : new Date()
   });
 
-
 const createContact = async () => {
-const { data } = await useFetch('/api/contact', {
-  method: 'POST',
-  body: state.value
-})
-router.push('/');
-}
+
+  if (!state.value.firstName || !state.value.lastName) {
+    alert('Both First Name and Last Name are required.');
+    return;
+  }
+
+  console.log("Current tags:", state.value.tag);
+
+  if (!state.value.tag || state.value.tag.length === 0) {
+    alert('Please assign at least one tag to the contact.');
+    return; // Stop the function from proceeding further
+  }
+
+  console.log("Entered create contact");
+  const { data } = await useFetch('/api/contact', {
+    method: 'POST',
+    body: state.value
+  });
+  console.log("Entered passed create contact");
+  router.push('/');
+};
+
 
 const { data: tags} = await useFetch('/api/tag', {
   method: 'GET',
@@ -168,8 +184,10 @@ const { data: tags} = await useFetch('/api/tag', {
 
 const addNewTag = (tagName: any) => {
   tags.value = [...(tags.value || []), tagName];
-  state.value.tags = [...(state.value.tags || []), tagName];
+  state.value.tag = [...(state.value.tag || []), tagName];
 };
+
+
 </script>
     
 <style scoped>
