@@ -1,4 +1,5 @@
 <template lang="pug">
+  
 .container
       .sidebar
         .logo
@@ -7,7 +8,7 @@
           .search-through
             strong Tags
             select(v-model="tagFilter")
-              option(value="None") None
+              option(value="None") None1
               option(v-for="tag in tags" :value="tag") {{ tag }}
       .body
         .top-bar
@@ -21,6 +22,7 @@
           NuxtLink.add-contact-button(v-if='isEditor || isAdmin' to='addContact') Add New Contact
           a.text(v-if='isEditor || isAdmin') |
           NuxtLink.admin-page-button(v-if='isAdmin' to='admin') Admin Page
+          button(@click="downloadContacts()") Download Contacts
         .search-container
           .search-bar
             input(type='text' placeholder='Search...' v-model='searchQuery')
@@ -84,12 +86,18 @@ const nextPage = () => {
   refresh();
 };
 */
+
+const downloadContacts = () => {
+  console.log("hi")
+  
+};
+
  
 
   const { data: tags} = await useFetch('/api/tag', {
     method: 'GET',
   });
-  const { data: searchResults, refresh:search } = await useFetch('/api/contactField', {
+  const { data: searchResults, refresh:search } = await useFetch('/api/contacts', {
     method: 'GET',
     params: {
       searchQuery,
@@ -98,8 +106,7 @@ const nextPage = () => {
   });
 
   const editContact = (contact: any) => {
-    const contactString = JSON.stringify(contact);
-    router.push({ path: `/editContact`, query: { tempContact: contactString } }); 
+    router.push({ path: `/editContact/`, query: {id: contact.id}} ); 
   };
  </script>
   

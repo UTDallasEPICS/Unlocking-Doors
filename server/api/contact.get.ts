@@ -2,10 +2,14 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export default defineEventHandler( async (event) => {
-  const contacts = await prisma.contact.findMany({
+  const {id} = getQuery(event)
+  const contacts = await prisma.contact.findFirst({
+    where:{
+      id: parseInt(id as string)
+    },
     include: {
-        Tags: true
+        tag: true
       }
     });
-    return contacts;
+    return contacts || {};
 });

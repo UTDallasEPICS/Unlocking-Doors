@@ -42,3 +42,10 @@ export default defineEventHandler(async (event) => {
   const contacts = await prisma.contact.findMany(query);
   return contacts;
 });
+
+// Add new tab/page for editing contacts
+// Create a table of existing tags to be able to modify/delete
+// - each row is a tag 
+// Columns include name, edit, and delete
+// - Have confirmation for deleting tag
+// Shouldn't actually delete tag, but 
