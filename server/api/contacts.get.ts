@@ -6,7 +6,10 @@ export default defineEventHandler(async (event) => {
 
   const { searchQuery, tag, cursor } = getQuery(event)
   const query:any = {
-    where: {}
+    where: {},
+    include:{
+      tag:true
+    }
   }
   if(searchQuery) {
     query.where.OR = [
