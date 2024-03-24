@@ -87,12 +87,97 @@ const nextPage = () => {
 };
 */
 
-const downloadContacts = () => {
-  console.log("hi")
-  
-};
+/*
 
- 
+const contacts = [{}]
+
+const headers = Object.keys(contacts[0])
+// for every contact in contacts
+// convert contact.tags to a "tag1, tag2" shape
+// concatenate all the values - for key in headers, value = value + contact[header]
+// csv final string is headers + "\n" + values.join("\n")
+*/
+
+const downloadContacts = async () => {
+  const response = await fetch(`/api/contacts?tag=${tagFilter.value}`, {
+  method: 'GET',
+});
+
+  if (!response.ok) {
+    console.error('Failed to fetch contacts');
+    return;
+  }
+
+  const contacts = await response.json();
+
+  const headers = Object.keys(contacts[0]);
+
+  const reduced = contacts.reduce(
+    (acc: string, curr: any) => {
+      const newValues = headers.map(h => {
+        if (h == "tag")
+        {
+          return `"${curr[h].map(({name}:{name:string})=>name).join(",")}"`
+        }
+        else
+          return curr[h];
+      }).join(",") + "\n"
+      return acc+newValues
+    },
+    ""
+  )
+
+  /*
+for every tag in tags (tag array), lastName, 
+firstName, middleName, prefix, suffix, company, professionalTitle, 
+address1, city1, state1, zipCode1, address1Type, 
+address2, city2, state2, zipCode2, address2Type, 
+mainPhone, directPhone, mobilePhone, narrative */
+
+
+  const hMap: Record<string, string> =
+  {
+    id: "ID",
+    tag: "Tags",
+    lastName: "Last Name",
+    firstName: "First Name",
+    middleName: "Middle Name/Initial",
+    prefix: "Prefix",
+    suffix: "Suffix",
+    company: "Organization",
+    professionalTitle: "Title",
+    address1: "Address 1",
+    city1: "City 1",
+    state1: "State 1",
+    zipCode1: "Zipcode 1",
+    address1Type: "Address 1 Type",
+    address2: "Address 2",
+    city2: "City 2",
+    state2: "State 2",
+    zipCode2: "Zipcode 2",
+    address2Type: "Address 2 Type",
+    emailAddress: "Email",
+    mainPhone: "Main Phone",
+    directPhone: "Direct Phone",
+    mobilePhone: "Mobile Phone",
+    narrative: "Notes",
+  }
+
+  const prettyHeaders = headers.map((h: string) => hMap[h]).join(",")+"\n"
+  
+  // Trigger the download of the CSV file
+  const encodedUri = URL.createObjectURL(
+    new Blob([prettyHeaders+reduced], {
+      type: "text/csv"
+    })
+  )
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", "contacts.csv");
+
+  link.click(); // This will download the file
+  document.body.removeChild(link); // Clean up
+};
 
   const { data: tags} = await useFetch('/api/tag', {
     method: 'GET',
@@ -109,6 +194,7 @@ const downloadContacts = () => {
     router.push({ path: `/editContact/`, query: {id: contact.id}} ); 
   };
  </script>
+
   
   
 <style scoped>
