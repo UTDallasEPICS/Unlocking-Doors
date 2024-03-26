@@ -59,7 +59,7 @@
  //import { useFetch } from "nuxt/app"
  const contact = ref([]);
  const searchQuery = ref('');
- const tagFilter = ref('None');
+ const tagFilter = ref('');
  const selectedContact = ref(null);
  import { useRouter } from 'vue-router';
  const router = useRouter();
@@ -187,6 +187,7 @@ mainPhone, directPhone, mobilePhone, narrative */
   const { data: tags} = await useFetch('/api/tag', {
     method: 'GET',
   });
+
   const { data: searchResults, refresh:search } = await useFetch('/api/contacts', {
     method: 'GET',
     params: {
