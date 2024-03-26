@@ -193,8 +193,8 @@ const addNewTag = (tagName: any) => {
 <style scoped>
 
   @font-face {
-    font-family: 'Poppins';
-    src: url('assets/fonts/Poppins-Medium.ttf');
+    font-family: 'AccidentalPresidency';
+    src: url('assets/fonts/AccidentalPresidency.ttf');
   }
 
   .body {
@@ -219,7 +219,7 @@ const addNewTag = (tagName: any) => {
   .top-bar {
     position: relative;
     height: 20%;
-    font-family: 'Poppins';
+    font-family: 'AccidentalPresidency';
     color: #034EA2;
   }
 
@@ -235,7 +235,7 @@ const addNewTag = (tagName: any) => {
   }
 
   .top-bar > .account-bar > a.my-account-button {
-    font-family: 'Poppins';
+    font-family: 'AccidentalPresidency';
     color: black !important;
     margin-right: 20px;
     cursor: pointer;
@@ -277,12 +277,12 @@ const addNewTag = (tagName: any) => {
     padding: 15px 13px 0 15px;
     font-size: 17px;
     font-weight: bold;
-    font-family: 'Poppins';
+    font-family: 'AccidentalPresidency';
   }
   
   .search-through select {
     margin-top: 10px;
-    font: 16px 'Poppins';
+    font: 16px 'AccidentalPresidency';
     border: transparent;
     border-radius: 10px;
     padding: 5px;
@@ -301,7 +301,7 @@ const addNewTag = (tagName: any) => {
   }
 
   .checkbox-label {
-    font: 300 15px 'Poppins';
+    font: 300 15px 'AccidentalPresidency';
     padding-left: 10px;
   }
 
@@ -309,7 +309,7 @@ const addNewTag = (tagName: any) => {
     display: flex;
     flex-direction: column;
     padding: 20px 10px 0 15px;
-    font: bold 17px 'Poppins';
+    font: bold 17px 'AccidentalPresidency';
     flex-grow: 1;
   }
 
@@ -346,7 +346,7 @@ const addNewTag = (tagName: any) => {
   }
 
   .add-container-contents > strong {
-    font: bold 20px 'Poppins';
+    font: bold 20px 'AccidentalPresidency';
   }
 
   .add-container-contents > form {
@@ -359,7 +359,7 @@ const addNewTag = (tagName: any) => {
     left: 10%;
     background-color: #034EA2;
     color: white;
-    font: 600 14px 'Poppins';
+    font: 600 14px 'AccidentalPresidency';
     padding: 5px 50px;
     border: 2px solid;
     border-radius: 20px;
@@ -375,7 +375,7 @@ const addNewTag = (tagName: any) => {
   .form-group > label {
     width: 100%;
     padding-right: 10px;
-    font: 15px 'Poppins';
+    font: 15px 'AccidentalPresidency';
     text-align: left;
   }
 
@@ -384,7 +384,7 @@ const addNewTag = (tagName: any) => {
     padding: 3px 7px;
     border: 2px solid #D9D9D9;
     border-radius: 20px;
-    font-family: 'Poppins';
+    font-family: 'AccidentalPresidency';
   }
 
   .form-group > textarea {
