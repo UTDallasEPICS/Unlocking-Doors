@@ -6,10 +6,14 @@
           img(src='~/assets/logo.png' width='150')
         .search-column
           .search-through
-            strong Tags
-            select(v-model="tagFilter")
-              option(value="None") None1
-              option(v-for="tag in tags" :value="tag") {{ tag }}
+          strong Tags
+            Multiselect(
+          v-model="tagFilter",
+          :options="tags",
+          placeholder="Select tags",
+          multiple
+        )
+
       .body
         .top-bar
           .account-bar
@@ -51,10 +55,11 @@
  <script lang='ts' setup>
  import type { User } from '@/types.d'
  import { ref } from "vue";
+ import Multiselect from 'vue-multiselect';
  //import { useFetch } from "nuxt/app"
  const contact = ref([]);
  const searchQuery = ref('');
- const tagFilter = ref('None');
+ const tagFilter = ref('');
  const selectedContact = ref(null);
  import { useRouter } from 'vue-router';
  const router = useRouter();
@@ -182,6 +187,7 @@ mainPhone, directPhone, mobilePhone, narrative */
   const { data: tags} = await useFetch('/api/tag', {
     method: 'GET',
   });
+
   const { data: searchResults, refresh:search } = await useFetch('/api/contacts', {
     method: 'GET',
     params: {
