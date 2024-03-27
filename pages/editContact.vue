@@ -117,16 +117,25 @@
       
 const {data: contact } = await useFetch(`/api/contact/?id=${route.query.id}`) 
 
-    const updateContact = async () => {
+  console.log(`Contact ID for update: ${contact.value.id}`); // Ensure this logs the expected ID
+
+const updateContact = async () => {
+    console.log('Updating contact with ID:', contact.value.id); // Debugging line
+    try {
         const data = await $fetch('/api/contact', {
             method: 'PUT',
-            body: contact,
+            body: contact.value, // Ensure you're passing the reactive value correctly
             params: {
-                contactId: contact.id
+                contactId: contact.value.id // Debugging line
             }
-        })
+        });
+        console.log('Update successful:', data); // Debugging line
         router.push('/');
-    };
+    } catch (error) {
+        console.error('Failed to update contact:', error);
+    }
+};
+
     
     const cancelEdit = () => {
       router.push('/');
