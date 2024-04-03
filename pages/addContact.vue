@@ -356,7 +356,7 @@ const addNewTag = (tagName: any) => {
   .create-contact-button > button {
     position: absolute;
     bottom: 5%;
-    left: 10%;
+    right: 10%;
     background-color: #034EA2;
     color: white;
     font: 600 14px 'AccidentalPresidency';

@@ -220,7 +220,7 @@ mainPhone, directPhone, mobilePhone, narrative */
   .top-bar {
     position: relative;
     height: 20%;
-    font-family: "Poppins";
+    font-family: "AccidentalPresidency";
     color: #034EA2;
   }
 
@@ -236,7 +236,7 @@ mainPhone, directPhone, mobilePhone, narrative */
   }
 
   .top-bar > .account-bar > a.my-account-button {
-    font-family: "Poppins";
+    font-family: "AccidentalPresidency";
     color: black !important;
     margin-right: 20px;
     cursor: pointer;
@@ -289,12 +289,12 @@ mainPhone, directPhone, mobilePhone, narrative */
     padding: 10px 10px 0 15px;
     font-size: 17px;
     font-weight: bold;
-    font-family: 'Poppins';
+    font-family: 'AccidentalPresidency';
   }
   
   .search-through select {
     margin-top: 10px;
-    font: 16px 'Poppins';
+    font: 16px 'AccidentalPresidency';
     border: transparent;
     border-radius: 10px;
     padding: 5px;
@@ -305,7 +305,7 @@ mainPhone, directPhone, mobilePhone, narrative */
     display: flex;
     flex-direction: column;
     padding: 20px 0 0 15px;
-    font: bold 17px 'Poppins';
+    font: bold 17px 'AccidentalPresidency';
   }
 
   .checkbox {
@@ -320,7 +320,7 @@ mainPhone, directPhone, mobilePhone, narrative */
   }
 
   .checkbox-label {
-    font: 300 15px 'Poppins';
+    font: 300 15px 'AccidentalPresidency';
     padding-left: 10px;
   }
 
@@ -328,7 +328,7 @@ mainPhone, directPhone, mobilePhone, narrative */
     display: flex;
     flex-direction: column;
     padding: 20px 10px 0 15px;
-    font: bold 17px 'Poppins';
+    font: bold 17px 'AccidentalPresidency';
     flex-grow: 1;
   }
 

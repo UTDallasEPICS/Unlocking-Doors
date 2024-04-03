@@ -159,7 +159,7 @@ const {data: contact } = await useFetch(`/api/contact/?id=${route.query.id}`)
   .top-bar {
     position: relative;
     height: 20%;
-    font-family: "Poppins";
+    font-family: "AccidentalPresidency";
     color: #034EA2;
   }
 
@@ -175,7 +175,7 @@ const {data: contact } = await useFetch(`/api/contact/?id=${route.query.id}`)
   }
 
   .top-bar > .account-bar > a.my-account-button {
-    font-family: "Poppins";
+    font-family: "AccidentalPresidency";
     color: black !important;
     margin-right: 20px;
     cursor: pointer;
@@ -211,12 +211,12 @@ const {data: contact } = await useFetch(`/api/contact/?id=${route.query.id}`)
     padding: 15px 13px 0 15px;
     font-size: 17px;
     font-weight: bold;
-    font-family: 'Poppins';
+    font-family: 'AccidentalPresidency';
   }
   
   .search-through select {
     margin-top: 10px;
-    font: 16px 'Poppins';
+    font: 16px 'AccidentalPresidency';
     border: transparent;
     border-radius: 10px;
     padding: 5px;
@@ -235,7 +235,7 @@ const {data: contact } = await useFetch(`/api/contact/?id=${route.query.id}`)
   }
 
   .checkbox-label {
-    font: 300 15px 'Poppins';
+    font: 300 15px 'AccidentalPresidency';
     padding-left: 10px;
   }
 
@@ -243,7 +243,7 @@ const {data: contact } = await useFetch(`/api/contact/?id=${route.query.id}`)
     display: flex;
     flex-direction: column;
     padding: 20px 10px 0 15px;
-    font: bold 17px 'Poppins';
+    font: bold 17px 'AccidentalPresidency';
     flex-grow: 1;
   }
 
@@ -280,7 +280,7 @@ const {data: contact } = await useFetch(`/api/contact/?id=${route.query.id}`)
   }
 
   .add-container-contents > strong {
-    font: bold 20px 'Poppins';
+    font: bold 20px 'AccidentalPresidency';
   }
 
   .add-container-contents > form {
@@ -297,7 +297,7 @@ const {data: contact } = await useFetch(`/api/contact/?id=${route.query.id}`)
   .buttons > a {
     position: absolute;
     bottom: 5%;
-    font: 600 14px 'Poppins';
+    font: 600 14px 'AccidentalPresidency';
     padding: 5px;
     border: 2px solid;
     border-radius: 20px;
@@ -326,7 +326,7 @@ const {data: contact } = await useFetch(`/api/contact/?id=${route.query.id}`)
   .form-group > label {
     width: 100%;
     padding-right: 10px;
-    font: 15px 'Poppins';
+    font: 15px 'AccidentalPresidency';
     text-align: left;
   }
 
@@ -335,7 +335,7 @@ const {data: contact } = await useFetch(`/api/contact/?id=${route.query.id}`)
     padding: 3px 7px;
     border: 2px solid #D9D9D9;
     border-radius: 20px;
-    font-family: 'Poppins';
+    font-family: 'AccidentalPresidency';
   }
 
   .form-group > textarea {
