@@ -199,14 +199,14 @@ const addNewTag = (tagName: any) => {
 
   .body {
     background-color: white;
-    width: 80%;
+    width: 800px;
+    margin: 0 auto;
     position: relative;
   }
 
   .container {
     display: flex;
     min-width: 1280px;
-    max-width: 1280px;
   }
 
   .sidebar {
