@@ -205,8 +205,8 @@ const addNewTag = (tagName: any) => {
 
   .container {
     display: flex;
-    justify-content: center;
     min-width: 1280px;
+    max-width: 1280px;
   }
 
   .sidebar {
