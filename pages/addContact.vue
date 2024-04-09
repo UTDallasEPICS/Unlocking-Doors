@@ -199,12 +199,12 @@ const addNewTag = (tagName: any) => {
 
   .body {
     background-color: white;
-    width: 80%;
-    position: relative;
+    margin: 0;
   }
 
   .container {
     display: flex;
+    justify-content: center;
     min-width: 1280px;
   }
 
@@ -221,6 +221,7 @@ const addNewTag = (tagName: any) => {
     height: 20%;
     font-family: 'AccidentalPresidency';
     color: #034EA2;
+    margin-bottom: 20px;
   }
 
   .top-bar > .account-bar {
