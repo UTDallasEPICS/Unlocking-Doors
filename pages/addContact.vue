@@ -203,7 +203,20 @@ const addNewTag = (tagName: any) => {
     max-width: 1000px;
     margin: 0 auto;
     position: relative;
+    font-size: 1em;
   }
+  @media screen and (max-width: 768px) {
+    .body {
+        font-size: 0.8em; 
+    }
+}
+
+
+@media screen and (min-width: 1280px) {
+    .body {
+        font-size: 1.2em; 
+    }
+}
 
   .container {
     display: flex;
