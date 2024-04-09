@@ -199,7 +199,8 @@ const addNewTag = (tagName: any) => {
 
   .body {
     background-color: white;
-    width: 800px;
+    width: 80vw;
+    max-width: 1000px;
     margin: 0 auto;
     position: relative;
   }
