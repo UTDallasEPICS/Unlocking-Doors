@@ -198,6 +198,7 @@ mainPhone, directPhone, mobilePhone, narrative */
   
   
 <style scoped>
+@media screen and (min-width: 768px) {
   .body {
     background-color: white;
     width: 80%;
@@ -443,5 +444,6 @@ mainPhone, directPhone, mobilePhone, narrative */
   .pagination span {
     background-color: #f0f0f0;
     cursor: default;
+  }
   }
 </style>
