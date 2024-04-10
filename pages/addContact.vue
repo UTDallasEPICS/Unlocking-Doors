@@ -225,7 +225,29 @@ const addNewTag = (tagName: any) => {
     font-family: 'AccidentalPresidency';
     color: #034EA2;
   }
+@media screen and (max-width: 1280px) {
+    .container {
+        min-width: 100%;
+    }
+}
 
+@media screen and (max-width: 1000px) {
+    .body {
+        width: 90vw;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .sidebar {
+        width: 25%;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .sidebar {
+        width: 40%;
+    }
+}
   .top-bar > .account-bar {
     padding: 7px 30px;
     position: absolute;
