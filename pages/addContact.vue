@@ -199,32 +199,30 @@ const addNewTag = (tagName: any) => {
 
   .body {
     background-color: white;
-    width: 80vw;
-    max-width: 1000px;
+    width: 1000px; /* Fixed width */
     margin: 0 auto;
     position: relative;
-    
-  }
+}
 
-  .container {
+.container {
     display: flex;
     min-width: 1280px;
-  }
+}
 
-  .sidebar {
-    height: 97.8vh;
-    width: 16%;
+.sidebar {
+    height: 800px; /* Fixed height */
+    width: 200px; /* Fixed width */
     position: relative;
     top: 0;
     left: 0;
-  }
+}
 
-  .top-bar {
+.top-bar {
     position: relative;
-    height: 20%;
+    height: 160px; /* Fixed height */
     font-family: 'AccidentalPresidency';
     color: #034EA2;
-  }
+}
 @media screen and (max-width: 1280px) {
     .container {
         min-width: 100%;
