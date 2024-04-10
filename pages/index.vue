@@ -128,8 +128,7 @@ const downloadContacts = async () => {
           return curr[h];
       }).join(",") + "\n"
       return acc+newValues
-    },
-    ""
+    }, ""
   )
 
   /*
