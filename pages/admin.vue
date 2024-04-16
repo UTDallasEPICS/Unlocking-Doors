@@ -155,7 +155,7 @@
     
     
     <style scoped>
-
+    @media screen and (min-width: 768px) {
     .body {
       background-color: white;
       width: 80%;
@@ -295,6 +295,6 @@
     button.delete-button:hover {
       background-color: red;
     }
-  
+    }
   </style>
   
