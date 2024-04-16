@@ -6,10 +6,13 @@
           img(src='~/assets/logo.png' width='150')
         .search-column
           .search-through
-            strong Tags
-            select(v-model="tagFilter")
-              option(value="None") None1
-              option(v-for="tag in tags" :value="tag") {{ tag }}
+            strong
+            Multiselect(
+          v-model="tagFilter",
+          :options="tags",
+          placeholder="Select tags",
+          multiple
+        )
       .body
         .top-bar
           .account-bar
@@ -49,6 +52,7 @@
   
   
  <script lang='ts' setup>
+ import Multiselect from 'vue-multiselect';
  import type { User } from '@/types.d'
  import { ref } from "vue";
  //import { useFetch } from "nuxt/app"

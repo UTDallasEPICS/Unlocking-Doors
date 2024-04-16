@@ -34,10 +34,18 @@ export default defineEventHandler(async (event) => {
         },
       ]
   }
-  if(tag != "None" && tag) {
-    query.where.tag = {
-      some: {name:tag},
-    }
+  if (tag !== "None" && tag) {
+    const tags = Array.isArray(tag) ? tag : [tag]; // Ensure tag is an array
+
+    query.where = {
+      AND: tags.map(tag => ({
+        tag: {
+          some: {
+            name: tag
+          }
+        }
+      }))
+    };
   }
 
   const pageSize = 10;
