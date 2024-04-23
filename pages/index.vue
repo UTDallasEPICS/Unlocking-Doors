@@ -41,7 +41,7 @@
                 td #[strong PHONE] 
                   br
                   br
-                  |{{ contact.mainPhone ? contact.mainPhone : (contact.directPhone ? contact.directPhone : contact.cellPhone) }}
+                  |{{ contact.mainPhone ? contact.mainPhone : (contact.directPhone ? contact.directPhone : contact.mobilePhone) }}
                 td {{ contact.company ? contact.company : &apos;&apos; }}
           .pagination
             button(@click="prevPage()") Previous
