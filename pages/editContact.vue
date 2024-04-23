@@ -296,7 +296,7 @@ const {data: contact } = await useFetch(`/api/contact/?id=${route.query.id}`)
   .buttons > button,
   .buttons > a {
     position: absolute;
-    bottom: 5%;
+    bottom: 3%;
     font: 600 14px 'AccidentalPresidency';
     padding: 5px;
     border: 2px solid;
