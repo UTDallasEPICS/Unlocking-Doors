@@ -33,10 +33,7 @@
           table
             tbody
               tr(v-for='contact in searchResults' :key='contact.id' @click='isEditor || isAdmin ? editContact(contact): null')
-                td.center-text #[strong NAME]
-                  br
-                  br
-                  |{{ (contact.firstName &amp;&amp; contact.lastName) ? (contact.firstName + &apos; &apos; + contact.lastName) : (contact.firstName || contact.lastName || &apos;&apos;) }} 
+                td.center-text #[strong {{ (contact.firstName &amp;&amp; contact.lastName) ? (contact.firstName + &apos; &apos; + contact.lastName) : (contact.firstName || contact.lastName || &apos;&apos;) }} ]
                 td #[strong EMAIL] 
                   br
                   br
@@ -48,7 +45,7 @@
                 td #[strong ORGANIZATION]
                   br
                   br
-                  {{ contact.company ? contact.company : &apos;&apos; }}
+                  |{{ contact.company ? contact.company : &apos;&apos; }}
           .pagination
             button(@click="prevPage()") Previous
             span  Page {{ currentPage }} 
