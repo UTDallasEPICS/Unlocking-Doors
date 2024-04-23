@@ -36,7 +36,7 @@
                 td.center-text #[strong NAME]
                   br
                   br
-                  {{ (contact.firstName &amp;&amp; contact.lastName) ? (contact.firstName + &apos; &apos; + contact.lastName) : (contact.firstName || contact.lastName || &apos;&apos;) }} ] 
+                  |{{ (contact.firstName &amp;&amp; contact.lastName) ? (contact.firstName + &apos; &apos; + contact.lastName) : (contact.firstName || contact.lastName || &apos;&apos;) }} 
                 td #[strong EMAIL] 
                   br
                   br
@@ -44,7 +44,7 @@
                 td #[strong PHONE] 
                   br
                   br
-                  |{{ contact.mainPhone ? contact.mainPhone : (contact.directPhone ? contact.directPhone : contact.mobilePhone) }}
+                  |{{ contact.mainPhone ? contact.mainPhone : (contact.directPhone ? contact.directPhone :(contact.mobilePhone ? contact.mobilePhone : 'N/A') ) }}
                 td #[strong ORGANIZATION]
                   br
                   br
