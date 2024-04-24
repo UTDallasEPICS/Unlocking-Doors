@@ -1,5 +1,4 @@
-<template lang="pug">
-  
+<template lang="pug"> 
 .container
       .sidebar
         .logo
@@ -7,9 +6,25 @@
         .search-column
           .search-through
             strong Tags
-            select(v-model="tagFilter")
-              option(value="None") None1
-              option(v-for="tag in tags" :value="tag") {{ tag }}
+            Multiselect(
+          v-model="filters.tag",
+          :options="tags",
+          placeholder="Select tags",
+          multiple,
+        )
+        .search-column
+          .search-through
+            strong Date
+            select(v-model="selectedDateRange")
+              option(value="lastMonth") Last Month
+              option(value="last2Weeks") Last 2 Weeks
+              option(value="lastWeek") Last Week
+              option(value="custom") Custom
+              option(value="allcontacts") All Contacts
+            div(v-if="selectedDateRange === 'custom'")
+              input(type="date", v-model="customStartDate")
+              input(type="date", v-model="customEndDate")
+              
       .body
         .top-bar
           .account-bar
@@ -29,17 +44,18 @@
             button(@click='contacts = search(searchQuery)') Search
           table
             tbody
+            tbody
               tr(v-for='contact in searchResults' :key='contact.id' @click='isEditor || isAdmin ? editContact(contact): null')
-                td.center-text #[strong {{ (contact.firstName &amp;&amp; contact.lastName) ? (contact.firstName + &apos; &apos; + contact.lastName) : (contact.firstName || contact.lastName || &apos;&apos;) }} ] 
+                td.center-text #[strong {{ (contact.firstName && contact.lastName) ? (contact.firstName + ' ' + contact.lastName) : (contact.firstName || contact.lastName || '') }} ] 
                 td #[strong EMAIL] 
                   br
                   br
-                  |{{ contact.emailAddress ? contact.emailAddress : &apos;&apos; }}
+                  |{{ contact.emailAddress ? contact.emailAddress : '' }}
                 td #[strong PHONE] 
                   br
                   br
-                  |{{ contact.mainPhone ? contact.mainPhone : &apos;&apos; }}
-                td {{ contact.company ? contact.company : &apos;&apos; }}
+                  |{{ contact.mainPhone ? contact.mainPhone : (contact.directPhone ? contact.directPhone : (contact.mobilePhone ? contact.mobilePhone : 'N/A')) }}
+                td {{ contact.company ? contact.company : '' }}
           .pagination
             button(@click="prevPage()") Previous
             span  Page {{ currentPage }} 
@@ -49,19 +65,35 @@
   
   
  <script lang='ts' setup>
- import type { User } from '@/types.d'
- import { ref } from "vue";
- //import { useFetch } from "nuxt/app"
- const contact = ref([]);
- const searchQuery = ref('');
- const tagFilter = ref('None');
- const selectedContact = ref(null);
- import { useRouter } from 'vue-router';
- const router = useRouter();
 
+ /* 
+Not able throw an event when the tag selected is changed, thats the root cause. 
+ */
+
+ import type { User } from '@/types.d'
+ import { ref, computed, watch, } from "vue";
+
+ import Multiselect from 'vue-multiselect';
+ import { useFetch } from "nuxt/app"
+ import { useRouter } from 'vue-router';
+
+ const selectedDateRange = ref('allcontacts');
+const customStartDate = ref('');
+const customEndDate = ref('');
+ const searchQuery = ref('');
+
+ const filters = ref({
+  startDate: '',
+  endDate: '',
+  tag: []
+})
+
+
+ const router = useRouter();
   const user = useCookie<User>('cvuser');
   const id_info = computed(() => user.value?.id)
   const id = id_info.value as number
+  
   const isViewer = computed(() => user.value?.permission == "VIEWER")
   const isEditor = computed(() => user.value?.permission == "EDITOR")
   const isAdmin = computed(() => user.value?.permission == "ADMIN")
@@ -72,34 +104,117 @@
   const cursors = ref([0]);
   const cursor = ref(0);
 
-/*
-  const prevPage = () => {
-    const last = searchResults.value.length - 1; // would it be from cursors array
-    const newCursor = searchResults.value[last]?.id;
-    cursor.value = newCursor;
-    refresh();
-  };
 
-  //update to which cursor?
-const nextPage = () => {
-  console.log("nextpage");
-  refresh();
+// Have a watcher (watch selected date) for the selectedDateRange
+// Watcher executes function when event changes (replace the const function of onDateRangeChange)
+
+watch(() => [filters.value.startDate, filters.value.endDate, filters.value.tag], () => {
+  console.log("inside watch")
+
+  const now = new Date();
+  const endDate = new Date(filters.value.endDate);
+  const startDate = new Date(filters.value.startDate);
+
+  // Ensure endDate is not after today
+  if (endDate > now) {
+    filters.value.endDate = now.toISOString();
+  }
+
+  // Ensure endDate is not before startDate
+  if (endDate < startDate) {
+    customEndDate.value = customStartDate.value;
+  }
+
+  updateDateRange();
+  fetchContacts();
+}, { deep: true });
+
+const updateDateRange = () => {
+  const now = new Date();
+  filters.value.endDate = new Date().toISOString();
+  /*
+  switch (selectedDateRange.value) {
+    case 'lastWeek':
+      filters.value.startDate = new Date(now.setDate(now.getDate() - 7)).toISOString().substring(0, 10);
+      filters.value.endDate = new Date().toISOString().substring(0, 10);
+      break;
+    case 'last2Weeks':
+      filters.value.startDate = new Date(now.setDate(now.getDate() - 14)).toISOString().substring(0, 10);
+      filters.value.endDate = new Date().toISOString().substring(0, 10);
+      break;
+    case 'lastMonth':
+      filters.value.startDate = new Date(now.setMonth(now.getMonth() - 1)).toISOString().substring(0, 10);
+      filters.value.endDate = new Date().toISOString().substring(0, 10);
+      break;
+    case 'custom':
+      filters.value.startDate = customStartDate.value;
+      filters.value.endDate = customEndDate.value;
+      break;
+    case 'allcontacts':
+      filters.value.startDate = '';
+      filters.value.endDate = '';
+      break;
+    */
+
+    console.log("Reached update date range");
+    switch (selectedDateRange.value) {
+    case 'lastWeek':
+      filters.value.startDate = new Date(now.setDate(now.getMinutes() - 1)).toISOString();
+      break;
+    case 'last2Weeks':
+      filters.value.startDate = new Date(now.setDate(now.getMinutes() - 2)).toISOString();
+      break;
+    case 'lastMonth':
+      filters.value.startDate = new Date(now.setMonth(now.getMinutes() - 4)).toISOString();
+      break;
+    case 'custom':
+      filters.value.startDate = customStartDate.value;
+      filters.value.endDate = customEndDate.value;
+      break;
+    case 'allcontacts':
+      filters.value.startDate = new Date(0).toISOString();;
+      break;
+
+  }
 };
-*/
 
-/*
+// Ensure that date and tag filters are managed cohesively
+// fetchContacts(); // Called when watcher executes; Watcher essentially replaces filterContactbyDates and onTagsChange
 
-const contacts = [{}]
+// Still need this
+const constructQueryParams = () => {
+  console.log("construct")
+    const tagsQueryParam = Array.isArray(filters.value.tag) ? filters.value.tag.join(',') : filters.value.tag;
 
-const headers = Object.keys(contacts[0])
-// for every contact in contacts
-// convert contact.tags to a "tag1, tag2" shape
-// concatenate all the values - for key in headers, value = value + contact[header]
-// csv final string is headers + "\n" + values.join("\n")
-*/
+    const params = new URLSearchParams({
+        startDate: filters.value.startDate,
+        endDate: filters.value.endDate,
+        tag: tagsQueryParam
+    });
+
+    return params.toString();
+};
+
+
+// Function to fetch contacts
+const fetchContacts = async () => {
+  console.log("fetch")
+  const queryParams = constructQueryParams();
+  try {
+    const response = await fetch(`/api/contacts?${queryParams}`);
+    const data = await response.json();
+    searchResults.value = data;
+  } catch (error) {
+    console.error("Error fetching contacts:", error);
+  }
+};
+
 
 const downloadContacts = async () => {
-  const response = await fetch(`/api/contacts?tag=${tagFilter.value}`, {
+
+  const queryParams = constructQueryParams();
+// Using the `query` in the fetch URL
+const response = await fetch(`/api/contacts?${queryParams}`, {
   method: 'GET',
 });
 
@@ -181,11 +296,12 @@ mainPhone, directPhone, mobilePhone, narrative */
   const { data: tags} = await useFetch('/api/tag', {
     method: 'GET',
   });
+
   const { data: searchResults, refresh:search } = await useFetch('/api/contacts', {
     method: 'GET',
     params: {
       searchQuery,
-      tag: tagFilter,
+      tag: filters.value.tag,
     }
   });
 
