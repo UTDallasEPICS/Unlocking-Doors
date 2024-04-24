@@ -6,7 +6,7 @@
           img(src='~/assets/logo.png' width='150')
         .search-column
           .search-through
-          strong
+          strong Tags
             Multiselect(
           v-model="tagFilter",
           :options="tags",
@@ -66,7 +66,6 @@
  const selectedContact = ref(null);
  import { useRouter } from 'vue-router';
  const router = useRouter();
- 
 
   const user = useCookie<User>('cvuser');
   const id_info = computed(() => user.value?.id)
@@ -107,35 +106,17 @@ const headers = Object.keys(contacts[0])
 // csv final string is headers + "\n" + values.join("\n")
 */
 
-
 const downloadContacts = async () => {
-
-  let apiUrl = '/api/contacts'; 
-
-
-    // Check if tags are selected
-  if (tagFilter.value.length > 0) {
-        // Construct the query parameters for tags
-        const tagParams = tagFilter.value.map(tag => `tag=${encodeURIComponent(tag)}`).join('&');
-        // Append tag parameters to the API URL
-        apiUrl += `?${tagParams}`;
-  }
-
-
-    // Fetch contacts data
-    const response = await fetch(apiUrl, {
-        method: 'GET',
-    });
-
-
-    console.log(response);
+  const response = await fetch(`/api/contacts?tag=${tagFilter.value}`, {
+  method: 'GET',
+});
 
   if (!response.ok) {
     console.error('Failed to fetch contacts');
     return;
   }
 
-  const contacts = await response.json();
+    const contacts = await response.json();
 
   const headers = Object.keys(contacts[0]);
 
@@ -217,6 +198,7 @@ mainPhone, directPhone, mobilePhone, narrative */
     }
   });
 
+
   const editContact = (contact: any) => {
     router.push({ path: `/editContact/`, query: {id: contact.id}} ); 
   };
@@ -243,6 +225,13 @@ mainPhone, directPhone, mobilePhone, narrative */
     top: 0;
     left: 0;
   }
+
+  .search-column{
+    font-family: "Poppins";
+    color: #034EA2;
+  }
+
+  
 
   .top-bar {
     position: relative;
@@ -313,7 +302,7 @@ mainPhone, directPhone, mobilePhone, narrative */
   .search-through {
     display: flex;
     flex-direction: column;
-    padding: 10px 10px 0 15px;
+    padding: 28px 10px 0 15px;
     font-size: 17px;
     font-weight: bold;
     font-family: 'Poppins';
