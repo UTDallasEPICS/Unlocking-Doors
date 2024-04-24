@@ -68,7 +68,8 @@
 };
 
   const recoverContact = async (contactId) => {
- 
+  console.log('Recovering contact with ID:', contactId);
+
   try {
     // Make an HTTP request to recover the contact
     const response = await $fetch(`/api/recover-contact?contactId=${contactId}`, {
