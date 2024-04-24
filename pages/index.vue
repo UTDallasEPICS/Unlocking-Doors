@@ -40,7 +40,7 @@
                 td #[strong EMAIL] 
                   br
                   br
-                  |{{ contact.emailAddress ? contact.emailAddress : &apos;&apos; }}
+                  |{{ contact.emailAddress ? contact.emailAddress : 'N/A' }}
                 td #[strong PHONE] 
                   br
                   br
@@ -48,7 +48,7 @@
                 td #[strong ORGANIZATION]
                   br
                   br
-                  |{{ contact.company ? contact.company : &apos;&apos; }}
+                  |{{ contact.company ? contact.company : 'N/A' }}
           .pagination
             button(@click="prevPage()") Previous
             span  Page {{ currentPage }} 
