@@ -6,7 +6,7 @@
           img(src='~/assets/logo.png' width='150')
         .search-column
           .search-through
-          strong Tags
+          strong
             Multiselect(
           v-model="tagFilter",
           :options="tags",
@@ -27,6 +27,8 @@
           a.text(v-if='isEditor || isAdmin') |
           NuxtLink.admin-page-button(v-if='isAdmin' to='admin') Admin Page
           button(@click="downloadContacts()") Download Contacts
+          router-link(:to="{ name: 'recoverContacts' }")
+            button.recover-button Recover Contacts
         .search-container
           .search-bar
             input(type='text' placeholder='Search...' v-model='searchQuery')
@@ -53,16 +55,18 @@
   
   
  <script lang='ts' setup>
+ import Multiselect from 'vue-multiselect';
  import type { User } from '@/types.d'
  import { ref } from "vue";
- import Multiselect from 'vue-multiselect';
+
  //import { useFetch } from "nuxt/app"
  const contact = ref([]);
  const searchQuery = ref('');
- const tagFilter = ref('');
+ const tagFilter = ref<string[]>([]);
  const selectedContact = ref(null);
  import { useRouter } from 'vue-router';
  const router = useRouter();
+ 
 
   const user = useCookie<User>('cvuser');
   const id_info = computed(() => user.value?.id)
@@ -103,10 +107,28 @@ const headers = Object.keys(contacts[0])
 // csv final string is headers + "\n" + values.join("\n")
 */
 
+
 const downloadContacts = async () => {
-  const response = await fetch(`/api/contacts?tag=${tagFilter.value}`, {
-  method: 'GET',
-});
+
+  let apiUrl = '/api/contacts';
+
+
+    // Check if tags are selected
+  if (tagFilter.value.length > 0) {
+        // Construct the query parameters for tags
+        const tagParams = tagFilter.value.map(tag => `tag=${encodeURIComponent(tag)}`).join('&');
+        // Append tag parameters to the API URL
+        apiUrl += `?${tagParams}`;
+  }
+
+
+    // Fetch contacts data
+    const response = await fetch(apiUrl, {
+        method: 'GET',
+    });
+
+
+    console.log(response);
 
   if (!response.ok) {
     console.error('Failed to fetch contacts');

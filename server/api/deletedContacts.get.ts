@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const { searchQuery, tag, cursor} = getQuery(event)
   const query:any = {
     where: {
-      removed: false
+      removed: true
     },
     include:{
       tag:true
