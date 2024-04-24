@@ -110,7 +110,7 @@ const headers = Object.keys(contacts[0])
 
 const downloadContacts = async () => {
 
-  let apiUrl = '/api/contacts';
+  let apiUrl = '/api/contacts'; 
 
 
     // Check if tags are selected
