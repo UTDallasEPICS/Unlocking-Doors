@@ -9,7 +9,7 @@
             strong Tags
               Multiselect(
             v-model="tagFilter",
-            :options="tags",
+            :options="tags.map((name)=>name)",
             placeholder="Select tags",
             multiple
           )

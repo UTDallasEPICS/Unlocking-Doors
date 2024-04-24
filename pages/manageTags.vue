@@ -19,7 +19,7 @@
             NuxtLink.manage-tags-button(to='manageTags') Manage Tags
             a.text |
             button(@click="downloadContacts()") Download Contacts
-            //need to make these buttons conditional and work like the rest^
+
         .search-container
             table
                 tbody
@@ -60,9 +60,8 @@ const editedTags = ref<string[]>([]);
 const editIndex = ref<number | null>(null);
 let nextTagId = 1;
 
-
 const fetchData = async () => {
-    const { data, error } = await useFetch('/api/tag', {
+    const { data, error } = await useFetch('/api/tags', {
         method: 'GET',
     });
 
@@ -72,7 +71,7 @@ const fetchData = async () => {
     }
 
     if (data.value && Array.isArray(data.value)) {
-        console.log(data.value);
+        //console.log(data.value);
         tags.value = data.value.map((item) => ({
             id: item.id,
             name: item.name,
@@ -91,13 +90,12 @@ const startEdit = (index: number) => {
 };
 
 const saveTag = async (tag: Tag, index: number) => {
-    console.log("making the call",editIndex.value,index);
-   // if (editIndex.value === index) {
+    //console.log("making the call",editIndex.value,index);
         tags.value[index].name = editedTags.value[index];
         editIndex.value = null;
         // Update the tag name in the database
         try {
-            console.log("making the call");
+            //console.log("making the call");
             await useFetch(`/api/tag/?id=${tag.id}`, {
                 method: 'PUT',
                 body: JSON.stringify({ name: editedTags.value[index] }),
@@ -107,7 +105,6 @@ const saveTag = async (tag: Tag, index: number) => {
             console.error('Error updating tag:', error);
             // Handle error
         }
-   // }
 };
 
 const cancelEdit = (index: number) => {
@@ -120,16 +117,15 @@ const editTag = (index: number) => {
 };
 
 const deleteTag = async (tag: Tag, index: number) => {
-    console.log("delete tag call")
+    //console.log("delete tag call")
     if (confirm(`Are you sure you want to delete the tag "${tag.name}"?`)) {
         const tagIndex = tags.value.findIndex(t => t.id === tag.id);
         if (tagIndex !== -1) {
             tags.value.splice(tagIndex, 1);
             // Update the editedTags array after deleting the tag
             editedTags.value.splice(index, 1);
-            // You may want to perform additional actions here, such as deleting the tag from the database
             try {
-                console.log("trying to fetch")
+                //console.log("trying to fetch")
                 await useFetch(`/api/tag/?id=${tag.id}`, {
                     method: 'DELETE',
                 });
@@ -145,8 +141,6 @@ const deleteTag = async (tag: Tag, index: number) => {
 const filteredTags = computed(() => tags.value.filter(tag => !tag.removed));
 
 </script>
-
-
 
 <style scoped>
 .body {
