@@ -1,12 +1,11 @@
 import { PrismaClient } from '@prisma/client';
-import { getQuery } from 'h3';
 
 const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event);
-  const contactId = query.contactId;
-  console.log('Received contact ID in TypeScript:', contactId);
+  const contactId = getQuery(event);
+
+  console.log('Received contact ID in TypeScript:', contactId); 
   const parsedContactId = parseInt(contactId as string);
   if (isNaN(parsedContactId) || parsedContactId <= 0) {
     return {
