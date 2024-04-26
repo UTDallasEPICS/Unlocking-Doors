@@ -4,10 +4,26 @@ const prisma = new PrismaClient()
 
 export default defineEventHandler(async (event) => {
 
-  const { searchQuery, tag, cursor } = getQuery(event)
+  const { searchQuery, tag, cursor} = getQuery(event)
+  const pageSize = 10;
+
   const query:any = {
+      take: pageSize,
     where: {}
   }
+
+  
+  /*if (prevPage) {
+    query.take = pageSize;
+    query.skip = -(pageSize* Math.abs(cursor));
+  } else if (nextPage) {
+    query.take = pageSize;
+    query.skip = (pageSize* Math.abs(cursor));
+  } else {
+    query.take = pageSize;
+    query.skip = 0;//(pageSize* Math.abs(cursor));
+  }*/
+
   if(searchQuery) {
     query.where.OR = [
         {
@@ -36,11 +52,10 @@ export default defineEventHandler(async (event) => {
       some: {name:tag},
     }
   }
-
-  const pageSize = 10;
   
   const contacts = await prisma.contact.findMany(query);
   return contacts;
+
 });
 
 // Add new tab/page for editing contacts

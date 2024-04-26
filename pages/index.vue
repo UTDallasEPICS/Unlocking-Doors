@@ -20,7 +20,7 @@
           a.search-page-button(@click="navigateTo('/')") Search Page
           a.text |
           NuxtLink.add-contact-button(v-if='isEditor || isAdmin' to='addContact') Add New Contact
-          a.text(v-if='isEditor || isAdmin') |
+          a.text(v-if='isEditor || isAdmin') | 
           NuxtLink.admin-page-button(v-if='isAdmin' to='admin') Admin Page
           button(@click="downloadContacts()") Download Contacts
         .search-container
@@ -41,9 +41,9 @@
                   |{{ contact.mainPhone ? contact.mainPhone : &apos;&apos; }}
                 td {{ contact.company ? contact.company : &apos;&apos; }}
           .pagination
-            button(@click="prevPage()") Previous
-            span  Page {{ currentPage }} 
-            button(@click="nextPage()") Next
+            button(@click="prevPage()" :disabled="currentPage === 1") Previous
+            span Page {{currentPage}} of {{totalPages}}
+            button(@click="nextPage()" :disabled="currentPage === totalPages") Next
           
 </template>
   
@@ -68,46 +68,49 @@
 
   const currentPage = ref(1);
   const pageSize = ref(10);
+  const totalPages = computed(() => Math.ceil(searchResults.value.length / pageSize.value));
 
-  const cursors = ref([0]);
-  const cursor = ref(0);
+  /*const myCursors = ref([0]);
+  const myCursor = ref(0);*/
 
-/*
-  const prevPage = () => {
-    const last = searchResults.value.length - 1; // would it be from cursors array
-    const newCursor = searchResults.value[last]?.id;
-    cursor.value = newCursor;
-    refresh();
-  };
 
-  //update to which cursor?
+/*const fetchContacts = (contact:any) => {
+  const startIdx = (currentPage.value - 1) * pageSize.value;
+  const endIdx = startIdx + pageSize.value;
+  return searchResults.value.slice(startIdx, endIdx);
+};*/
+
+// Function to navigate to the previous page
+const prevPage  = () => {
+  if (currentPage.value > 0) {
+    currentPage.value -= 1;
+  }
+};
+
+// Function to navigate to the next page
 const nextPage = () => {
-  console.log("nextpage");
-  refresh();
+  if (currentPage.value < totalPages.value) {
+    currentPage.value += 1;
+  }
 };
-*/
-
-const downloadContacts = () => {
-  console.log("hi")
-  
-};
-
- 
 
   const { data: tags} = await useFetch('/api/tag', {
     method: 'GET',
   });
+
   const { data: searchResults, refresh:search } = await useFetch('/api/contacts', {
     method: 'GET',
     params: {
       searchQuery,
       tag: tagFilter,
+      cursor: currentPage,
     }
   });
 
   const editContact = (contact: any) => {
     router.push({ path: `/editContact/`, query: {id: contact.id}} ); 
   };
+
  </script>
   
   
