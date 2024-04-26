@@ -6,10 +6,14 @@
           img(src='~/assets/logo.png' width='150')
         .search-column
           .search-through
-            strong Tags
-            select(v-model="tagFilter")
-              option(value="None") None1
-              option(v-for="tag in tags" :value="tag") {{ tag }}
+          strong Tags
+            Multiselect(
+          v-model="tagFilter",
+          :options="tags",
+          placeholder="Select tags",
+          multiple
+        )
+
       .body
         .top-bar
           .account-bar
@@ -51,13 +55,15 @@
  <script lang='ts' setup>
  import type { User } from '@/types.d'
  import { ref } from "vue";
+
  //import { useFetch } from "nuxt/app"
  const contact = ref([]);
  const searchQuery = ref('');
- const tagFilter = ref('None');
+ const tagFilter = ref('');
  const selectedContact = ref(null);
  import { useRouter } from 'vue-router';
  const router = useRouter();
+ import Multiselect from 'vue-multiselect';
 
   const user = useCookie<User>('cvuser');
   const id_info = computed(() => user.value?.id)
@@ -98,17 +104,38 @@ const headers = Object.keys(contacts[0])
 // csv final string is headers + "\n" + values.join("\n")
 */
 
+/*
+
+*/
+
+
+
+
 const downloadContacts = async () => {
-  const response = await fetch(`/api/contacts?tag=${tagFilter.value}`, {
-  method: 'GET',
-});
+  
+  let apiUrl = '/api/contacts';
 
-  if (!response.ok) {
-    console.error('Failed to fetch contacts');
-    return;
+    // Check if tags are selected
+  if (tagFilter.value.length > 0) {
+        // Construct the query parameters for tags
+        const tagParams = tagFilter.value.map(tag => `tag=${encodeURIComponent(tag)}`).join('&');
+        // Append tag parameters to the API URL
+        apiUrl += `?${tagParams}`;
   }
+    
+    // Fetch contacts data
+    const response = await fetch(apiUrl, {
+        method: 'GET',
+    });
 
-  const contacts = await response.json();
+    console.log(response);
+
+    if (!response.ok) {
+        console.error('Failed to fetch contacts');
+        return;
+    }
+
+    const contacts = await response.json();
 
   const headers = Object.keys(contacts[0]);
 
@@ -182,6 +209,7 @@ mainPhone, directPhone, mobilePhone, narrative */
   const { data: tags} = await useFetch('/api/tag', {
     method: 'GET',
   });
+
   const { data: searchResults, refresh:search } = await useFetch('/api/contacts', {
     method: 'GET',
     params: {
@@ -189,6 +217,7 @@ mainPhone, directPhone, mobilePhone, narrative */
       tag: tagFilter,
     }
   });
+
 
   const editContact = (contact: any) => {
     router.push({ path: `/editContact/`, query: {id: contact.id}} ); 
@@ -216,6 +245,12 @@ mainPhone, directPhone, mobilePhone, narrative */
     top: 0;
     left: 0;
   }
+
+  .search-column{
+    font-family: "Poppins";
+  }
+
+  
 
   .top-bar {
     position: relative;
@@ -286,7 +321,7 @@ mainPhone, directPhone, mobilePhone, narrative */
   .search-through {
     display: flex;
     flex-direction: column;
-    padding: 10px 10px 0 15px;
+    padding: 35px 10px 0 15px;
     font-size: 17px;
     font-weight: bold;
     font-family: 'Poppins';
