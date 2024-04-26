@@ -12,15 +12,8 @@
               a.logout-link(href='/api/logout') Logout
               img(src='~/assets/account.png')
             .title
-              strong Contact Database
+              strong Removed Contacts
             a.search-page-button(@click="navigateTo('/')") Search Page
-            a.text |
-            NuxtLink.add-contact-button(v-if='isEditor || isAdmin' to='addContact') Add New Contact
-            a.text(v-if='isEditor || isAdmin') |
-            NuxtLink.admin-page-button(v-if='isAdmin' to='admin') Admin Page
-            button(@click="downloadContacts()") Download Contacts
-            router-link(:to="{ name: 'recoverContacts' }")
-              button.recover-button Recover Contacts
           .search-container
             .search-bar
               input(type='text' placeholder='Search...' v-model='searchQuery')
@@ -38,7 +31,8 @@
                     br
                     |{{ contact.mainPhone ? contact.mainPhone : &apos;&apos; }}
                   td {{ contact.company ? contact.company : &apos;&apos; }}
-                  <button @click='logClickedContact(contact)'>Recover</button>
+                  <button @click="confirmAction(contact, 'recover')">Recover</button>
+                  <button @click="deleteContact(contact)">Delete</button>
             .pagination
               button(@click="prevPage()") Previous
               span  Page {{ currentPage }} 
@@ -58,45 +52,31 @@
    const selectedContact = ref(null);
    import { useRouter } from 'vue-router';
    const router = useRouter();
-   
-   let obj = 0;
 
-   const logClickedContact = (contact) => {
-  console.log("Clicked contact:", contact);
-  obj = contact.id;
-  recoverClickedContact();
-};
+  const confirmAction = async (contact, action) => {
+  let confirmMessage;
 
-  const recoverContact = async (contactId) => {
-  console.log('Recovering contact with ID:', contactId);
+  confirmMessage = `Are you sure you want to recover ${contact.firstName} ${contact.lastName}?`;
 
-  try {
-    // Make an HTTP request to recover the contact
-    const response = await $fetch(`/api/recover-contact?contactId=${contactId}`, {
-      method: 'PUT',
-    });
+  const confirmActionDialog = confirm(confirmMessage);
 
-    if (response.error) {
-      console.error('An error occurred while recovering the contact:', response.error);
-    } else {
-      console.log('Contact recovered successfully');
-      // Optionally, you can redirect the user to another page after successful recovery
-      router.push('/'); // Redirect to the homepage after successful recovery
+  if (confirmActionDialog) {
+    try {
+      const response = await $fetch(`/api/recover-contact?contactId=${contact.id}&action=${action}`, {
+        method: 'PUT',
+      });
+
+      if (response.error) {
+        console.error(`An error occurred while ${action}ing the contact:`, response.error);
+      } else {
+        console.log(`Contact ${action}d successfully`);
+        router.push('/'); // Redirect to the homepage after successful action
+      }
+    } catch (error) {
+      console.error(`An error occurred while ${action}ing the contact:`, error);
     }
-  } catch (error) {
-    console.error('An error occurred while recovering the contact:', error);
-    // Handle error, maybe show an error message to the user
   }
 };
-
-// Define the recoverClickedContact function to call recoverContact when the recover button is clicked
-const recoverClickedContact = () => {
-  console.log('Recovering contact with ID:', obj); // Log the contact ID
-  recoverContact(obj);
-};
-
-
-
 
 
   
@@ -104,13 +84,14 @@ const recoverClickedContact = () => {
       method: 'GET',
     });
   
-    const { data: searchResults, refresh:search } = await useFetch('/api/deletedContacts', {
-      method: 'GET',
-      params: {
-        searchQuery,
-        tag: tagFilter,
-      }
-    });
+    const { data: searchResults, refresh:search } = await useFetch('/api/contacts', {
+    method: 'GET',
+    params: {
+      searchQuery,
+      tag: tagFilter,
+      showRemoved: true,
+    }
+  });
   
     const editContact = (contact: any) => {
       router.push({ path: `/editContact/`, query: {id: contact.id}} ); 

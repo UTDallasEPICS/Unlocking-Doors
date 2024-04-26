@@ -26,16 +26,16 @@
           NuxtLink.add-contact-button(v-if='isEditor || isAdmin' to='addContact') Add New Contact
           a.text(v-if='isEditor || isAdmin') |
           NuxtLink.admin-page-button(v-if='isAdmin' to='admin') Admin Page
+          a.text |
+          NuxtLink.recover-contact-button(v-if='isEditor || isAdmin' to='recoverContacts') Recover Contacts
           button(@click="downloadContacts()") Download Contacts
-          router-link(:to="{ name: 'recoverContacts' }")
-            button.recover-button Recover Contacts
         .search-container
           .search-bar
             input(type='text' placeholder='Search...' v-model='searchQuery')
             button(@click='contacts = search(searchQuery)') Search
           table
             tbody
-              tr(v-for='contact in searchResults' :key='contact.id' @click='isEditor || isAdmin ? editContact(contact): null')
+              tr(v-for='contact in searchResults' :key='contact.id' @click='isEditor || isAdmin')
                 td.center-text #[strong {{ (contact.firstName &amp;&amp; contact.lastName) ? (contact.firstName + &apos; &apos; + contact.lastName) : (contact.firstName || contact.lastName || &apos;&apos;) }} ] 
                 td #[strong EMAIL] 
                   br
@@ -46,6 +46,8 @@
                   br
                   |{{ contact.mainPhone ? contact.mainPhone : &apos;&apos; }}
                 td {{ contact.company ? contact.company : &apos;&apos; }}
+                <button @click="editContact(contact)">Edit Contact</button>
+                <button @click="confirmAction(contact, 'delete')">Delete</button>
           .pagination
             button(@click="prevPage()") Previous
             span  Page {{ currentPage }} 
@@ -80,41 +82,55 @@
   const cursors = ref([0]);
   const cursor = ref(0);
 
-/*
-  const prevPage = () => {
-    const last = searchResults.value.length - 1; // would it be from cursors array
-    const newCursor = searchResults.value[last]?.id;
-    cursor.value = newCursor;
-    refresh();
-  };
+const confirmAction = async (contact, action) => {
+  let confirmMessage;
 
-  //update to which cursor?
-const nextPage = () => {
-  console.log("nextpage");
-  refresh();
+  confirmMessage = `Are you sure you want to delete ${contact.firstName} ${contact.lastName}?`;
+
+  const confirmActionDialog = confirm(confirmMessage);
+
+  if (confirmActionDialog) {
+    try {
+      const response = await $fetch(`/api/recover-contact?contactId=${contact.id}&action=delete`, {
+        method: 'PUT',
+      });
+
+      if (response.error) {
+        console.error(`An error occurred while ${action}ing the contact:`, response.error);
+      } else {
+        console.log(`Contact ${action}d successfully`);
+        window.location.reload();  // refresh the homepage after successful action
+      }
+    } catch (error) {
+      console.error(`An error occurred while ${action}ing the contact:`, error);
+    }
+  }
 };
-*/
-
-/*
-
-const contacts = [{}]
-
-const headers = Object.keys(contacts[0])
-// for every contact in contacts
-// convert contact.tags to a "tag1, tag2" shape
-// concatenate all the values - for key in headers, value = value + contact[header]
-// csv final string is headers + "\n" + values.join("\n")
-*/
 
 const downloadContacts = async () => {
-  const response = await fetch(`/api/contacts?tag=${tagFilter.value}`, {
-  method: 'GET',
-});
 
-  if (!response.ok) {
-    console.error('Failed to fetch contacts');
-    return;
+
+  let apiUrl = '/api/contacts';
+
+    // Check if tags are selected
+  if (tagFilter.value.length > 0) {
+        // Construct the query parameters for tags
+        const tagParams = tagFilter.value.map(tag => `tag=${encodeURIComponent(tag)}`).join('&');
+        // Append tag parameters to the API URL
+        apiUrl += `?${tagParams}`;
   }
+    
+    // Fetch contacts data
+    const response = await fetch(apiUrl, {
+        method: 'GET',
+    });
+
+    console.log(response);
+
+    if (!response.ok) {
+        console.error('Failed to fetch contacts');
+        return;
+    }
 
     const contacts = await response.json();
 
@@ -195,6 +211,7 @@ mainPhone, directPhone, mobilePhone, narrative */
     params: {
       searchQuery,
       tag: tagFilter,
+      showRemoved: false,
     }
   });
 
@@ -290,6 +307,12 @@ mainPhone, directPhone, mobilePhone, narrative */
   }
 
   .top-bar > .admin-page-button {
+    cursor: pointer;
+    text-decoration: none;
+    color: #034EA2;
+  }
+
+  .top-bar > .recover-contact-button {
     cursor: pointer;
     text-decoration: none;
     color: #034EA2;
