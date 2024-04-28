@@ -162,10 +162,12 @@ const createContact = async () => {
 
   console.log("Current tags:", state.value.tag);
 
+/*
   if (!state.value.tag || state.value.tag.length === 0) {
     alert('Please assign at least one tag to the contact.');
     return; // Stop the function from proceeding further
   }
+  */
 
   console.log("Entered create contact");
   const { data } = await useFetch('/api/contact', {
@@ -173,6 +175,7 @@ const createContact = async () => {
     body: state.value
   });
   console.log("Entered passed create contact");
+  console.log(state.value);
   router.push('/');
 };
 

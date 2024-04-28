@@ -21,9 +21,10 @@
               option(value="lastWeek") Last Week
               option(value="custom") Custom
               option(value="allcontacts") All Contacts
-            div(v-if="selectedDateRange === 'custom'")
-              input(type="date", v-model="customStartDate")
-              input(type="date", v-model="customEndDate")
+              div(v-if="selectedDateRange === 'custom'")
+                VueDatePicker(v-model="filters.startDate" :max-date="new Date()" enable-time-picker="false")
+                VueDatePicker(v-model="filters.endDate" :max-date="new Date()")
+
               
       .body
         .top-bar
@@ -63,138 +64,85 @@
           
 </template>
   
-  
- <script lang='ts' setup>
 
- /* 
+<script lang='ts' setup>
+/* 
 Not able throw an event when the tag selected is changed, thats the root cause. 
- */
+*/
+import type { User } from '@/types.d'
+import { ref, computed, watch, } from "vue";
+import Multiselect from 'vue-multiselect';
+import { useFetch } from "nuxt/app"
+import { useRouter } from 'vue-router';
+import VueDatePicker from '@vuepic/vue-datepicker';
 
- import type { User } from '@/types.d'
- import { ref, computed, watch, } from "vue";
 
- import Multiselect from 'vue-multiselect';
- import { useFetch } from "nuxt/app"
- import { useRouter } from 'vue-router';
+const selectedDateRange = ref('allcontacts');
+const searchQuery = ref('');
 
- const selectedDateRange = ref('allcontacts');
-const customStartDate = ref('');
-const customEndDate = ref('');
- const searchQuery = ref('');
-
- const filters = ref({
-  startDate: '',
-  endDate: '',
+const filters = ref({
+  startDate: new Date(0),
+  endDate: new Date(),
   tag: []
 })
 
+const router = useRouter();
+const user = useCookie<User>('cvuser');
+const id_info = computed(() => user.value?.id)
+const id = id_info.value as number
 
- const router = useRouter();
-  const user = useCookie<User>('cvuser');
-  const id_info = computed(() => user.value?.id)
-  const id = id_info.value as number
-  
-  const isViewer = computed(() => user.value?.permission == "VIEWER")
-  const isEditor = computed(() => user.value?.permission == "EDITOR")
-  const isAdmin = computed(() => user.value?.permission == "ADMIN")
+const isViewer = computed(() => user.value?.permission == "VIEWER")
+const isEditor = computed(() => user.value?.permission == "EDITOR")
+const isAdmin = computed(() => user.value?.permission == "ADMIN")
 
-  const currentPage = ref(1);
-  const pageSize = ref(10);
+const currentPage = ref(1);
+const pageSize = ref(10);
 
-  const cursors = ref([0]);
-  const cursor = ref(0);
-
+const cursors = ref([0]);
+const cursor = ref(0);
 
 // Have a watcher (watch selected date) for the selectedDateRange
 // Watcher executes function when event changes (replace the const function of onDateRangeChange)
+watch(selectedDateRange, (value:string) => {
+  const now = new Date()
+  filters.value.endDate = now;
 
-watch(() => [filters.value.startDate, filters.value.endDate, filters.value.tag], () => {
+  switch (value) {
+    case 'lastWeek':
+      filters.value.startDate = new Date(now.setMinutes(now.getMinutes() - 1));
+      break;
+    case 'last2Weeks':
+      filters.value.startDate = new Date(now.setMinutes(now.getMinutes() - 2));
+      break;
+    case 'lastMonth':
+      filters.value.startDate = new Date(now.setMinutes(now.getMinutes() - 4));
+      break;
+    case 'allcontacts':
+      filters.value.startDate = new Date(0);
+      break;
+  }
+})
+
+watch(filters, () => {
   console.log("inside watch")
-
-  const now = new Date();
-  const endDate = new Date(filters.value.endDate);
-  const startDate = new Date(filters.value.startDate);
-
-  // Ensure endDate is not after today
-  if (endDate > now) {
-    filters.value.endDate = now.toISOString();
-  }
-
-  // Ensure endDate is not before startDate
-  if (endDate < startDate) {
-    customEndDate.value = customStartDate.value;
-  }
-
-  updateDateRange();
   fetchContacts();
 }, { deep: true });
-
-const updateDateRange = () => {
-  const now = new Date();
-  filters.value.endDate = new Date().toISOString();
-  /*
-  switch (selectedDateRange.value) {
-    case 'lastWeek':
-      filters.value.startDate = new Date(now.setDate(now.getDate() - 7)).toISOString().substring(0, 10);
-      filters.value.endDate = new Date().toISOString().substring(0, 10);
-      break;
-    case 'last2Weeks':
-      filters.value.startDate = new Date(now.setDate(now.getDate() - 14)).toISOString().substring(0, 10);
-      filters.value.endDate = new Date().toISOString().substring(0, 10);
-      break;
-    case 'lastMonth':
-      filters.value.startDate = new Date(now.setMonth(now.getMonth() - 1)).toISOString().substring(0, 10);
-      filters.value.endDate = new Date().toISOString().substring(0, 10);
-      break;
-    case 'custom':
-      filters.value.startDate = customStartDate.value;
-      filters.value.endDate = customEndDate.value;
-      break;
-    case 'allcontacts':
-      filters.value.startDate = '';
-      filters.value.endDate = '';
-      break;
-    */
-
-    console.log("Reached update date range");
-    switch (selectedDateRange.value) {
-    case 'lastWeek':
-      filters.value.startDate = new Date(now.setDate(now.getMinutes() - 1)).toISOString();
-      break;
-    case 'last2Weeks':
-      filters.value.startDate = new Date(now.setDate(now.getMinutes() - 2)).toISOString();
-      break;
-    case 'lastMonth':
-      filters.value.startDate = new Date(now.setMonth(now.getMinutes() - 4)).toISOString();
-      break;
-    case 'custom':
-      filters.value.startDate = customStartDate.value;
-      filters.value.endDate = customEndDate.value;
-      break;
-    case 'allcontacts':
-      filters.value.startDate = new Date(0).toISOString();;
-      break;
-
-  }
-};
 
 // Ensure that date and tag filters are managed cohesively
 // fetchContacts(); // Called when watcher executes; Watcher essentially replaces filterContactbyDates and onTagsChange
 
-// Still need this
 const constructQueryParams = () => {
   console.log("construct")
     const tagsQueryParam = Array.isArray(filters.value.tag) ? filters.value.tag.join(',') : filters.value.tag;
 
     const params = new URLSearchParams({
-        startDate: filters.value.startDate,
-        endDate: filters.value.endDate,
+        startDate: filters.value.startDate.toISOString(),
+        endDate: filters.value.endDate.toISOString(),
         tag: tagsQueryParam
     });
-
+    console.log(params);
     return params.toString();
 };
-
 
 // Function to fetch contacts
 const fetchContacts = async () => {
@@ -209,9 +157,7 @@ const fetchContacts = async () => {
   }
 };
 
-
 const downloadContacts = async () => {
-
   const queryParams = constructQueryParams();
 // Using the `query` in the fetch URL
 const response = await fetch(`/api/contacts?${queryParams}`, {
@@ -224,7 +170,6 @@ const response = await fetch(`/api/contacts?${queryParams}`, {
   }
 
   const contacts = await response.json();
-
   const headers = Object.keys(contacts[0]);
 
   const reduced = contacts.reduce(

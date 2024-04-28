@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
     narrative,
     company,
     tag = [], 
-    // date,
+    added_date
   } = await readBody(event);
 
   console.log("tag: ", tag); // Improved logging
@@ -46,6 +46,7 @@ export default defineEventHandler(async (event) => {
       console.log("Processed tags: ", JSON.stringify(processedTags)); // Corrected logging
 
   // Create a new contact in the database.
+  const currentDate = new Date();
   const newContactData = {
     prefix,
     firstName,
@@ -70,16 +71,27 @@ export default defineEventHandler(async (event) => {
     narrative,
     company,
     ...(processedTags && { tag: processedTags }), // Conditionally include tags
-    // Have date
+    added_date : new Date() 
+
   };
+
+  console.log("contact created1");
+  console.log("tagend1: ", JSON.stringify(newContactData.tag)); // Corrected logging
+  console.log("firstend1: ", firstName);
+  // console.log("date1: ", new);
 
   const newContact = await prisma.contact.create({
     data: newContactData,
   });
 
-  console.log("contact created");
-  console.log("tagend: ", JSON.stringify(newContactData.tag)); // Corrected logging
-  console.log("firstend: ", firstName);
+  console.log("contact created2");
+  console.log("tagend2: ", JSON.stringify(newContactData.tag)); // Corrected logging
+  console.log("firstend2: ", firstName);
+
+  console.log("date2date: ", newContactData.added_date);
+  
+
+
 
   return {
     data: newContact,
