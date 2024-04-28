@@ -61,10 +61,10 @@
  import Multiselect from 'vue-multiselect';
  import type { User } from '@/types.d'
  import { ref } from "vue";
- //import { useFetch } from "nuxt/app"
+ import { useFetch } from "nuxt/app"
  const contact = ref([]);
  const searchQuery = ref('');
- const tagFilter = ref('None');
+ const tagFilter = ref('');
  const selectedContact = ref(null);
  import { useRouter } from 'vue-router';
  const router = useRouter();
