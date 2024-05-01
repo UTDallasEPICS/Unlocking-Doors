@@ -63,6 +63,7 @@
  import type { User } from '@/types.d'
  import { ref } from "vue";
 
+
  //import { useFetch } from "nuxt/app"
  const contact = ref([]);
  const searchQuery = ref('');
@@ -70,6 +71,7 @@
  const selectedContact = ref(null);
  import { useRouter } from 'vue-router';
  const router = useRouter();
+
 
   const user = useCookie<User>('cvuser');
   const id_info = computed(() => user.value?.id)
@@ -121,6 +123,10 @@ const downloadContacts = async () => {
 
     console.log(response);
 
+    if (!response.ok) {
+        console.error('Failed to fetch contacts');
+        return;
+    }
     if (!response.ok) {
         console.error('Failed to fetch contacts');
         return;
@@ -200,6 +206,7 @@ mainPhone, directPhone, mobilePhone, narrative */
     method: 'GET',
   });
 
+
   const { data: searchResults, refresh:search } = await useFetch('/api/contacts', {
     method: 'GET',
     params: {
@@ -208,6 +215,7 @@ mainPhone, directPhone, mobilePhone, narrative */
       showRemoved: false,
     }
   });
+
 
 
   const editContact = (contact: any) => {
