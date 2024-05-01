@@ -95,7 +95,7 @@ const confirmAction = async (contact:any, action:String) => {
 
   if (confirmActionDialog) {
 
-      const response = await $fetch(`/api/recover-contact?contactId=${contact.id}&action=${action}`, {
+      const response = await $fetch(`/api/contactStatusChanger?contactId=${contact.id}&action=${action}`, {
         method: 'PUT',
       });
         window.location.reload();

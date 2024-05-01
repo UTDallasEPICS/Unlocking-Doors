@@ -76,7 +76,7 @@
 
   if (confirmActionDialog) {
 
-      const response = await $fetch(`/api/recover-contact?contactId=${contact.id}&action=${action}`, {
+      const response = await $fetch(`/api/contactStatusChanger?contactId=${contact.id}&action=${action}`, {
         method: 'PUT',
       });
         router.push('/'); // Redirect to the homepage after successful action
