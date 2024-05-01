@@ -9,6 +9,7 @@
             Multiselect(
           v-model="filters.tag",
           :options="tags",
+          :close-on-select="false",
           placeholder="Select tags",
           multiple,
         )
@@ -22,8 +23,8 @@
               option(value="custom") Custom
               option(value="allcontacts") All Contacts
               div(v-if="selectedDateRange === 'custom'")
-                VueDatePicker(v-model="filters.startDate" :max-date="new Date()" enable-time-picker="false")
-                VueDatePicker(v-model="filters.endDate" :max-date="new Date()")
+                //VueDatePicker(v-model="filters.startDate" :max-date="new Date()" enable-time-picker="false")
+                //VueDatePicker(v-model="filters.endDate" :max-date="new Date()")
 
               
       .body
@@ -58,9 +59,9 @@
                   |{{ contact.mainPhone ? contact.mainPhone : (contact.directPhone ? contact.directPhone : (contact.mobilePhone ? contact.mobilePhone : 'N/A')) }}
                 td {{ contact.company ? contact.company : '' }}
           .pagination
-            button(@click="prevPage()") Previous
-            span  Page {{ currentPage }} 
-            button(@click="nextPage()") Next
+            button(@click="prevPage()" :disabled="currentPage === 1") Previous
+            span Page {{currentPage}} of {{totalPages}}
+            button(@click="nextPage()" :disabled="currentPage === totalPages") Next
           
 </template>
   
@@ -97,30 +98,57 @@ const isAdmin = computed(() => user.value?.permission == "ADMIN")
 
 const currentPage = ref(1);
 const pageSize = ref(10);
+// replace 10 with searchResults.value.length
+const totalPages = computed(() => {
+  return searchResults.value ? Math.ceil(searchResults.value.length / pageSize.value) : 0;
+});
+
 
 const cursors = ref([0]);
 const cursor = ref(0);
+
+const prevPage  = () => {
+  if (currentPage.value > 0) {
+    currentPage.value -= 1;
+  }
+};
+
+// Function to navigate to the next page
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value += 1;
+  }
+};
+
+watch([currentPage, filters], () => {
+  fetchContacts(); // Re-fetch contacts whenever page or filters change
+}, { deep: true });
+
 
 // Have a watcher (watch selected date) for the selectedDateRange
 // Watcher executes function when event changes (replace the const function of onDateRangeChange)
 watch(selectedDateRange, (value:string) => {
   const now = new Date()
-  filters.value.endDate = now;
-
+  filters.value.endDate = new Date(now);
+console.log("enddate: ", filters.value.endDate)
   switch (value) {
     case 'lastWeek':
-      filters.value.startDate = new Date(now.setMinutes(now.getMinutes() - 1));
+      now.setMinutes(now.getMinutes() - 1)
+      filters.value.startDate = new Date(now);
       break;
     case 'last2Weeks':
-      filters.value.startDate = new Date(now.setMinutes(now.getMinutes() - 2));
+      now.setMinutes(now.getMinutes() - 2)
+      filters.value.startDate = new Date(now);
       break;
     case 'lastMonth':
-      filters.value.startDate = new Date(now.setMinutes(now.getMinutes() - 4));
+      now.setMinutes(now.getMinutes() - 30)
+      filters.value.startDate = new Date(now);
       break;
     case 'allcontacts':
       filters.value.startDate = new Date(0);
       break;
   }
+  console.log("startdate: ", filters.value.startDate)
 })
 
 watch(filters, () => {
@@ -140,7 +168,9 @@ const constructQueryParams = () => {
         endDate: filters.value.endDate.toISOString(),
         tag: tagsQueryParam
     });
-    console.log(params);
+    console.log("startdate with isostring", filters.value.startDate);
+    console.log("enddate with iostring", filters.value.endDate);
+    console.log(params.entries());
     return params.toString();
 };
 
@@ -247,7 +277,8 @@ mainPhone, directPhone, mobilePhone, narrative */
     params: {
       searchQuery,
       tag: filters.value.tag,
-    }
+      cursor: currentPage,
+    },
   });
 
   const editContact = (contact: any) => {
