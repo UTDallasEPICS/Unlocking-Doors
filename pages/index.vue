@@ -6,7 +6,7 @@
           img(src='~/assets/logo.png' width='150')
         .search-column
           .search-through
-          strong Tags
+          strong Tag Filtering
             Multiselect(
           v-model="tagFilter",
           :options="tags",
@@ -46,8 +46,10 @@
                   br
                   |{{ contact.mainPhone ? contact.mainPhone : &apos;&apos; }}
                 td {{ contact.company ? contact.company : &apos;&apos; }}
-                <button @click="editContact(contact)">Edit Contact</button>
-                <button @click="confirmAction(contact, 'delete')">Delete</button>
+                .actions-container
+                  img.edit-contact-icon(src='~/assets/edit-icon.png' alt='Edit Contact' @click="editContact(contact)")
+                  img.delete-button(src='~/assets/remove.png' alt='Remove' @click="confirmAction(contact, 'delete')")
+                
           .pagination
             button(@click="prevPage()") Previous
             span  Page {{ currentPage }} 
@@ -82,29 +84,21 @@
   const cursors = ref([0]);
   const cursor = ref(0);
 
-const confirmAction = async (contact, action) => {
+const confirmAction = async (contact:any, action:String) => {
   let confirmMessage;
 
-  confirmMessage = `Are you sure you want to delete ${contact.firstName} ${contact.lastName}?`;
+  confirmMessage = `Are you sure you want to remove ${contact.firstName} ${contact.lastName}?`;
 
   const confirmActionDialog = confirm(confirmMessage);
 
   if (confirmActionDialog) {
-    try {
-      const response = await $fetch(`/api/recover-contact?contactId=${contact.id}&action=delete`, {
+
+      const response = await $fetch(`/api/recover-contact?contactId=${contact.id}&action=${action}`, {
         method: 'PUT',
       });
-
-      if (response.error) {
-        console.error(`An error occurred while ${action}ing the contact:`, response.error);
-      } else {
-        console.log(`Contact ${action}d successfully`);
-        window.location.reload();  // refresh the homepage after successful action
+        window.location.reload();
       }
-    } catch (error) {
-      console.error(`An error occurred while ${action}ing the contact:`, error);
-    }
-  }
+   
 };
 
 const downloadContacts = async () => {
@@ -428,6 +422,7 @@ mainPhone, directPhone, mobilePhone, narrative */
     text-align: left;
     padding: 12px;
     height: 10px;
+    position: relative;
   }
 
   .center-text {
@@ -455,10 +450,6 @@ mainPhone, directPhone, mobilePhone, narrative */
     background-color: white;
   }
 
-  tbody tr:hover {
-    background-color: #ddd;
-  }
-
   .pagination {
     display: flex;
     justify-content: center;
@@ -482,5 +473,36 @@ mainPhone, directPhone, mobilePhone, narrative */
   .pagination span {
     background-color: #f0f0f0;
     cursor: default;
+  }
+
+  .actions-container {
+  position: absolute;
+  right: 50px; 
+}
+
+  .edit-contact-icon{
+    margin-top: 15px;
+    width: 40px;
+    height: 40px;
+    cursor:pointer;
+    margin-right: 15px;
+    transition: background-color 0.3s ease;
+    border-radius: 50%;
+  }
+
+  .edit-contact-icon:hover {
+  background-color: #cecdcd; 
+}
+
+  .delete-button{
+    width: 40px;
+    height: 40px;
+    cursor:pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 50%;
+  }
+
+  .delete-button:hover {
+    background-color: #cecdcd; 
   }
 </style>

@@ -14,6 +14,8 @@
             .title
               strong Removed Contacts
             a.search-page-button(@click="navigateTo('/')") Search Page
+            a.text |
+            a.recover-title Recover Contacts
           .search-container
             .search-bar
               input(type='text' placeholder='Search...' v-model='searchQuery')
@@ -31,12 +33,10 @@
                     br
                     |{{ contact.mainPhone ? contact.mainPhone : &apos;&apos; }}
                   td {{ contact.company ? contact.company : &apos;&apos; }}
-                  <button @click="confirmAction(contact, 'recover')">Recover</button>
-                  <button @click="deleteContact(contact)">Delete</button>
-            .pagination
-              button(@click="prevPage()") Previous
-              span  Page {{ currentPage }} 
-              button(@click="nextPage()") Next
+                  .actions-container
+                    img.edit-contact-icon(src='~/assets/recover.png' alt='Recover' @click="confirmAction(contact, 'recover')")
+                    img.delete-button(src='~/assets/delete.png' alt='Delete' @click="deleteContact(contact)")
+
             
 </template>
     
@@ -48,12 +48,26 @@
    import { useFetch } from "nuxt/app"
    const contact = ref([]);
    const searchQuery = ref('');
-   const tagFilter = ref<string[]>([]);
+   const tagFilter = ref([]);
    const selectedContact = ref(null);
    import { useRouter } from 'vue-router';
    const router = useRouter();
 
-  const confirmAction = async (contact, action) => {
+  const deleteContact = async (contact:any) => {
+    const confirmDelete = confirm(`Are you sure you want to permanently delete ${contact.firstName} ${contact.lastName}?`);
+
+    if (confirmDelete) {
+      const response = await $fetch(`/api/contacts?contactId=${contact.id}`, {
+        method: 'DELETE',
+      });
+
+      router.push('/');
+    }
+
+};
+
+
+  const confirmAction = async (contact:any, action:String) => {
   let confirmMessage;
 
   confirmMessage = `Are you sure you want to recover ${contact.firstName} ${contact.lastName}?`;
@@ -61,29 +75,18 @@
   const confirmActionDialog = confirm(confirmMessage);
 
   if (confirmActionDialog) {
-    try {
+
       const response = await $fetch(`/api/recover-contact?contactId=${contact.id}&action=${action}`, {
         method: 'PUT',
       });
-
-      if (response.error) {
-        console.error(`An error occurred while ${action}ing the contact:`, response.error);
-      } else {
-        console.log(`Contact ${action}d successfully`);
         router.push('/'); // Redirect to the homepage after successful action
       }
-    } catch (error) {
-      console.error(`An error occurred while ${action}ing the contact:`, error);
-    }
-  }
+   
 };
 
 
-  
-    const { data: tags} = await useFetch('/api/tag', {
-      method: 'GET',
-    });
-  
+
+
     const { data: searchResults, refresh:search } = await useFetch('/api/contacts', {
     method: 'GET',
     params: {
@@ -92,10 +95,7 @@
       showRemoved: true,
     }
   });
-  
-    const editContact = (contact: any) => {
-      router.push({ path: `/editContact/`, query: {id: contact.id}} ); 
-    };
+
    </script>
   
     
@@ -173,6 +173,10 @@
     .top-bar > .search-page-button {
       padding-left: 30px;
       cursor: pointer;
+      
+    }
+
+    .top-bar > .recover-title{
       text-decoration: underline;
     }
   
@@ -319,10 +323,6 @@
       background-color: white;
     }
   
-    tbody tr:hover {
-      background-color: #ddd;
-    }
-  
     .pagination {
       display: flex;
       justify-content: center;
@@ -347,4 +347,35 @@
       background-color: #f0f0f0;
       cursor: default;
     }
+
+    .actions-container {
+  position: absolute;
+  right: 50px; 
+    }
+
+  .edit-contact-icon{
+    margin-top: 15px;
+    width: 40px;
+    height: 40px;
+    cursor:pointer;
+    margin-right: 15px;
+    transition: background-color 0.3s ease;
+    border-radius: 50%;
+     }
+
+  .edit-contact-icon:hover {
+  background-color: #cecdcd; 
+    }
+
+  .delete-button{
+    width: 40px;
+    height: 40px;
+    cursor:pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 50%;
+  }
+
+  .delete-button:hover {
+    background-color: #cecdcd; 
+  }
   </style>
