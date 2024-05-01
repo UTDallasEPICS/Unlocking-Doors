@@ -476,9 +476,10 @@ mainPhone, directPhone, mobilePhone, narrative */
   }
 
   .actions-container {
-  position: absolute;
-  right: 50px; 
+  position: relative; 
+  margin-left: auto; 
 }
+
 
   .edit-contact-icon{
     margin-top: 15px;

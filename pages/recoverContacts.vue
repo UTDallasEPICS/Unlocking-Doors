@@ -57,7 +57,7 @@
     const confirmDelete = confirm(`Are you sure you want to permanently delete ${contact.firstName} ${contact.lastName}?`);
 
     if (confirmDelete) {
-      const response = await $fetch(`/api/contacts?contactId=${contact.id}`, {
+      const response = await $fetch(`/api/contact?contactId=${contact.id}`, {
         method: 'DELETE',
       });
 
@@ -164,12 +164,6 @@
       margin-right: 20px;
     }
   
-    .top-bar > .add-contact-button {
-      cursor: pointer;
-      text-decoration: none;
-      color: #034EA2;
-    }
-  
     .top-bar > .search-page-button {
       padding-left: 30px;
       cursor: pointer;
@@ -180,11 +174,6 @@
       text-decoration: underline;
     }
   
-    .top-bar > .admin-page-button {
-      cursor: pointer;
-      text-decoration: none;
-      color: #034EA2;
-    }
   
     .logo {
       padding: 25px 0 10px 35px;
@@ -323,35 +312,10 @@
       background-color: white;
     }
   
-    .pagination {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 20px;
-    }
-  
-    .pagination button, .pagination span {
-      padding: 8px 16px;
-      margin: 0 5px;
-      cursor: pointer;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background-color: #fff;
-    }
-  
-    .pagination button:hover {
-      background-color: #f0f0f0;
-    }
-  
-    .pagination span {
-      background-color: #f0f0f0;
-      cursor: default;
-    }
-
     .actions-container {
-  position: absolute;
-  right: 50px; 
-    }
+  position: relative; 
+  margin-left: auto; 
+}
 
   .edit-contact-icon{
     margin-top: 15px;
