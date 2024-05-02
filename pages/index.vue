@@ -6,7 +6,7 @@
           img(src='~/assets/logo.png' width='150')
         .search-column
           .search-through
-          strong Tags
+          strong Tag Filtering
             Multiselect(
           v-model="tagFilter",
           :options="tags",
@@ -26,6 +26,8 @@
           NuxtLink.add-contact-button(v-if='isEditor || isAdmin' to='addContact') Add New Contact
           a.text(v-if='isEditor || isAdmin') |
           NuxtLink.admin-page-button(v-if='isAdmin' to='admin') Admin Page
+          a.text |
+          NuxtLink.recover-contact-button(v-if='isEditor || isAdmin' to='recoverContacts') Recover Contacts
           button(@click="downloadContacts()") Download Contacts
         .search-container
           .search-bar
@@ -33,7 +35,7 @@
             button(@click='contacts = search(searchQuery)') Search
           table
             tbody
-              tr(v-for='contact in searchResults' :key='contact.id' @click='isEditor || isAdmin ? editContact(contact): null')
+              tr(v-for='contact in searchResults' :key='contact.id' @click='isEditor || isAdmin')
                 td.center-text #[strong {{ (contact.firstName &amp;&amp; contact.lastName) ? (contact.firstName + &apos; &apos; + contact.lastName) : (contact.firstName || contact.lastName || &apos;&apos;) }} ] 
                 td #[strong EMAIL] 
                   br
@@ -44,6 +46,10 @@
                   br
                   |{{ contact.mainPhone ? contact.mainPhone : &apos;&apos; }}
                 td {{ contact.company ? contact.company : &apos;&apos; }}
+                .actions-container
+                  img.edit-contact-icon(src='~/assets/edit-icon.png' alt='Edit Contact' @click="editContact(contact)")
+                  img.delete-button(src='~/assets/remove.png' alt='Remove' @click="confirmAction(contact, 'delete')")
+                
           .pagination
             button(@click="prevPage()") Previous
             span  Page {{ currentPage }} 
@@ -53,17 +59,19 @@
   
   
  <script lang='ts' setup>
+ import Multiselect from 'vue-multiselect';
  import type { User } from '@/types.d'
  import { ref } from "vue";
+
 
  //import { useFetch } from "nuxt/app"
  const contact = ref([]);
  const searchQuery = ref('');
- const tagFilter = ref('');
+ const tagFilter = ref<string[]>([]);
  const selectedContact = ref(null);
  import { useRouter } from 'vue-router';
  const router = useRouter();
- import Multiselect from 'vue-multiselect';
+
 
   const user = useCookie<User>('cvuser');
   const id_info = computed(() => user.value?.id)
@@ -78,41 +86,26 @@
   const cursors = ref([0]);
   const cursor = ref(0);
 
-/*
-  const prevPage = () => {
-    const last = searchResults.value.length - 1; // would it be from cursors array
-    const newCursor = searchResults.value[last]?.id;
-    cursor.value = newCursor;
-    refresh();
-  };
+const confirmAction = async (contact:any, action:String) => {
+  let confirmMessage;
 
-  //update to which cursor?
-const nextPage = () => {
-  console.log("nextpage");
-  refresh();
+  confirmMessage = `Are you sure you want to remove ${contact.firstName} ${contact.lastName}?`;
+
+  const confirmActionDialog = confirm(confirmMessage);
+
+  if (confirmActionDialog) {
+
+      const response = await $fetch(`/api/contactStatusChanger?contactId=${contact.id}&action=${action}`, {
+        method: 'PUT',
+      });
+        window.location.reload();
+      }
+   
 };
-*/
-
-/*
-
-const contacts = [{}]
-
-const headers = Object.keys(contacts[0])
-// for every contact in contacts
-// convert contact.tags to a "tag1, tag2" shape
-// concatenate all the values - for key in headers, value = value + contact[header]
-// csv final string is headers + "\n" + values.join("\n")
-*/
-
-/*
-
-*/
-
-
-
 
 const downloadContacts = async () => {
-  
+
+
   let apiUrl = '/api/contacts';
 
     // Check if tags are selected
@@ -134,6 +127,10 @@ const downloadContacts = async () => {
         console.error('Failed to fetch contacts');
         return;
     }
+    if (!response.ok) {
+        console.error('Failed to fetch contacts');
+        return;
+    }
 
     const contacts = await response.json();
 
@@ -150,8 +147,7 @@ const downloadContacts = async () => {
           return curr[h];
       }).join(",") + "\n"
       return acc+newValues
-    },
-    ""
+    }, ""
   )
 
   /*
@@ -210,13 +206,16 @@ mainPhone, directPhone, mobilePhone, narrative */
     method: 'GET',
   });
 
+
   const { data: searchResults, refresh:search } = await useFetch('/api/contacts', {
     method: 'GET',
     params: {
       searchQuery,
       tag: tagFilter,
+      showRemoved: false,
     }
   });
+
 
 
   const editContact = (contact: any) => {
@@ -248,6 +247,7 @@ mainPhone, directPhone, mobilePhone, narrative */
 
   .search-column{
     font-family: "Poppins";
+    color: #034EA2;
   }
 
   
@@ -314,6 +314,12 @@ mainPhone, directPhone, mobilePhone, narrative */
     color: #034EA2;
   }
 
+  .top-bar > .recover-contact-button {
+    cursor: pointer;
+    text-decoration: none;
+    color: #034EA2;
+  }
+
   .logo {
     padding: 25px 0 10px 35px;
   }
@@ -321,7 +327,7 @@ mainPhone, directPhone, mobilePhone, narrative */
   .search-through {
     display: flex;
     flex-direction: column;
-    padding: 35px 10px 0 15px;
+    padding: 28px 10px 0 15px;
     font-size: 17px;
     font-weight: bold;
     font-family: 'Poppins';
@@ -424,6 +430,7 @@ mainPhone, directPhone, mobilePhone, narrative */
     text-align: left;
     padding: 12px;
     height: 10px;
+    position: relative;
   }
 
   .center-text {
@@ -451,10 +458,6 @@ mainPhone, directPhone, mobilePhone, narrative */
     background-color: white;
   }
 
-  tbody tr:hover {
-    background-color: #ddd;
-  }
-
   .pagination {
     display: flex;
     justify-content: center;
@@ -478,5 +481,37 @@ mainPhone, directPhone, mobilePhone, narrative */
   .pagination span {
     background-color: #f0f0f0;
     cursor: default;
+  }
+
+  .actions-container {
+  position: relative; 
+  margin-left: auto; 
+}
+
+
+  .edit-contact-icon{
+    margin-top: 15px;
+    width: 40px;
+    height: 40px;
+    cursor:pointer;
+    margin-right: 15px;
+    transition: background-color 0.3s ease;
+    border-radius: 50%;
+  }
+
+  .edit-contact-icon:hover {
+  background-color: #cecdcd; 
+}
+
+  .delete-button{
+    width: 40px;
+    height: 40px;
+    cursor:pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 50%;
+  }
+
+  .delete-button:hover {
+    background-color: #cecdcd; 
   }
 </style>
