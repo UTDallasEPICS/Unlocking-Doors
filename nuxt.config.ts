@@ -6,4 +6,8 @@ export default defineNuxtConfig({
     AUTH0_BASE_URL: 'http://localhost:3000',
     AUTH0_ISSUER_BASE_URL: 'https://unlocking-doors.us.auth0.com',
   },
+  css: [
+    '@vuepic/vue-datepicker/dist/main.css',
+    'vue-multiselect/dist/vue-multiselect.css',
+  ],
 });
