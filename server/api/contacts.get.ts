@@ -5,6 +5,7 @@ export default defineEventHandler(async (event) => {
   const { searchQuery, tag, startDate, endDate, cursor, showRemoved = false } = getQuery(event);
   const id =  parseInt(cursor as string || "0")
   const pageSize = 10; 
+  
   const query: any = {
     take: pageSize,
     where: {

@@ -7,12 +7,12 @@
       .search-through
         sstrong Tags
         Multiselect(
-      v-model="filters.tag",
-      :options="tags",
-      :close-on-select="false",
-      placeholder="Select tags",
-      multiple,
-    )
+          v-model="filters.tag",
+          :options="tags",
+          :close-on-select="false",
+          placeholder="Select tags",
+          multiple,
+        )
     .search-column
       .search-through
         strong Date
@@ -45,12 +45,12 @@
       table
         tbody(v-if="searchResults.length")
           tr(v-for='contact in searchResults' :key='contact.id' @click='isEditor || isAdmin ? editContact(contact): null')
-            td.center-text #[strong {{ (contact.firstName && contact.lastName) ? (contact.firstName + ' ' + contact.lastName) : (contact.firstName || contact.lastName || '') }} ] 
-            td #[strong EMAIL] 
+            td.center-text #[strong {{ (contact.firstName && contact.lastName) ? (contact.firstName + ' ' + contact.lastName) : (contact.firstName || contact.lastName || '') }} ]
+            td #[strong EMAIL]
               br
               br
               |{{ contact.emailAddress ? contact.emailAddress : '' }}
-            td #[strong PHONE] 
+            td #[strong PHONE]
               br
               br
               |{{ contact.mainPhone ? contact.mainPhone : (contact.directPhone ? contact.directPhone : (contact.mobilePhone ? contact.mobilePhone : 'N/A')) }}
@@ -64,8 +64,8 @@
 
 <script lang='ts' setup>
 //connect search button to fetch results
-/* 
-Not able throw an event when the tag selected is changed, thats the root cause. 
+/*
+Not able throw an event when the tag selected is changed, thats the root cause.
 */
 import type { User } from '@/types.d';
 import { ref, computed, watch, } from "vue";
