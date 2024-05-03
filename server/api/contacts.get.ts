@@ -2,12 +2,13 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
-  const { searchQuery, tag, startDate, endDate, cursor } = getQuery(event);
+  const { searchQuery, tag, startDate, endDate, cursor, showRemoved = false } = getQuery(event);
   const id =  parseInt(cursor as string || "0")
   const pageSize = 10; 
   const query: any = {
     take: pageSize,
     where: {
+      removed: showRemoved,
       AND: [],
     },
   };
@@ -59,6 +60,9 @@ export default defineEventHandler(async (event) => {
       ]
     });
   }
+  
+  
+
 
   const [data,count] = await Promise.all([ //waits for all the results to return in an array
     prisma.contact.findMany({

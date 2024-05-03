@@ -155,7 +155,7 @@
     
     
     <style scoped>
-
+    @media screen and (min-width: 768px) {
     .body {
       background-color: white;
       width: 80%;
@@ -183,7 +183,7 @@
       padding: 15px 13px 0 15px;
       font-size: 17px;
       font-weight: bold;
-      font-family: 'Poppins';
+      font-family: 'AccidentalPresidency';
       color: #034EA2;
       cursor: pointer;
     }
@@ -192,7 +192,7 @@
       width: 100%;
       position: relative;
       height: 20%;
-      font-family: "Poppins";
+      font-family: "AccidentalPresidency";
       color: #034EA2;
     }
   
@@ -208,7 +208,7 @@
     }
   
     .top-bar > .account-bar > a.my-account-button {
-      font-family: "Poppins";
+      font-family: "AccidentalPresidency";
       color: black !important;
       margin-right: 20px;
       cursor: pointer;
@@ -255,7 +255,7 @@
     }
   
     .admin-container-contents > strong {
-      font: bold 20px 'Poppins';
+      font: bold 20px 'AccidentalPresidency';
     }
   
     .user-item {
@@ -278,13 +278,13 @@
       width: 30ch;
       text-align: center;
       margin-right: 10px;
-      font: bold 15px 'Poppins';
+      font: bold 15px 'AccidentalPresidency';
     }
   
     span {
       position: relative;
       width: 10ch;
-      font-family: 'Poppins';
+      font-family: 'AccidentalPresidency';
     }
   
     button.delete-button {
@@ -295,6 +295,6 @@
     button.delete-button:hover {
       background-color: red;
     }
-  
+    }
   </style>
   

@@ -39,6 +39,7 @@ Run npm install to download all the necessary packages and dependencies. <br>
 Create a .env file and copy over .env.example with the correct information. <br>
 Update the nuxt.config.ts with the necessary auth0 information. (ASK TAZ) <br>
 Run docker-compose up. <br>
+Also run npx prisma migrate dev to initialize the database.
 Run npx prisma studio. Brings up the database where you should add yourself as a new user in the User table. <br>
 Run npm run dev. Open localhost:3000 and sign up with the same username/email you added to the database.
 
