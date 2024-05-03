@@ -1,56 +1,62 @@
 <template lang="pug">
   
 .container
-        .sidebar
-          .logo
-            img(src='~/assets/logo.png' width='150')
-          .search-column
-            .search-through
-            strong Tags
-              Multiselect(
-            v-model="tagFilter",
-            :options="tags.map((name)=>name)",
-            placeholder="Select tags",
-            multiple
-          )
-  
-        .body
-          .top-bar
-            .account-bar
-              a.logout-link(href='/api/logout') Logout
-              img(src='~/assets/account.png')
-            .title
-              strong Contact Database
-            a.search-page-button(@click="navigateTo('/')") Search Page
-            a.text |
-            NuxtLink.add-contact-button(v-if='isEditor || isAdmin' to='addContact') Add New Contact
-            a.text(v-if='isEditor || isAdmin') |
-            NuxtLink.admin-page-button(v-if='isAdmin' to='admin') Admin Page
-            a.text |
-            NuxtLink.add-contact-button(v-if='isEditor || isAdmin' to='manageTags') Tag Management
-            button(@click="downloadContacts()") Download Contacts
-          .search-container
-            .search-bar
-              input(type='text' placeholder='Search...' v-model='searchQuery')
-              button(@click='contacts = search(searchQuery)') Search
-            table
-              tbody
-                tr(v-for='contact in searchResults' :key='contact.id' @click='isEditor || isAdmin ? editContact(contact): null')
-                  td.center-text #[strong {{ (contact.firstName &amp;&amp; contact.lastName) ? (contact.firstName + &apos; &apos; + contact.lastName) : (contact.firstName || contact.lastName || &apos;&apos;) }} ] 
-                  td #[strong EMAIL] 
-                    br
-                    br
-                    |{{ contact.emailAddress ? contact.emailAddress : &apos;&apos; }}
-                  td #[strong PHONE] 
-                    br
-                    br
-                    |{{ contact.mainPhone ? contact.mainPhone : &apos;&apos; }}
-                  td {{ contact.company ? contact.company : &apos;&apos; }}
-            .pagination
-              button(@click="prevPage()") Previous
-              span  Page {{ currentPage }} 
-              button(@click="nextPage()") Next
-            
+      .sidebar
+        .logo
+          img(src='~/assets/logo.png' width='150')
+        .search-column
+          .search-through
+          strong Tag Filtering
+            Multiselect(
+          v-model="tagFilter",
+          :options="tags",
+          placeholder="Select tags",
+          multiple
+        )
+
+      .body
+        .top-bar
+          .account-bar
+            a.logout-link(href='/api/logout') Logout
+            img(src='~/assets/account.png')
+          .title
+            strong Contact Database
+          a.search-page-button(@click="navigateTo('/')") Search Page
+          a.text |
+          NuxtLink.add-contact-button(v-if='isEditor || isAdmin' to='addContact') Add New Contact
+          a.text(v-if='isEditor || isAdmin') |
+          NuxtLink.admin-page-button(v-if='isAdmin' to='admin') Admin Page
+          a.text |
+          NuxtLink.add-contact-button(v-if='isEditor || isAdmin' to='manageTags') Tag Management
+          a.text |
+          NuxtLink.recover-contact-button(v-if='isEditor || isAdmin' to='recoverContacts') Recover Contacts
+          button(@click="downloadContacts()") Download Contacts
+        .search-container
+          .search-bar
+            input(type='text' placeholder='Search...' v-model='searchQuery')
+            button(@click='contacts = search(searchQuery)') Search
+          table
+            tbody
+              tr(v-for='contact in searchResults' :key='contact.id' @click='isEditor || isAdmin')
+                td.center-text #[strong {{ (contact.firstName &amp;&amp; contact.lastName) ? (contact.firstName + &apos; &apos; + contact.lastName) : (contact.firstName || contact.lastName || &apos;&apos;) }} ] 
+                td #[strong EMAIL] 
+                  br
+                  br
+                  |{{ contact.emailAddress ? contact.emailAddress : &apos;&apos; }}
+                td #[strong PHONE] 
+                  br
+                  br
+                  |{{ contact.mainPhone ? contact.mainPhone : &apos;&apos; }}
+                td {{ contact.company ? contact.company : &apos;&apos; }}
+                .actions-container
+                  img.edit-contact-icon(src='~/assets/edit-icon.png' alt='Edit Contact' @click="editContact(contact)")
+                  img.delete-button(src='~/assets/remove.png' alt='Remove' @click="confirmAction(contact, 'delete')")
+                
+          .pagination
+            button(@click="prevPage()") Previous
+            span  Page {{ currentPage }} 
+            button(@click="nextPage()") Next
+          
 </template>
     
     

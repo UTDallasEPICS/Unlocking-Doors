@@ -4,11 +4,14 @@ const prisma = new PrismaClient()
 
 export default defineEventHandler(async (event) => {
 
-  const { searchQuery, tag, cursor } = getQuery(event)
+  const { searchQuery, tag, showRemoved} = getQuery(event)
   const query:any = {
-    where: {},
+    where: {
+      removed: showRemoved === 'true',
+    },
     include:{
-      tag:true
+     tag: true
+      
     }
   }
   if(searchQuery) {
@@ -38,15 +41,13 @@ export default defineEventHandler(async (event) => {
   if (tag !== "None" && tag) {
     const tags = Array.isArray(tag) ? tag : [tag]; // Ensure tag is an array
     
-    query.where = {
-      AND: tags.map(tag => ({
-        tag: {
-          some: {
-            name: tag
-          }
+    query.where.AND = tags.map(tag => ({
+      tag: {
+        some: {
+          name: tag
         }
-      }))
-    };
+      }
+    }));
   }
   
   
