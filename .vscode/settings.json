@@ -9,5 +9,6 @@
             "database": "postgres",
             "username": "postgres"
         }
-    ]
+    ],
+    "java.dependency.syncWithFolderExplorer": false
 }

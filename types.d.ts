@@ -20,13 +20,18 @@ export declare type Contact = {
     group: string[];
     tag: string[];
   };
-  
   export declare type User = {
     id: number;
     username: string;
     permission: Permission;
   };
-  
+
+  export interface Tag {
+  id: number;
+  name: string;
+  removed?: boolean;
+}
+
   export declare enum Permission {
     VIEWER = 'VIEWER',
     EDITOR = 'EDITOR',
