@@ -9,7 +9,7 @@ datasource db {
 
 model Contact {
   id                Int     @id @default(autoincrement())
-  removed Boolean @default(false)
+  removed           Boolean @default(false)
   company           String
   prefix            String?
   firstName         String?
@@ -40,6 +40,7 @@ model Tag {
   id       Int       @id @default(autoincrement())
   name     String    @unique
   contacts Contact[] @relation("ContactToTag")
+  removed Boolean @default(false)
 }
 
 //make email
