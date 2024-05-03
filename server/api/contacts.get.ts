@@ -1,66 +1,80 @@
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
-
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
-
-  const { searchQuery, tag, showRemoved} = getQuery(event)
-  const query:any = {
+  const { searchQuery, tag, startDate, endDate, cursor, showRemoved = false } = getQuery(event);
+  const id =  parseInt(cursor as string || "0")
+  const pageSize = 10; 
+  const query: any = {
+    take: pageSize,
     where: {
-      removed: showRemoved === 'true',
+      removed: showRemoved,
+      AND: [],
     },
-    include:{
-     tag: true
-      
-    }
+  };
+
+  if (startDate && endDate) {
+    query.where.AND.push({
+      added_date: {
+        gte: startDate,
+        lte: endDate,
+      }
+    });
   }
-  if(searchQuery) {
-    query.where.OR = [
+
+  if (tag !== "None" && tag) {
+    query.where.AND.push(
+      ...(tag as string).split(",").map(
+        s => ({
+          tag: {
+            some: {
+              name: s,
+            }
+          }
+        })
+      )
+    );
+  }
+
+  if (searchQuery) {
+    query.where.AND.push({
+      OR: [
         {
           firstName: {
-            //HAVE CONTAINS SEARCH QUERY INSTEAD  
-            contains: searchQuery as any,
+            contains: searchQuery,
             mode: 'insensitive',
           },
         },
         {
           lastName: {
-            contains: searchQuery as any,
+            contains: searchQuery,
             mode: 'insensitive',
           },
         },
         {
           company: {
-            contains: searchQuery as any,
+            contains: searchQuery,
             mode: 'insensitive',
           },
         },
       ]
+    });
   }
-  if (tag !== "None" && tag) {
-    const tags = Array.isArray(tag) ? tag : [tag]; // Ensure tag is an array
-    
-    query.where.AND = tags.map(tag => ({
-      tag: {
-        some: {
-          name: tag
+  
+  
+
+
+  const [data,count] = await Promise.all([ //waits for all the results to return in an array
+    prisma.contact.findMany({
+      ...query,
+      ...(id && {
+        skip: 1,
+        cursor: {
+          id,
         }
-      }
-    }));
-  }
-  
-  
-
-
-  const pageSize = 10;
-  
-  const contacts = await prisma.contact.findMany(query);
-  return contacts;
+      }),
+    }),
+    prisma.contact.count(query)
+  ])
+  return {data, count};
 });
-
-// Add new tab/page for editing contacts
-// Create a table of existing tags to be able to modify/delete
-// - each row is a tag 
-// Columns include name, edit, and delete
-// - Have confirmation for deleting tag
-// Shouldn't actually delete tag, but 
