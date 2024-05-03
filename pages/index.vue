@@ -6,13 +6,13 @@
           img(src='~/assets/logo.png' width='150')
         .search-column
           .search-through
-          strong Tag Filtering
+            strong Tag Filtering
             Multiselect(
-          v-model="tagFilter",
-          :options="tags",
-          placeholder="Select tags",
-          multiple
-        )
+              v-model="tagFilter",
+              :options="tags",
+              placeholder="Select tags",
+              multiple
+            )
 
       .body
         .top-bar
@@ -38,16 +38,19 @@
           table
             tbody
               tr(v-for='contact in searchResults' :key='contact.id' @click='isEditor || isAdmin')
-                td.center-text #[strong {{ (contact.firstName &amp;&amp; contact.lastName) ? (contact.firstName + &apos; &apos; + contact.lastName) : (contact.firstName || contact.lastName || &apos;&apos;) }} ] 
+                td #[strong NAME]
+                    br
+                    br
+                    |{{ (contact.firstName &amp;&amp; contact.lastName) ? (contact.firstName + &apos; &apos; + contact.lastName) : (contact.firstName || contact.lastName || 'N/A';) }} 
                 td #[strong EMAIL] 
                   br
                   br
-                  |{{ contact.emailAddress ? contact.emailAddress : &apos;&apos; }}
+                  |{{ contact.emailAddress ? contact.emailAddress : 'N/A'; }}
                 td #[strong PHONE] 
                   br
                   br
-                  |{{ contact.mainPhone ? contact.mainPhone : &apos;&apos; }}
-                td {{ contact.company ? contact.company : &apos;&apos; }}
+                  |{{ contact.mainPhone ? contact.mainPhone : (contact.directPhone ? contact.directPhone :(contact.mobilePhone ? contact.mobilePhone : 'N/A') ) }}
+                td {{ contact.company ? contact.company : 'N/A'; }}
                 .actions-container
                   img.edit-contact-icon(src='~/assets/edit-icon.png' alt='Edit Contact' @click="editContact(contact)")
                   img.delete-button(src='~/assets/remove.png' alt='Remove' @click="confirmAction(contact, 'delete')")
@@ -255,7 +258,7 @@
     }
   
     .search-column{
-      font-family: "Poppins";
+      font-family: "AccidentalPresidency";
     }
   
     
@@ -263,7 +266,7 @@
     .top-bar {
       position: relative;
       height: 20%;
-      font-family: "Poppins";
+      font-family: "AccidentalPresidency";
       color: #034EA2;
     }
   
@@ -279,7 +282,7 @@
     }
   
     .top-bar > .account-bar > a.my-account-button {
-      font-family: "Poppins";
+      font-family: "AccidentalPresidency";
       color: black !important;
       margin-right: 20px;
       cursor: pointer;
@@ -332,12 +335,12 @@
       padding: 35px 10px 0 15px;
       font-size: 17px;
       font-weight: bold;
-      font-family: 'Poppins';
+      font-family: 'AccidentalPresidency';
     }
     
     .search-through select {
       margin-top: 10px;
-      font: 16px 'Poppins';
+      font: 16px 'AccidentalPresidency';
       border: transparent;
       border-radius: 10px;
       padding: 5px;
@@ -348,7 +351,7 @@
       display: flex;
       flex-direction: column;
       padding: 20px 0 0 15px;
-      font: bold 17px 'Poppins';
+      font: bold 17px 'AccidentalPresidency';
     }
   
     .checkbox {
@@ -363,7 +366,7 @@
     }
   
     .checkbox-label {
-      font: 300 15px 'Poppins';
+      font: 300 15px 'AccidentalPresidency';
       padding-left: 10px;
     }
   
@@ -371,7 +374,7 @@
       display: flex;
       flex-direction: column;
       padding: 20px 10px 0 15px;
-      font: bold 17px 'Poppins';
+      font: bold 17px 'AccidentalPresidency';
       flex-grow: 1;
     }
   

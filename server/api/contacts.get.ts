@@ -37,7 +37,6 @@ export default defineEventHandler(async (event) => {
         },
       ]
   }
-
   if (tag !== "None" && tag) {
     const tags = Array.isArray(tag) ? tag : [tag]; // Ensure tag is an array
     
