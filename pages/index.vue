@@ -37,6 +37,7 @@
       NuxtLink.add-contact-button(v-if='isEditor || isAdmin' to='addContact') Add New Contact
       a.text(v-if='isEditor || isAdmin') |
       NuxtLink.admin-page-button(v-if='isAdmin' to='admin') Admin Page
+      a.text |
       NuxtLink.admin-page-button(v-if='isAdmin' to='manageTags') Manage Tags
       button(@click="downloadContacts()") Download Contacts
     .search-container
@@ -106,6 +107,23 @@ const pageSize = ref(10); //current.pagesize out of all(count)
 const totalPages = computed(() => {
   return searchResults.value ? Math.ceil(count.value / pageSize.value) : 0;
 });
+
+const confirmAction = async (contact: any, action: String) => {
+  let confirmMessage;
+
+  confirmMessage = `Are you sure you want to remove ${contact.firstName} ${contact.lastName}?`;
+
+  const confirmActionDialog = confirm(confirmMessage);
+
+  if (confirmActionDialog) {
+
+    const response = await $fetch(`/api/contactStatusChanger?contactId=${contact.id}&action=${action}`, {
+      method: 'PUT',
+    });
+    window.location.reload();
+  }
+
+};
 
 
 const prevPage = () => {
