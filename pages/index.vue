@@ -5,7 +5,7 @@
       img(src='~/assets/logo.png' width='150')
     .search-column
       .search-through
-        sstrong Tags
+        strong Tags
         Multiselect(
           v-model="filters.tag",
           :options="tags",
