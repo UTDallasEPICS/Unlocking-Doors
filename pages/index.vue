@@ -37,6 +37,7 @@
       NuxtLink.add-contact-button(v-if='isEditor || isAdmin' to='addContact') Add New Contact
       a.text(v-if='isEditor || isAdmin') |
       NuxtLink.admin-page-button(v-if='isAdmin' to='admin') Admin Page
+      NuxtLink.admin-page-button(v-if='isAdmin' to='manageTags') Manage Tags
       button(@click="downloadContacts()") Download Contacts
     .search-container
       .search-bar
