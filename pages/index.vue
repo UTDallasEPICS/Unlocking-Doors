@@ -56,10 +56,14 @@
               br
               |{{ contact.mainPhone ? contact.mainPhone : (contact.directPhone ? contact.directPhone : (contact.mobilePhone ? contact.mobilePhone : 'N/A')) }}
             td {{ contact.company ? contact.company : '' }}
+            .actions-container
+              img.edit-contact-icon(src='~/assets/edit-icon.png' alt='Edit Contact' @click="editContact(contact)")
+              img.delete-button(src='~/assets/remove.png' alt='Remove' @click="confirmAction(contact, 'delete')")
+
       .pagination
         button(@click="prevPage()" :disabled="currentPage === 0") Previous
-        span Page {{currentPage}} of {{totalPages}}
-        button(@click="nextPage()" :disabled="currentPage === totalPages") Next
+        span Page {{currentPage + 1}} of {{totalPages}}
+        button(@click="nextPage()" :disabled="currentPage + 1 === totalPages") Next
 
 </template>
 
@@ -740,5 +744,37 @@ tbody tr:hover {
 .pagination span {
   background-color: #f0f0f0;
   cursor: default;
+}
+
+.actions-container {
+  position: relative;
+  margin-left: auto;
+}
+
+
+.edit-contact-icon {
+  margin-top: 15px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  margin-right: 15px;
+  transition: background-color 0.3s ease;
+  border-radius: 50%;
+}
+
+.edit-contact-icon:hover {
+  background-color: #cecdcd;
+}
+
+.delete-button {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 50%;
+}
+
+.delete-button:hover {
+  background-color: #cecdcd;
 }
 </style>
