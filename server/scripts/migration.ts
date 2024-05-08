@@ -21,7 +21,7 @@ async function readSpreadsheet(filePath: string) {
 async function processExcelData(data: string[][]) {
   try {
     const createContactPromises = data.map(async (row) => {
-      const newTags = new Array();
+      const newTags = [];
       for (let k = 0; k < 4; k++) {
         if (row[k] != null) {
           newTags.push(row[k]);

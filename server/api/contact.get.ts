@@ -3,7 +3,8 @@ const prisma = new PrismaClient()
 
 export default defineEventHandler( async (event) => {
   const {id} = getQuery(event)
-  const contacts = await prisma.contact.findFirst({
+  if(id =="0") return {tag:[]}
+  const contact = await prisma.contact.findFirst({
     where:{
       id: parseInt(id as string)
     },
@@ -11,5 +12,5 @@ export default defineEventHandler( async (event) => {
         tag: true
       }
     });
-    return contacts || {};
+    return contact || {tag:[]};
 });

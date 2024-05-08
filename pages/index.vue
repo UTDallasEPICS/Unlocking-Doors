@@ -1,83 +1,61 @@
 <template lang="pug">
-.container
-  .sidebar
-    .logo
-      img(src='~/assets/logo.png' width='150')
-    .search-column
-      .search-through
-        strong Tags
-        Multiselect(
-          v-model="filters.tag",
-          :options="tags",
-          :close-on-select="false",
-          placeholder="Select tags",
-          multiple,
-        )
-    .search-column
-      .search-through
-        strong Date
-        select(v-model="selectedDateRange")
-          option(value="lastMonth") Last Month
-          option(value="last2Weeks") Last 2 Weeks
-          option(value="lastWeek") Last Week
-          option(value="custom") Custom
-          option(value="allcontacts") All Contacts
-          div(v-if="selectedDateRange === 'custom'")
-            //VueDatePicker(v-model="filters.startDate" :max-date="new Date()" enable-time-picker="false")
-            //VueDatePicker(v-model="filters.endDate" :max-date="new Date()")
-  .body
-    .top-bar
-      .account-bar
-        a.logout-link(href='/api/logout') Logout
-        img(src='~/assets/account.png')
-      .title
-        strong Contact Database
-      a.search-page-button(@click="navigateTo('/')") Search Page
-      a.text |
-      NuxtLink.add-contact-button(v-if='isEditor || isAdmin' to='addContact') Add New Contact
-      a.text(v-if='isEditor || isAdmin') |
-      NuxtLink.admin-page-button(v-if='isAdmin' to='admin') Admin Page
-      a.text |
-      NuxtLink.admin-page-button(v-if='isAdmin' to='manageTags') Manage Tags
+.flex.gap-5
+  .flex.flex-col(class="w-1/6")
+    .flex.flex-col.py-4.font-bold
       button(@click="downloadContacts()") Download Contacts
-    .search-container
-      .search-bar
-        input(type='text' placeholder='Search...' v-model='searchQuery')
-        button(@click='contacts = search(searchQuery)') Search
-      table
-        tbody(v-if="searchResults.length")
-          tr(v-for='contact in searchResults' :key='contact.id' @click='isEditor || isAdmin ? editContact(contact): null')
-            td.center-text #[strong {{ (contact.firstName && contact.lastName) ? (contact.firstName + ' ' + contact.lastName) : (contact.firstName || contact.lastName || '') }} ]
-            td #[strong EMAIL]
-              br
-              br
-              |{{ contact.emailAddress ? contact.emailAddress : '' }}
-            td #[strong PHONE]
-              br
-              br
-              |{{ contact.mainPhone ? contact.mainPhone : (contact.directPhone ? contact.directPhone : (contact.mobilePhone ? contact.mobilePhone : 'N/A')) }}
-            td {{ contact.company ? contact.company : '' }}
-            .actions-container
-              img.edit-contact-icon(src='~/assets/edit-icon.png' alt='Edit Contact' @click="editContact(contact)")
-              img.delete-button(src='~/assets/remove.png' alt='Remove' @click="confirmAction(contact, 'delete')")
+    .flex.flex-col.py-4.font-bold
+      strong Tags
+      Multiselect(
+        v-model="filters.tag",
+        :options="tags",
+        :close-on-select="false",
+        placeholder="Select tags",
+        multiple,
+      )
 
-      .pagination
-        button(@click="prevPage()" :disabled="currentPage === 0") Previous
-        span Page {{currentPage + 1}} of {{totalPages}}
-        button(@click="nextPage()" :disabled="currentPage + 1 === totalPages") Next
-
+    .flex.flex-col.py-4.font-bold
+      strong Date
+      select.mt-2.rounded-lg.p-5.bg-white(v-model="selectedDateRange")
+        option(value="lastMonth") Last Month
+        option(value="last2Weeks") Last 2 Weeks
+        option(value="lastWeek") Last Week
+        option(value="custom") Custom
+        option(value="allcontacts") All Contacts
+        div(v-if="selectedDateRange === 'custom'")
+          //VueDatePicker(v-model="filters.startDate" :max-date="new Date()" enable-time-picker="false")
+          //VueDatePicker(v-model="filters.endDate" :max-date="new Date()")
+  .rounded-lg.p-8.bg-zinc-400.w-full.shadow-inner.flex.flex-col.gap-5
+    .flex.gap-5.items-center
+      input.grow.p-4.border-0.rounded-md.shadow-lg(class="w-7/8" type='text' placeholder='Search...' v-model='searchQuery')
+      button.bg-theme-primary.text-white.rounded-md.text-md.p-4(@click='fetchContacts') Search
+    table.w-full.flex.flex-col.gap-2(v-if="searchResults.length")
+      thead
+        tr.grid.grid-cols-5.bg-white.rounded-lg.py-2
+          th Name
+          th Email
+          th Phone
+          th Company
+          th Actions
+      tbody.flex.flex-col.gap-2
+        tr.grid.grid-cols-5.bg-white.rounded-lg.py-4(v-for='contact in searchResults' :key='contact.id')
+          p.text-center.align-center  {{ (contact.firstName && contact.lastName) ? (contact.firstName + ' ' + contact.lastName) : (contact.firstName || contact.lastName || '') }}
+          p.text-center.align-center  {{ contact.emailAddress ? contact.emailAddress : '' }}
+          p.text-center.align-center {{ contact.mainPhone ? contact.mainPhone : (contact.directPhone ? contact.directPhone : (contact.mobilePhone ? contact.mobilePhone : 'N/A')) }}
+          p.text-center.align-center {{ contact.company ? contact.company : '' }}
+          .flex.gap-5.justify-center
+            img.cursor-pointer.w-6.h-6(src='~/assets/edit-icon.png' alt='Edit Contact' @click="editContact(contact)")
+            img.cursor-pointer.w-6.h-6(src='~/assets/remove.png' alt='Remove' @click="confirmAction(contact, 'delete')")
+    .flex.flex-col.gap-2.items-center.mt-10.select-none
+      .flex.gap-3.justify-center.mt-10
+        button.cursor-pointer.bg-zinc-100.p-2.rounded-md(class="disabled:bg-gray-300" @click="prevPage()" :disabled="currentPage === 0") Prev
+        span.bg-zinc-100.p-2.rounded-md Page {{currentPage + 1}} of {{totalPages}}
+        button.cursor-pointer.bg-zinc-100.p-2.rounded-md(class="disabled:bg-gray-300" @click="nextPage()" :disabled="currentPage + 1 === totalPages") Next
+      span.h-min.w-min.whitespace-nowrap Contacts {{currentPage*pageSize+1}}-{{count < pageSize ? searchResults.length : (currentPage+1)*pageSize > count ? count : (currentPage+1)*pageSize}} of {{ count }}
 </template>
 
 <script lang='ts' setup>
-//connect search button to fetch results
-/*
-Not able throw an event when the tag selected is changed, thats the root cause.
-*/
 import type { User } from '@/types.d';
-import { ref, computed, watch, } from "vue";
 import Multiselect from 'vue-multiselect';
-import { useFetch } from "nuxt/app";
-import { useRouter } from 'vue-router';
 //import VueDatePicker from '@vuepic/vue-datepicker';
 
 const selectedDateRange = ref('allcontacts');
@@ -102,13 +80,12 @@ const cursors = ref([0]);
 const cursor = ref(0);
 const count = ref(0);
 const currentPage = ref(0);
-const pageSize = ref(10); //current.pagesize out of all(count)
-// replace 10 with searchResults.value.length
+const pageSize = ref(10);
 const totalPages = computed(() => {
   return searchResults.value ? Math.ceil(count.value / pageSize.value) : 0;
 });
 
-const confirmAction = async (contact: any, action: String) => {
+const confirmAction = async (contact: any, action: string) => {
   let confirmMessage;
 
   confirmMessage = `Are you sure you want to remove ${contact.firstName} ${contact.lastName}?`;
@@ -189,7 +166,8 @@ const constructQueryParams = () => {
     endDate: filters.value.endDate.toISOString(),
     searchQuery: searchQuery.value,
     tag: tagsQueryParam,
-    cursor: cursors.value[currentPage.value] + ''
+    cursor: cursors.value[currentPage.value] + '',
+    pageSize: pageSize.value + ''
   });
   console.log("startdate with isostring", filters.value.startDate);
   console.log("enddate with iostring", filters.value.endDate);
@@ -303,496 +281,4 @@ const editContact = (contact: any) => {
 };
 </script>
 
-<style scoped>
-.body {
-  background-color: white;
-  width: 80%;
-  position: relative;
-}
-
-.container {
-  display: flex;
-  min-width: 1280px;
-}
-
-.sidebar {
-  height: 97.8vh;
-  width: 16%;
-  position: relative;
-  top: 0;
-  left: 0;
-}
-
-.top-bar {
-  position: relative;
-  height: 20%;
-  font-family: "Poppins";
-  color: #034EA2;
-}
-
-.top-bar>.account-bar {
-  padding: 7px 30px;
-  position: absolute;
-  top: -8%;
-  right: -1%;
-  border-radius: 0 0 0 20px;
-  background-color: #D9D9D9;
-  display: flex;
-  flex-direction: row;
-}
-
-.top-bar>.account-bar>a.my-account-button {
-  font-family: "Poppins";
-  color: black !important;
-  margin-right: 20px;
-  cursor: pointer;
-}
-
-a.logout-link {
-  color: #034EA2;
-  text-decoration: none;
-}
-
-.top-bar>.account-bar>img {
-  height: 25px;
-  width: 25px;
-}
-
-.top-bar>.title {
-  padding: 25px 0 0 30px;
-  font-size: 28px;
-}
-
-.top-bar>a {
-  margin-right: 20px;
-}
-
-.top-bar>.add-contact-button {
-  cursor: pointer;
-  text-decoration: none;
-  color: #034EA2;
-}
-
-.top-bar>.search-page-button {
-  padding-left: 30px;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.top-bar>.admin-page-button {
-  cursor: pointer;
-  text-decoration: none;
-  color: #034EA2;
-}
-
-.logo {
-  padding: 25px 0 10px 35px;
-}
-
-.search-through {
-  display: flex;
-  flex-direction: column;
-  padding: 10px 10px 0 15px;
-  font-size: 17px;
-  font-weight: bold;
-  font-family: 'Poppins';
-}
-
-.search-through select {
-  margin-top: 10px;
-  font: 16px 'Poppins';
-  border: transparent;
-  border-radius: 10px;
-  padding: 5px;
-  background-color: #D9D9D9;
-}
-
-.filter-communication {
-  display: flex;
-  flex-direction: column;
-  padding: 20px 0 0 15px;
-  font: bold 17px 'Poppins';
-}
-
-.checkbox {
-  display: flex;
-  flex-direction: row;
-  padding: 6px 0;
-}
-
-.checkbox>input {
-  cursor: pointer;
-  height: 15px;
-}
-
-.checkbox-label {
-  font: 300 15px 'Poppins';
-  padding-left: 10px;
-}
-
-.selected-filters {
-  display: flex;
-  flex-direction: column;
-  padding: 20px 10px 0 15px;
-  font: bold 17px 'Poppins';
-  flex-grow: 1;
-}
-
-.filters {
-  margin-top: 8px;
-  height: 250px;
-  border-radius: 10px;
-  background-color: #D9D9D9;
-}
-
-.search-container {
-  background-color: #D9D9D9;
-  margin-left: 30px;
-  border-radius: 20px 0 0 0;
-  box-shadow: inset 0 0 15px #717171;
-  height: 150%;
-  width: 98%;
-  position: absolute;
-}
-
-.search-bar {
-  display: flex;
-  margin-bottom: 25px;
-  margin-top: 25px;
-  margin-left: 25px;
-  align-items: center;
-}
-
-.search-bar input {
-  width: 85%;
-  padding: 10px;
-  font-size: 20px;
-  border: none;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.search-bar button {
-  height: 100%;
-  margin-left: 10px;
-  padding: 10px;
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-table {
-  border-spacing: 0 10px;
-  width: 95%;
-  max-height: 80%;
-  margin-left: 25px;
-}
-
-th,
-td {
-  text-align: left;
-  padding: 12px;
-  height: 10px;
-}
-
-.center-text {
-  text-align: center;
-}
-
-th {
-  background-color: #ddd;
-  border: 1px solid black;
-}
-
-td:first-child,
-th:first-child {
-  border-radius: 10px 0 0 10px;
-}
-
-td:last-child,
-th:last-child {
-  border-radius: 0 10px 10px 0;
-}
-
-tbody tr {
-  border: 1px solid black;
-  padding: 8px 0;
-  background-color: white;
-}
-
-tbody tr:hover {
-  background-color: #ddd;
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.top-bar {
-  position: relative;
-  height: 20%;
-  font-family: "AccidentalPresidency";
-  color: #034EA2;
-}
-
-.top-bar>.account-bar {
-  padding: 7px 30px;
-  position: absolute;
-  top: -8%;
-  right: -1%;
-  border-radius: 0 0 0 20px;
-  background-color: #D9D9D9;
-  display: flex;
-  flex-direction: row;
-}
-
-.top-bar>.account-bar>a.my-account-button {
-  font-family: "AccidentalPresidency";
-  color: black !important;
-  margin-right: 20px;
-  cursor: pointer;
-}
-
-a.logout-link {
-  color: #034EA2;
-  text-decoration: none;
-}
-
-.top-bar>.account-bar>img {
-  height: 25px;
-  width: 25px;
-}
-
-.top-bar>.title {
-  padding: 25px 0 0 30px;
-  font-size: 28px;
-}
-
-.top-bar>a {
-  margin-right: 20px;
-}
-
-.top-bar>.add-contact-button {
-  cursor: pointer;
-  text-decoration: none;
-  color: #034EA2;
-}
-
-.top-bar>.search-page-button {
-  padding-left: 30px;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.top-bar>.admin-page-button {
-  cursor: pointer;
-  text-decoration: none;
-  color: #034EA2;
-}
-
-.logo {
-  padding: 25px 0 10px 35px;
-}
-
-.search-through {
-  display: flex;
-  flex-direction: column;
-  padding: 35px 10px 0 15px;
-  font-size: 17px;
-  font-weight: bold;
-  font-family: 'AccidentalPresidency';
-}
-
-.search-through select {
-  margin-top: 10px;
-  font: 16px 'AccidentalPresidency';
-  border: transparent;
-  border-radius: 10px;
-  padding: 5px;
-  background-color: #D9D9D9;
-}
-
-.filter-communication {
-  display: flex;
-  flex-direction: column;
-  padding: 20px 0 0 15px;
-  font: bold 17px 'AccidentalPresidency';
-}
-
-.checkbox {
-  display: flex;
-  flex-direction: row;
-  padding: 6px 0;
-}
-
-.checkbox>input {
-  cursor: pointer;
-  height: 15px;
-}
-
-.checkbox-label {
-  font: 300 15px 'AccidentalPresidency';
-  padding-left: 10px;
-}
-
-.selected-filters {
-  display: flex;
-  flex-direction: column;
-  padding: 20px 10px 0 15px;
-  font: bold 17px 'AccidentalPresidency';
-  flex-grow: 1;
-}
-
-.filters {
-  margin-top: 8px;
-  height: 250px;
-  border-radius: 10px;
-  background-color: #D9D9D9;
-}
-
-.search-container {
-  background-color: #D9D9D9;
-  margin-left: 30px;
-  border-radius: 20px 0 0 0;
-  box-shadow: inset 0 0 15px #717171;
-  height: 150%;
-  width: 98%;
-  position: absolute;
-}
-
-.search-bar {
-  display: flex;
-  margin-bottom: 25px;
-  margin-top: 25px;
-  margin-left: 25px;
-  align-items: center;
-}
-
-.search-bar input {
-  width: 85%;
-  padding: 10px;
-  font-size: 20px;
-  border: none;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.search-bar button {
-  height: 100%;
-  margin-left: 10px;
-  padding: 10px;
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-table {
-  border-spacing: 0 10px;
-  width: 95%;
-  max-height: 80%;
-  margin-left: 25px;
-}
-
-th,
-td {
-  text-align: left;
-  padding: 12px;
-  height: 10px;
-}
-
-.center-text {
-  text-align: center;
-}
-
-th {
-  background-color: #ddd;
-  border: 1px solid black;
-}
-
-td:first-child,
-th:first-child {
-  border-radius: 10px 0 0 10px;
-}
-
-td:last-child,
-th:last-child {
-  border-radius: 0 10px 10px 0;
-}
-
-tbody tr {
-  border: 1px solid black;
-  padding: 8px 0;
-  background-color: white;
-}
-
-tbody tr:hover {
-  background-color: #ddd;
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.pagination button,
-.pagination span {
-  padding: 8px 16px;
-  margin: 0 5px;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #fff;
-}
-
-.pagination button:hover {
-  background-color: #f0f0f0;
-}
-
-.pagination span {
-  background-color: #f0f0f0;
-  cursor: default;
-}
-
-.actions-container {
-  position: relative;
-  margin-left: auto;
-}
-
-
-.edit-contact-icon {
-  margin-top: 15px;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  margin-right: 15px;
-  transition: background-color 0.3s ease;
-  border-radius: 50%;
-}
-
-.edit-contact-icon:hover {
-  background-color: #cecdcd;
-}
-
-.delete-button {
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  border-radius: 50%;
-}
-
-.delete-button:hover {
-  background-color: #cecdcd;
-}
-</style>
+<style scoped></style>

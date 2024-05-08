@@ -7,7 +7,17 @@ export default defineNuxtConfig({
     AUTH0_ISSUER_BASE_URL: 'https://unlocking-doors.us.auth0.com',
   },
   css: [
+    '~/main.css',
     '@vuepic/vue-datepicker/dist/main.css',
     'vue-multiselect/dist/vue-multiselect.css',
+  ],
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
+  components: [
+    { path: '~/components', pathPrefix: false },
   ],
 });
