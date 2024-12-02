@@ -2,7 +2,7 @@
 .flex.gap-5
   .flex.flex-col(class="w-1/6")
     .flex.flex-col.py-4.font-bold
-      button(@click="downloadContacts()") Download Contacts
+      button.border.border-gray-200.rounded-lg.p-2.whitespace-nowrap(@click="downloadContacts()" class="hover:bg-blue-600 hover:text-white") Download Contacts
     .flex.flex-col.py-4.font-bold
       strong Tags
       Multiselect(
@@ -15,19 +15,19 @@
 
     .flex.flex-col.py-4.font-bold
       strong Date
-      select.mt-2.rounded-lg.p-5.bg-white(v-model="selectedDateRange")
-        option(value="lastMonth") Last Month
-        option(value="last2Weeks") Last 2 Weeks
-        option(value="lastWeek") Last Week
-        option(value="custom") Custom
-        option(value="allcontacts") All Contacts
+      select.mt-2.rounded-lg.p-2.bg-white.border.border-gray-200.cursor-pointer( v-model="selectedDateRange")
+        option(class="hover:bg-blue-600 hover:text-white" value="lastMonth") Last Month
+        option(class="hover:bg-blue-600 hover:text-white" value="last2Weeks") Last 2 Weeks
+        option(class="hover:bg-blue-600 hover:text-white" value="lastWeek") Last Week
+        option(class="hover:bg-blue-600 hover:text-white" value="custom") Custom
+        option(class="hover:bg-blue-600 hover:text-white" value="allcontacts") All Contacts
       div(v-if="selectedDateRange === 'custom'")
         VueDatePicker(v-model="filters.startDate" :max-date="new Date()" :enableTimePicker="false")
         VueDatePicker(v-model="filters.endDate" :max-date="new Date()"  :enableTimePicker="false")
   .rounded-lg.p-8.bg-zinc-400.w-full.shadow-inner.flex.flex-col.gap-5
     .flex.gap-5.items-center
       input.grow.p-4.border-0.rounded-md.shadow-lg(class="w-7/8" type='text' placeholder='Search...' v-model='searchQuery')
-      button.bg-theme-primary.text-white.rounded-md.text-md.p-4(@click='fetchContacts') Search
+      button.bg-theme-primary.text-white.rounded-md.text-md.p-4(@click='fetchContacts' class="hover:bg-blue-600 hover:text-white") Search
       .flex.flex-col.gap-2
         label(for='showRemoved') Show Removed
         input(name="showRemoved" type="checkbox" v-model="filters.showRemoved") 

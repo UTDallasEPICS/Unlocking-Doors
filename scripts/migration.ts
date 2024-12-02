@@ -7,7 +7,8 @@ const prisma = new PrismaClient();
 async function readSpreadsheet(filePath: string) {
     try {
       const content = fs.readFileSync(filePath, 'utf-8');
-      const rows = content.split('\n').map(row => row.split(','));
+      // NOTE: expect as ; separated instead of , although we should replace with a real parser
+      const rows = content.split('\n').map(row => row.split(';'));
       //skip headers in row 1
       const data = rows.slice(1)
       await processExcelData(data)

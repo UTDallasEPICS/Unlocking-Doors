@@ -4,7 +4,7 @@ div
     .rounded-lg.p-8.flex.flex-col.gap-5
       .rounded-lg.flex.justify-between.bg-white.p-4
         .text-2xl.font-bold.self-center USERS
-        NavLink.bg-theme-primary.text-white.rounded-md.text-md.p-4.w-min.h-min.whitespace-nowrap(to='/addUser') Add User
+        NavLink.bg-theme-primary.text-white.rounded-md.text-md.p-4.w-min.h-min.whitespace-nowrap(to='/addUser' class="hover:bg-blue-600 hover:text-white") Add User
       table.w-full.flex.flex-col.gap-2
         thead
           tr.grid.grid-cols-3.bg-white.rounded-lg.py-2
@@ -16,7 +16,7 @@ div
             p.text-center.align-center {{ user.username }}
             p.text-center.align-center {{ user.permission}}
             .flex.gap-5.justify-center
-              img.cursor-pointer.w-6.h-6(src='~/assets/edit-icon.png' alt='Edit Contact' @click="editContact(user)")
+              //img.cursor-pointer.w-6.h-6(src='~/assets/edit-icon.png' alt='Edit Contact' @click="editContact(user)")
               img.cursor-pointer.w-6.h-6(src='~/assets/remove.png' alt='Remove' @click="confirmAction(user, 'delete')")
 </template>
 <script setup>

@@ -4,8 +4,9 @@ div
     .bg-white.rounded-lg.p-8
       .text-2xl.font-bold {{route.query.id != '0' ? 'Edit Contact' : 'Add New Contact'}}
       form.flex.flex-col.mt-2(@submit.prevent='updateContact' @keydown.enter.prevent) 
-        .grid.grid-cols-1.gap-5(class="md:grid-cols-2 xl:grid-cols-3")
+        .grid.grid-cols-1.gap-5(class="lg:grid-cols-2")
           .flex.flex-col.gap-2
+            p.text-xl.font-semibold Info
             .flex.flex-col.justify-between(class="sm:flex-row")
               label.whitespace-nowrap.self-center(for='prefix') Prefix:
               input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.prefix')
@@ -27,38 +28,6 @@ div
             .flex.flex-col.justify-between(class="sm:flex-row")
               label.whitespace-nowrap.self-center(for='company') Company:
               input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.company')
-          .flex.flex-col.gap-2
-            .flex.flex-col.justify-between(class="sm:flex-row")
-              label.whitespace-nowrap.self-center(for='address1') Address 1:
-              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.address1')
-            .flex.flex-col.justify-between(class="sm:flex-row")
-              label.whitespace-nowrap.self-center(for='city') City:
-              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.city1')
-            .flex.flex-col.justify-between(class="sm:flex-row")
-              label.whitespace-nowrap.self-center(for='contact') State:
-              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.state1')
-            .flex.flex-col.justify-between(class="sm:flex-row")
-              label.whitespace-nowrap.self-center(for='zipCode') Zip Code:
-              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.zipCode1')
-            .flex.flex-col.justify-between(class="sm:flex-row")
-              label.whitespace-nowrap.self-center(for='address1Type') Address Type:
-              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.address1Type')
-            .flex.flex-col.justify-between(class="sm:flex-row")
-              label.whitespace-nowrap.self-center(for='address2') Address 2:
-              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.address2')
-            .flex.flex-col.justify-between(class="sm:flex-row")
-              label.whitespace-nowrap.self-center(for='city2') City:
-              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.city2')
-            .flex.flex-col.justify-between(class="sm:flex-row")
-              label.whitespace-nowrap.self-center(for='state2') State:
-              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.state2')
-            .flex.flex-col.justify-between(class="sm:flex-row")
-              label.whitespace-nowrap.self-center(for='zipCode2') Zip Code:
-              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.zipCode2')
-            .flex.flex-col.justify-between(class="sm:flex-row")
-              label.whitespace-nowrap.self-center(for='address2Type') Address Type:
-              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.address2Type')
-          .flex.flex-col.gap-2
             .flex.flex-col.justify-between(class="sm:flex-row")
               label.whitespace-nowrap.self-center(for='mainPhone') Main Phone:
               input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.mainPhone')
@@ -73,7 +42,41 @@ div
               input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.emailAddress')
             .flex.flex-col.justify-between(class="sm:flex-row")
               label.whitespace-nowrap.self-center(for='narrative') Narrative:
-              textarea.w-max(v-model='contact.narrative')
+              textarea.w-max.border.border-gray-400.p-2(v-model='contact.narrative')
+          .flex.flex-col.gap-2
+            p.text-xl.font-semibold Address One
+            .flex.flex-col.justify-between(class="sm:flex-row")
+              label.whitespace-nowrap.self-center(for='address1') Street Address:
+              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.address1')
+            .flex.flex-col.justify-between(class="sm:flex-row")
+              label.whitespace-nowrap.self-center(for='address1Type') Address Type:
+              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.address1Type')
+            .flex.flex-col.justify-between(class="sm:flex-row")
+              label.whitespace-nowrap.self-center(for='city') City:
+              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.city1')
+            .flex.flex-col.justify-between(class="sm:flex-row")
+              label.whitespace-nowrap.self-center(for='contact') State:
+              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.state1')
+            .flex.flex-col.justify-between(class="sm:flex-row")
+              label.whitespace-nowrap.self-center(for='zipCode') Zip Code:
+              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.zipCode1')
+            p.text-xl.font-semibold Address Two
+            .flex.flex-col.justify-between(class="sm:flex-row")
+              label.whitespace-nowrap.self-center(for='address2') Street Address:
+              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.address2')
+            .flex.flex-col.justify-between(class="sm:flex-row")
+              label.whitespace-nowrap.self-center(for='address2Type') Address Type:
+              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.address2Type')
+            .flex.flex-col.justify-between(class="sm:flex-row")
+              label.whitespace-nowrap.self-center(for='city2') City:
+              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.city2')
+            .flex.flex-col.justify-between(class="sm:flex-row")
+              label.whitespace-nowrap.self-center(for='state2') State:
+              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.state2')
+            .flex.flex-col.justify-between(class="sm:flex-row")
+              label.whitespace-nowrap.self-center(for='zipCode2') Zip Code:
+              input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.zipCode2')
+            
             .flex.flex-col.justify-between
               Multiselect(
                 placeholder="Search or add a tag"
@@ -86,7 +89,7 @@ div
                 :options="tags" 
                 @tag="addNewTag"
               )
-        button.self-end.bg-theme-primary.text-white.rounded-md.text-md.p-4.w-min.h-min.whitespace-nowrap(type='submit') {{route.query.id != '0' ? 'Update' : 'Create'}} Contact
+        button.self-end.bg-theme-primary.text-white.rounded-md.text-md.p-4.w-min.h-min.whitespace-nowrap(type='submit' class="hover:bg-blue-600 hover:text-white") {{route.query.id != '0' ? 'Update' : 'Create'}} Contact
 </template>
 
 <script setup lang="ts">
