@@ -1,6 +1,3 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
-
 export default defineEventHandler(async (event) => {
   const {
     id,
@@ -37,7 +34,7 @@ export default defineEventHandler(async (event) => {
 } : undefined;
 
   try {
-    const updatedContact = await prisma.contact.update({
+    const updatedContact = await event.context.client.contact.update({
       where: { id },
       data: {
         prefix,

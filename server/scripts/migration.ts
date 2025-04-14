@@ -14,7 +14,7 @@ async function readSpreadsheet(filePath: string) {
     } catch (error) {
       console.log(error);
     } finally {
-      await prisma.$disconnect();
+      await event.context.client.$disconnect();
     }
 }
 
@@ -32,7 +32,7 @@ async function processExcelData(data: string[][]) {
       const tagPromises = newTags
       .filter(tagText => tagText.trim() !== '') // Only use valid tag values
       .map(async (tagText) => {
-        return prisma.tag.upsert({
+        return event.context.client.tag.upsert({
           where: { name: tagText },
           create: { name: tagText },
           update: { name: tagText },
@@ -41,7 +41,7 @@ async function processExcelData(data: string[][]) {
     
       const createdTags = await Promise.all(tagPromises);
 
-      const newContact = await prisma.contact.create({
+      const newContact = await event.context.client.contact.create({
         data: {
           prefix : row[7],
           firstName : row[5],
@@ -77,7 +77,7 @@ async function processExcelData(data: string[][]) {
   } catch (error) {
     console.error('Error creating new contact: ', error);
   } finally {
-    await prisma.$disconnect();
+    await event.context.client.$disconnect();
   }
 }
 

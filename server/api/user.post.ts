@@ -1,10 +1,7 @@
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
-
 export default defineEventHandler(async (event) => {
     const { username, permission } = await readBody(event)
   
-    const newUser = await prisma.user.create({
+    const newUser = await event.context.client.user.create({
       data: {
         username,
         permission,

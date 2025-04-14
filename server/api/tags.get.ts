@@ -1,12 +1,7 @@
-// retrieve all tags
-
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
-
 export default defineEventHandler(async () => {
   try {
     // Retrieve all tags from the database
-    const tags = await prisma.tag.findMany({
+    const tags = await event.context.client.tag.findMany({
         where: {
           //this is the only way the filter can work proeprly
           removed:false
