@@ -1,0 +1,62 @@
+generator client {
+  provider      = "prisma-client"
+  output = "../prisma/client"
+  binaryTargets = ["native","linux-arm64-openssl-1.1.x"]
+  moduleFormat = "esm"  
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Contact {
+  id                Int      @id @default(autoincrement())
+  removed           Boolean  @default(false)
+  company           String
+  prefix            String?
+  firstName         String?
+  middleName        String?
+  lastName          String?
+  suffix            String?
+  professionalTitle String?
+  address1          String?
+  city1             String?
+  state1            String?
+  zipCode1          String?
+  address1Type      String?
+  address2          String?
+  city2             String?
+  state2            String?
+  zipCode2          String?
+  address2Type      String?
+  mainPhone         String?
+  directPhone       String?
+  mobilePhone       String?
+  emailAddress      String?
+  narrative         String?
+  tag               Tag[]    @relation("ContactToTag")
+  added_date        DateTime @default(now())
+}
+
+model Tag {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  contacts Contact[] @relation("ContactToTag")
+  removed  Boolean   @default(false)
+}
+
+//make email
+model User {
+  id         Int        @id @default(autoincrement())
+  username   String     @unique
+  permission Permission @default(VIEWER)
+
+  @@map("user")
+}
+
+enum Permission {
+  ADMIN
+  EDITOR
+  VIEWER
+}

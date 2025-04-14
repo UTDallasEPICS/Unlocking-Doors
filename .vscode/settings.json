@@ -1,0 +1,14 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5002,
+            "driver": "PostgreSQL",
+            "name": "unlocking-db",
+            "database": "postgres",
+            "username": "postgres"
+        }
+    ],
+    "java.dependency.syncWithFolderExplorer": false
+}
