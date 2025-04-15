@@ -1,9 +1,3 @@
-// editing tags
-
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
 export default defineEventHandler(async (event) => {
     //console.log("trying to run put")
   const { id } = getQuery(event); // Assuming you pass tag ID as a query parameter
@@ -11,7 +5,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Update the tag name in the database
-    const updatedTag = await prisma.tag.update({
+    const updatedTag = await event.context.client.tag.update({
       where: { id: parseInt(id as string) }, // Assuming id is a string, parse it to an integer
       data: { name },
     });

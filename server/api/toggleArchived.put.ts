@@ -1,7 +1,3 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
   const contactId = query.contactId;
@@ -22,13 +18,13 @@ export default defineEventHandler(async (event) => {
 
     if (action === 'unarchive') {
       // Update the contact by setting its removed field to false
-      updatedContact = await prisma.contact.update({
+      updatedContact = await event.context.client.contact.update({
         where: { id: parsedContactId },
         data: { removed: false },
       });
     } else if (action === 'archive') {
       // Update the contact by setting its removed field to true
-      updatedContact = await prisma.contact.update({
+      updatedContact = await event.context.client.contact.update({
         where: { id: parsedContactId },
         data: { removed: true },
       });

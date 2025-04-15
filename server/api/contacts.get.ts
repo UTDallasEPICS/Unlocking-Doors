@@ -1,6 +1,3 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
-
 export default defineEventHandler(async (event) => {
   const { pageSize, searchQuery, tag, startDate, endDate, cursor, showRemoved } = getQuery(event);
   const id =  parseInt(cursor as string || "0")
@@ -61,7 +58,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const [data,count] = await Promise.all([ //waits for all the results to return in an array
-    prisma.contact.findMany({
+    event.context.client.contact.findMany({
       take: parseInt(pageSize as string),
       ...query,
       ...(id && {
@@ -71,7 +68,7 @@ export default defineEventHandler(async (event) => {
         }
       }),
     }),
-    prisma.contact.count(query)
+    event.context.client.contact.count(query)
   ])
   return {data, count};
 });

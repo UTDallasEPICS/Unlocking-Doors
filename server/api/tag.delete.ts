@@ -1,9 +1,3 @@
-// delete a tag
-
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
 export default defineEventHandler(async (event) => {
     //console.log("im here")
   try {
@@ -18,7 +12,7 @@ export default defineEventHandler(async (event) => {
     //console.log(tagId,"TagId");
 
     // Perform database query to delete the specified tag
-    await prisma.tag.delete({
+    await event.context.client.tag.delete({
       where: {
         id: tagId,
       },

@@ -1,6 +1,3 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
-
 export default defineEventHandler(async (event) => {
   // Get the contact data from the request body.
   const {
@@ -80,7 +77,7 @@ export default defineEventHandler(async (event) => {
   console.log("firstend1: ", firstName);
   // console.log("date1: ", new);
 
-  const newContact = await prisma.contact.create({
+  const newContact = await event.context.client.contact.create({
     data: newContactData,
   });
 
