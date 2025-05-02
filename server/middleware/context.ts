@@ -6,7 +6,7 @@ import { loginRedirectUrl } from "../api/auth0";
 const client = new PrismaClient();
 
 const runtime  = useRuntimeConfig()
-const key = fs.readFileSync(process.cwd() + '/cert-dev.pem').toString()
+const key = fs.readFileSync(runtime.AUTH0_PUB_KEY_PATH).toString()
 export default defineEventHandler(async (event) => {
   event.context.client = client;
   const cvtoken = getCookie(event, 'cvtoken') || '';
@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     await sendRedirect(event, loginRedirectUrl());
   } else if (cvtoken) {
     try {
-      const importedKey = await importX509(key, 'ES256')
+      const importedKey = await importX509(key, 'RS256')
       const decoded = await jwtVerify(
         cvtoken, 
         importedKey
