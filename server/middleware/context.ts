@@ -1,4 +1,4 @@
-import {jwtVerify, importX509} from "jose";
+import {jwtVerify, importX509, decodeJwt} from "jose";
 import fs from "fs";
 import { PrismaClient } from "@/prisma/client";
 import { loginRedirectUrl } from "../api/auth0";
@@ -16,10 +16,11 @@ export default defineEventHandler(async (event) => {
   } else if (cvtoken) {
     try {
       const importedKey = await importX509(key, 'RS256')
-      const decoded = await jwtVerify(
+      await jwtVerify(
         cvtoken, 
         importedKey
       );
+      const decoded = decodeJwt(cvtoken)
       const claims = decoded as unknown as {email:string}; 
 
       if (claims.email) {
