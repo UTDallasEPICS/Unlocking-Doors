@@ -4,6 +4,7 @@ div
     .rounded-lg.p-8.flex.flex-col.gap-5
       .rounded-lg.flex.justify-between.bg-white.p-4
         .text-2xl.font-bold.self-center TAGS
+        NuxtLink.bg-theme-primary.text-white.rounded-md.text-md.p-2.self-center(to="/editTag?id=0") Add New Tag
       table.w-full.flex.flex-col.gap-2
         thead
           tr.grid.grid-cols-2.bg-white.rounded-lg.py-2
@@ -29,6 +30,7 @@ div
 <script lang="ts" setup>
 import type { User, Tag } from '@/types.d';
 
+const router = useRouter();
 const editIndex = ref<number | null>(null);
 
 const { data: tags, refresh } = await useFetch('/api/tags');
