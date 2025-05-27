@@ -1,6 +1,3 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
   try {
@@ -13,7 +10,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const existingTag = await prisma.tag.findUnique({
+    const existingTag = await event.context.client.tag.findUnique({
       where: { name: body.name.trim() },
     });
 
@@ -24,7 +21,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const newTag = await prisma.tag.create({
+    const newTag = await event.context.client.tag.create({
       data: {
         name: body.name.trim(),
       },
@@ -42,6 +39,6 @@ export default defineEventHandler(async (event) => {
       statusMessage: 'Failed to create tag.',
     });
   } finally {
-    await prisma.$disconnect();
+    await event.context.client.$disconnect();
   }
 });
