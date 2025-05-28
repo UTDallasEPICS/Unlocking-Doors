@@ -1,4 +1,4 @@
-export default defineEventHandler(async () => {
+export default defineEventHandler(async (event) => {
   try {
     // Retrieve all tags from the database
     const tags = await event.context.client.tag.findMany({
