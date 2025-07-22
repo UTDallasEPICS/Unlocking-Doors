@@ -1,6 +1,6 @@
 import {jwtVerify, importX509, decodeJwt} from "jose";
 import fs from "fs";
-import { PrismaClient } from "@/prisma/client";
+import { PrismaClient } from "@/prisma/client/client";
 import { loginRedirectUrl } from "../api/auth0";
 
 const client = new PrismaClient();
