@@ -2,7 +2,7 @@
 .flex.gap-5
   .flex.flex-col(class="w-1/6")
     .flex.flex-col.py-4.font-bold
-      button.border.border-gray-200.rounded-lg.p-2.whitespace-nowrap(@click="downloadContacts()" class="hover:bg-blue-600 hover:text-white") Download Contacts
+      button.border.border-gray-200.rounded-lg.p-2.whitespace-nowrap(@click="downloadContacts()" class="hover:bg-blue-600 hover:text-white") Download All Contacts
     .flex.flex-col.py-4.font-bold
       strong Tags
       Multiselect(
@@ -174,7 +174,7 @@ const constructQueryParams = () => {
     tag: tagsQueryParam,
     cursor: cursors.value[currentPage.value] + '',
     pageSize: pageSize.value + '',
-    showRemoved: filters.value.showRemoved,
+    showRemoved: String(filters.value.showRemoved),
   });
   console.log("startdate with isostring", filters.value.startDate);
   console.log("enddate with iostring", filters.value.endDate);
@@ -201,9 +201,8 @@ const fetchContacts = async () => {
 // NOTE FOR TAZ: this should ideally be computed coming off a useFetch 
 onMounted(() => fetchContacts());
 const downloadContacts = async () => {
-  const queryParams = constructQueryParams();
   // Using the `query` in the fetch URL
-  const response = await fetch(`/api/contacts?${queryParams}`, {
+  const response = await fetch(`/api/all-contacts`, {
     method: 'GET',
   });
 
@@ -213,7 +212,31 @@ const downloadContacts = async () => {
   }
 
   const contacts = await response.json();
-  const headers = Object.keys(contacts[0]);
+  const headers = [
+    "lastName",
+    "firstName",
+    "middleName",
+    "prefix",
+    "suffix",
+    "company",
+    "professionalTitle",
+    "address1",
+    "city1",
+    "state1",
+    "zipCode1",
+    "address1Type",
+    "address2",
+    "city2",
+    "state2",
+    "zipCode2",
+    "address2Type",
+    "mainPhone",
+    "directPhone",
+    "mobilePhone",
+    "emailAddress",
+    "narrative",
+    "tag"
+  ]
 
   const reduced = contacts.reduce(
     (acc: string, curr: any) => {
