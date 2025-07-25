@@ -245,7 +245,7 @@ const downloadContacts = async () => {
           return `"${curr[h].map(({ name }: { name: string; }) => name).join(",")}"`;
         }
         else
-          return curr[h];
+          return `"${curr[h]}"`;
       }).join(",") + "\n";
       return acc + newValues;
     }, ""
