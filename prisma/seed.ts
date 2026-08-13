@@ -1,5 +1,12 @@
 import "dotenv/config";
-import { prisma } from "../server/utils/prisma";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaClient } from "./client";
+
+const prisma = new PrismaClient({
+  adapter: new PrismaBetterSqlite3({
+    url: process.env.DATABASE_URL || "file:./dev.db",
+  })
+})
 
 async function main() {
   const adminEmail = process.env.SEED_EMAIL || "samuel.ma@npts.tech";
