@@ -12,30 +12,38 @@
         NavLink(class="hover:bg-blue-600 rounded-lg hover:text-white p-2" v-if='isEditor || isAdmin' to='/editContact/?id=0') Add New Contact
         NavLink(class="hover:bg-blue-600 rounded-lg hover:text-white p-2" v-if='isAdmin' to='/admin') Admin Page
         NavLink(class="hover:bg-blue-600 rounded-lg hover:text-white p-2" v-if='isAdmin' to='/manageTags') Manage Tags
-        a.no-underline(href='/api/logout' class="hover:bg-blue-600 rounded-lg hover:text-white p-2") Logout
+        a.no-underline.cursor-pointer(v-if="isLoggedIn" @click="handleLogout" class="hover:bg-blue-600 rounded-lg hover:text-white p-2") Logout
   NuxtPage.h-full.px-8
   
 </template>
 
 <script setup lang="ts">
+import { authClient } from '~/utils/auth-client';
+
 const runtime = useRuntimeConfig();
 const router = useRouter();
 const routes = ref(router.getRoutes());
 const route = useRoute();
-const cvCookie = useCookie('cvtoken');
-const cvuser = useCookie('cvuser');
+const uduser = useCookie('uduser');
 const isSearch = computed(() => route.path == "/Search/");
 
-if (!cvCookie.value) {
-  await navigateTo('/api/login');
+if (!uduser.value && route.path !== '/login') {
+  await navigateTo('/login');
 }
 
-const id_info = computed(() => cvuser.value?.id);
-const id = id_info.value as number;
+const handleLogout = async () => {
+  await authClient.signOut();
+  uduser.value = null; // Clear cookie
+  await navigateTo('/login');
+};
 
-const isViewer = computed(() => cvuser.value?.permission == "VIEWER");
-const isEditor = computed(() => cvuser.value?.permission == "EDITOR");
-const isAdmin = computed(() => cvuser.value?.permission == "ADMIN");
+const id_info = computed(() => uduser.value?.id);
+const id = id_info.value as string;
+
+const isLoggedIn = computed(() => !!uduser.value);
+const isViewer = computed(() => uduser.value?.permission == "VIEWER");
+const isEditor = computed(() => uduser.value?.permission == "EDITOR");
+const isAdmin = computed(() => uduser.value?.permission == "ADMIN");
 
 </script>
 <style></style>

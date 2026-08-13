@@ -1,13 +1,11 @@
 generator client {
-  provider      = "prisma-client"
-  output = "../prisma/client"
+  provider      = "prisma-client-js"
+  output        = "../prisma/client"
   binaryTargets = ["native"]
-  moduleFormat = "esm"  
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
 }
 
 model Contact {
@@ -46,17 +44,62 @@ model Tag {
   removed  Boolean   @default(false)
 }
 
-//make email
 model User {
-  id         Int        @id @default(autoincrement())
-  username   String     @unique
-  permission Permission @default(VIEWER)
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  name          String?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  permission    String    @default("VIEWER")
+  sessions      Session[]
+  accounts      Account[]
 
   @@map("user")
 }
 
-enum Permission {
-  ADMIN
-  EDITOR
-  VIEWER
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@unique([providerId, accountId])
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+
+  @@map("verification")
 }
