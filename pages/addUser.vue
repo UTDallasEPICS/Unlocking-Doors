@@ -5,7 +5,7 @@ div
       form.flex.flex-col.mt-2.mx-auto(class="w-1/2" @submit.prevent='createUser' @keydown.enter.prevent)
         .flex.flex-col.justify-between(class="sm:flex-row")
           label.whitespace-nowrap.self-center(for='prefix') Email:
-          input.rounded-2xl.p-2.border.border-gray-400(v-model='user.username')
+          input.rounded-2xl.p-2.border.border-gray-400(v-model='user.email')
         .flex.flex-col.justify-between(class="sm:flex-row")
           label.whitespace-nowrap.self-center(for='prefix') Role:
           select.mt-2.rounded-lg.p-5.bg-white(v-model="user.permission")
@@ -23,7 +23,7 @@ const createUser = async () => {
     method: 'POST',
     body: user.value
   });
-  router.navigate('/admin');
+  await navigateTo('/admin');
 };
 </script>
 

@@ -12,41 +12,43 @@ div
             th Role
             th Actions
         tbody.flex.flex-col.gap-2
-          tr.grid.grid-cols-3.bg-white.rounded-lg.py-4(v-for='user in users' :key='user.id' @click='isEditor || isAdmin ? editContact(user): null')
-            p.text-center.align-center {{ user.username }}
-            p.text-center.align-center {{ user.permission}}
+          tr.grid.grid-cols-3.bg-white.rounded-lg.py-4(v-for='user in users' :key='user.id')
+            p.text-center.align-center {{ user.email }}
+            p.text-center.align-center {{ user.permission }}
             .flex.gap-5.justify-center
-              //img.cursor-pointer.w-6.h-6(src='~/assets/edit-icon.png' alt='Edit Contact' @click="editContact(user)")
-              img.cursor-pointer.w-6.h-6(src='~/assets/remove.png' alt='Remove' @click="confirmAction(user, 'delete')")
+              img.cursor-pointer.w-6.h-6(src='~/assets/remove.png' alt='Remove' @click.stop="confirmDeleteUser(user.email)")
 </template>
+
 <script setup>
-const { data: users } = await useFetch('/api/user', {
+const { data: users, refresh } = await useFetch('/api/user', {
   method: 'GET',
   default() {
     return [];
   },
 });
 
-const confirmDeleteUser = (username) => {
-  const confirmed = confirm(`Are you sure you want to delete the user ${username}?`);
+const confirmDeleteUser = (email) => {
+  const confirmed = confirm(`Are you sure you want to delete the user ${email}?`);
   if (confirmed) {
-    deleteUser(username);
+    deleteUser(email);
   }
 };
 
-const deleteUser = async (username) => {
+const deleteUser = async (email) => {
   const params = new URLSearchParams();
-  params.append('username', username);
+  params.append('email', email);
 
   const response = await fetch('/api/user/?' + params.toString(), { method: 'DELETE' });
+  if (response.ok) {
+    refresh();
+  }
 };
 
-const cvuser = useCookie('cvuser');
-const isViewer = computed(() => cvuser.value?.permission == "VIEWER");
-const isEditor = computed(() => cvuser.value?.permission == "EDITOR");
-const isAdmin = computed(() => cvuser.value?.permission == "ADMIN");
+const uduser = useCookie('uduser');
+const isViewer = computed(() => uduser.value?.permission == "VIEWER");
+const isEditor = computed(() => uduser.value?.permission == "EDITOR");
+const isAdmin = computed(() => uduser.value?.permission == "ADMIN");
 
 </script>
-
 
 <style scoped></style>

@@ -72,7 +72,7 @@ const filters = ref({
 });
 
 const router = useRouter();
-const user = useCookie<User>('cvuser');
+const user = useCookie<User>('uduser');
 const id_info = computed(() => user.value?.id);
 const id = id_info.value as number;
 
