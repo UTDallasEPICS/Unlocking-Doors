@@ -26,6 +26,10 @@ export default defineNuxtConfig({
       dedupe: ['vue'],
     },
   },
+  // Added to fix an issue where you would get an error when rendering page after logging in
+  build: {
+    transpile: ['vue-multiselect'],
+  },
 
   compatibilityDate: '2025-04-14',
 });
