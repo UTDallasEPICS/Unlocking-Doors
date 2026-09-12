@@ -78,17 +78,19 @@ div
               input.rounded-2xl.p-2.border.border-gray-400(v-model='contact.zipCode2')
             
             .flex.flex-col.justify-between
-              Multiselect(
-                placeholder="Search or add a tag"
-                tag-placeholder="Add this as new tag"
-                :multiple="true" 
-                v-model="contact.tag" 
-                :close-on-select="false" 
-                open-direction="bottom" 
-                :taggable="true" 
-                :options="tags" 
-                @tag="addNewTag"
-              )
+              // This is marked as ClientOnly to hopefully fix an issue in production where seeing this causes an error. 
+              ClientOnly
+                Multiselect(
+                  placeholder="Search or add a tag"
+                  tag-placeholder="Add this as new tag"
+                  :multiple="true" 
+                  v-model="contact.tag" 
+                  :close-on-select="false" 
+                  open-direction="bottom" 
+                  :taggable="true" 
+                  :options="tags" 
+                  @tag="addNewTag"
+                )
         button.self-end.bg-theme-primary.text-white.rounded-md.text-md.p-4.w-min.h-min.whitespace-nowrap(type='submit' class="hover:bg-blue-600 hover:text-white") {{route.query.id != '0' ? 'Update' : 'Create'}} Contact
 </template>
 

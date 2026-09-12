@@ -5,13 +5,15 @@
       button.border.border-gray-200.rounded-lg.p-2.whitespace-nowrap(@click="downloadContacts()" class="hover:bg-blue-600 hover:text-white") Download All Contacts
     .flex.flex-col.py-4.font-bold
       strong Tags
-      Multiselect(
-        v-model="filters.tag",
-        :options="tags",
-        :close-on-select="false",
-        placeholder="Select tags",
-        multiple,
-      )
+      // This is marked as ClientOnly to hopefully fix an issue in production where seeing this causes an error. 
+      ClientOnly
+        Multiselect(
+          v-model="filters.tag",
+          :options="tags",
+          :close-on-select="false",
+          placeholder="Select tags",
+          multiple,
+        )
 
     .flex.flex-col.py-4.font-bold
       strong Date
