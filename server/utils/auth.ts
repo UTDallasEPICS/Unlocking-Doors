@@ -61,7 +61,6 @@ export const auth = betterAuth({
           console.log(`[Better Auth OTP] Email sent successfully: ${info.messageId}`);
         } catch (error) {
           console.error(`[Better Auth OTP] Failed to send email to ${email}:`, error);
-          console.log(`\n💡 [Developer Tip] SMTP delivery failed, but you can still copy the 6-digit OTP code printed above (${otp}) and paste it into the login screen to sign in locally! 🚀\n`);
         }
       },
       disableSignUp: true, // Only allow admin pre-created users
